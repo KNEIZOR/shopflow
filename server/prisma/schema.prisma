@@ -101,7 +101,8 @@ model ProductVariant {
   productId String
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  cartItems CartItem[]
+  cartItems  CartItem[]
+  orderItems OrderItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -147,7 +148,7 @@ model Favorite {
   id String @id @default(cuid())
 
   userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   productId String
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
@@ -171,7 +172,7 @@ model Address {
   apartment  String?
 
   userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   orders Order[]
 
@@ -185,7 +186,7 @@ model Order {
   id String @id @default(cuid())
 
   userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Restrict)
+  user   User @relation(fields: [userId], references: [id], onDelete: Restrict)
 
   addressId String
   address   Address @relation(fields: [addressId], references: [id], onDelete: Restrict)
@@ -233,15 +234,19 @@ model OrderItem {
   price    Decimal @db.Decimal(10, 2)
 
   orderId String
-  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  order   Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   productId String
   product   Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  variantId String
+  variant   ProductVariant @relation(fields: [variantId], references: [id], onDelete: Restrict)
 
   createdAt DateTime @default(now())
 
   @@index([orderId])
   @@index([productId])
+  @@index([variantId])
 }
 
 model Review {
@@ -251,7 +256,7 @@ model Review {
   comment String?
 
   userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   productId String
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
@@ -262,3 +267,4 @@ model Review {
   @@unique([userId, productId])
   @@index([productId])
 }
+

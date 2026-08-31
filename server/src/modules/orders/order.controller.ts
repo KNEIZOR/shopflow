@@ -11,11 +11,11 @@ import {
 import { AppError } from '../../errors/app-error';
 
 const getAuthenticatedUserId = (req: Request) => {
-    if (!req.user?.id) {
+    if (!req.userId) {
         throw new AppError(401, 'UNAUTHORIZED', 'Authentication required');
     }
 
-    return req.user.id;
+    return req.userId;
 };
 
 export const create = async (
