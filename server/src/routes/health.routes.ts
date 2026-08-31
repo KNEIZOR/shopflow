@@ -1,12 +1,20 @@
 import { Router } from 'express';
+import { prisma } from '../lib/prisma';
 
 const router = Router();
 
-router.get('/', (_req, res) => {
-    res.status(200).json({
-        status: 'ok',
-        message: 'ShopFlow API is running',
-    });
+router.get('/', async (_req, res, next) => {
+    try {
+        await prisma.$queryRaw`SELECT 1`;
+
+        res.json({
+            success: true,
+            status: 'ok',
+            database: 'connected',
+        });
+    } catch (error) {
+        next(error);
+    }
 });
 
 export default router;

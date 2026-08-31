@@ -1,11 +1,19 @@
-import dotenv from 'dotenv';
-
-dotenv.config();
-
 import app from './app';
+import { env } from './config/env';
+import { prisma } from './lib/prisma';
 
-const PORT = Number(process.env.PORT) || 5000;
+const startServer = async () => {
+    try {
+        await prisma.$connect();
 
-app.listen(PORT, () => {
-    console.log(`Server started on http://localhost:${PORT}`);
-});
+        app.listen(env.PORT, () => {
+            console.log(`ShopFlow API running on http://localhost:${env.PORT}`);
+        });
+    } catch (error) {
+        console.error('Failed to start server:', error);
+        await prisma.$disconnect();
+        process.exit(1);
+    }
+};
+
+startServer();
