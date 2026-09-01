@@ -1,0 +1,49 @@
+{
+    "language": {
+        "label": "Language selection"
+    },
+    "home": {
+        "eyebrow": "Welcome to ShopFlow",
+        "title": "Everything you need in one place",
+        "description": "Discover our products and enjoy a simple and secure shopping experience."
+    },
+    "header": {
+        "navigation": "Navigation",
+        "home": "Home",
+        "catalog": "Catalog",
+        "cart": "Cart"
+    },
+    "footer": {
+        "description": "ShopFlow online store"
+    },
+    "notFound": {
+        "title": "Page not found",
+        "description": "It looks like this page does not exist.",
+        "backHome": "Back to home"
+    },
+    "product": {
+        "noImage": "No image"
+    },
+    "catalog": {
+        "eyebrow": "Catalog",
+        "title": "All products",
+        "description": "Choose the right products from our catalog.",
+        "loading": "Loading products...",
+        "error": "Failed to load products.",
+        "empty": "No products yet.",
+        "filters": {
+            "search": "Search",
+            "searchPlaceholder": "Find a product...",
+            "minPrice": "Min price",
+            "maxPrice": "Max price",
+            "sort": "Sort by",
+            "newest": "Newest first",
+            "oldest": "Oldest first",
+            "priceAsc": "Price: low to high",
+            "priceDesc": "Price: high to low",
+            "nameAsc": "Name: A–Z",
+            "nameDesc": "Name: Z–A",
+            "reset": "Reset"
+        }
+    }
+}

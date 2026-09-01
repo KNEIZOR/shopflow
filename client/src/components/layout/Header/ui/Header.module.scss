@@ -1,0 +1,168 @@
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    border-bottom: 1px solid #e5e5e5;
+
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+
+    &__inner {
+        min-height: 72px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 32px;
+    }
+
+    &__logo {
+        flex-shrink: 0;
+
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        white-space: nowrap;
+    }
+
+    &__right {
+        min-width: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+
+        gap: 28px;
+    }
+
+    &__nav {
+        min-width: 0;
+
+        display: flex;
+        align-items: center;
+        gap: 28px;
+    }
+
+    &__link {
+        position: relative;
+
+        padding: 8px 0;
+
+        color: #666666;
+        font-size: 15px;
+        font-weight: 500;
+
+        white-space: nowrap;
+
+        transition: color 0.2s ease;
+
+        &:hover {
+            color: #111111;
+        }
+    }
+
+    &__linkActive {
+        color: #111111;
+        font-weight: 600;
+
+        &::after {
+            content: '';
+
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            left: 0;
+
+            height: 2px;
+
+            background: #111111;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        &__inner {
+            min-height: 64px;
+
+            gap: 20px;
+        }
+
+        &__right {
+            gap: 16px;
+        }
+
+        &__nav {
+            gap: 18px;
+        }
+
+        &__link {
+            font-size: 14px;
+        }
+    }
+}
+
+@media (max-width: 560px) {
+    .header {
+        &__inner {
+            min-height: auto;
+
+            display: grid;
+            grid-template-columns: 1fr auto;
+            grid-template-areas:
+                'logo language'
+                'nav nav';
+
+            gap: 10px 16px;
+
+            padding-top: 12px;
+            padding-bottom: 12px;
+        }
+
+        &__logo {
+            grid-area: logo;
+
+            font-size: 21px;
+        }
+
+        &__right {
+            display: contents;
+        }
+
+        &__nav {
+            grid-area: nav;
+
+            width: 100%;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 12px;
+        }
+
+        &__link {
+            padding: 5px 0;
+
+            font-size: 13px;
+        }
+    }
+}
+
+@media (max-width: 360px) {
+    .header {
+        &__inner {
+            column-gap: 10px;
+        }
+
+        &__nav {
+            gap: 8px;
+        }
+
+        &__link {
+            font-size: 12px;
+        }
+    }
+}

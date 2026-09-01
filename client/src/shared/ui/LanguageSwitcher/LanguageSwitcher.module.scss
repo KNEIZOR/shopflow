@@ -1,0 +1,51 @@
+.switcher {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 3px;
+
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+
+    background: #f7f7f7;
+}
+
+.button {
+    min-width: 38px;
+    min-height: 32px;
+    padding: 0 8px;
+
+    border-radius: 6px;
+
+    background: transparent;
+    color: #777;
+
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease;
+
+    &:hover {
+        color: #111;
+    }
+}
+
+.active {
+    background: #fff;
+    color: #111;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+@media (max-width: 640px) {
+    .button {
+        min-width: 34px;
+        min-height: 30px;
+        padding: 0 7px;
+
+        font-size: 11px;
+    }
+}
