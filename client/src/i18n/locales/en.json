@@ -52,5 +52,61 @@
             "nameDesc": "Name: Z–A",
             "reset": "Reset"
         }
+    },
+    "common": {
+        "loading": "Loading...",
+        "error": "An error occurred.",
+        "save": "Save",
+        "saving": "Saving...",
+        "delete": "Delete",
+        "edit": "Edit",
+        "cancel": "Cancel",
+        "close": "Close"
+    },
+    "admin": {
+        "products": {
+            "title": "Products",
+            "basicInfo": "Basic information",
+            "basicInfoDescription": "Basic information about the product.",
+            "name": "Name",
+            "slug": "Slug",
+            "category": "Category",
+            "status": "Status",
+            "description": "Description",
+            "currentPrice": "Current price",
+            "productUpdated": "Product updated successfully",
+
+            "translations": "Translations",
+            "translationsDescription": "Manage product name and description translations.",
+            "defaultLanguage": "Default language",
+            "namePlaceholder": "Enter product name",
+            "descriptionPlaceholder": "Enter product description",
+
+            "prices": "Prices",
+            "pricesDescription": "Product prices in different currencies.",
+            "defaultCurrency": "Default currency",
+
+            "variants": "Variants",
+            "variantsDescription": "Manage product variants and stock.",
+            "addVariant": "Add variant",
+            "noVariants": "This product has no variants yet.",
+            "unnamedVariant": "Unnamed",
+            "stock": "Stock",
+            "variantName": "Variant name",
+            "variantPrice": "Variant price",
+            "sku": "SKU",
+
+            "variantPrices": "Variant prices",
+            "variantPricesDescription": "Variant prices in different currencies.",
+
+            "imageUrl": "Image URL",
+            "imageAlt": "Image description",
+            "imageAltPlaceholder": "Enter image description",
+            "imagePosition": "Position",
+            "imagesDescription": "Manage product images.",
+            "addImage": "Add image",
+            "imageLimit": "The image limit has been reached.",
+            "noImages": "This product has no images yet."
+        }
     }
 }

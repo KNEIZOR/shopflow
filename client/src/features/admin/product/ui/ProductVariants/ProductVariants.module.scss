@@ -1,0 +1,319 @@
+.card {
+    grid-column: 1 / -1;
+    min-width: 0;
+    padding: 24px;
+    border: 1px solid #e7e3dd;
+    border-radius: 16px;
+    background: #fff;
+}
+
+.header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.title {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.3;
+}
+
+.description {
+    margin: 8px 0 0;
+    color: #77736d;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.addButton,
+.editButton,
+.deleteButton,
+.saveButton,
+.cancelButton {
+    padding: 10px 15px;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+    font: inherit;
+    transition:
+        opacity 0.15s ease,
+        background 0.15s ease;
+}
+
+.addButton {
+    flex-shrink: 0;
+    background: #a15f3c;
+    color: #fff;
+}
+
+.editButton {
+    background: #f3f1ed;
+    color: #55514c;
+}
+
+.deleteButton {
+    background: #f3e8e5;
+    color: #a04444;
+}
+
+.saveButton {
+    background: #a15f3c;
+    color: #fff;
+}
+
+.cancelButton {
+    background: #f3f1ed;
+    color: #55514c;
+}
+
+.addButton:disabled,
+.editButton:disabled,
+.deleteButton:disabled,
+.saveButton:disabled,
+.cancelButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.createSection {
+    margin-bottom: 20px;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.variant {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 18px;
+    border: 1px solid #eeeae4;
+    border-radius: 12px;
+    background: #faf9f7;
+}
+
+.variantInfo {
+    display: grid;
+    grid-template-columns:
+        minmax(180px, 1fr)
+        auto
+        auto;
+    align-items: center;
+    gap: 28px;
+    min-width: 0;
+    flex: 1;
+}
+
+.variantMain {
+    min-width: 0;
+}
+
+.variantName {
+    margin: 0;
+    overflow: hidden;
+    font-size: 16px;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+}
+
+.sku {
+    display: block;
+    margin-top: 5px;
+    overflow: hidden;
+    color: #77736d;
+    font-size: 12px;
+    text-overflow: ellipsis;
+}
+
+.stock {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 70px;
+}
+
+.stock span {
+    color: #77736d;
+    font-size: 12px;
+}
+
+.stock strong {
+    font-size: 15px;
+}
+
+.variantPrice {
+    min-width: 100px;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: right;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
+    border: 1px dashed #ddd8d0;
+    border-radius: 12px;
+    background: #faf9f7;
+}
+
+.empty p {
+    margin: 0;
+    color: #77736d;
+    font-size: 14px;
+}
+
+.form {
+    padding: 20px;
+    border: 1px solid #eeeae4;
+    border-radius: 12px;
+    background: #faf9f7;
+}
+
+.formGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.field > span {
+    color: #55514c;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.field input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px 12px;
+    border: 1px solid #ddd8d0;
+    border-radius: 8px;
+    outline: none;
+    background: #fff;
+    color: inherit;
+    font: inherit;
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.field input:focus {
+    border-color: #a15f3c;
+    box-shadow: 0 0 0 3px rgb(161 95 60 / 10%);
+}
+
+.field input:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.formActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.muted {
+    margin: 0;
+    color: #77736d;
+}
+
+.error {
+    margin: 0;
+    color: #a04444;
+}
+
+@media (max-width: 900px) {
+    .variant {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .variantInfo {
+        grid-template-columns:
+            minmax(0, 1fr)
+            auto;
+    }
+
+    .variantPrice {
+        text-align: left;
+    }
+
+    .actions {
+        width: 100%;
+    }
+
+    .editButton,
+    .deleteButton {
+        flex: 1;
+    }
+}
+
+@media (max-width: 640px) {
+    .card {
+        padding: 18px;
+    }
+
+    .header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .addButton {
+        width: 100%;
+    }
+
+    .form {
+        padding: 16px;
+    }
+
+    .formGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .formActions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .saveButton,
+    .cancelButton {
+        width: 100%;
+    }
+
+    .variantInfo {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .actions {
+        flex-direction: column;
+    }
+
+    .editButton,
+    .deleteButton {
+        width: 100%;
+    }
+}

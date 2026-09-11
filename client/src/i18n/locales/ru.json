@@ -52,5 +52,61 @@
             "nameDesc": "Название: Я–А",
             "reset": "Сбросить"
         }
+    },
+    "common": {
+        "loading": "Загрузка...",
+        "error": "Произошла ошибка.",
+        "save": "Сохранить",
+        "saving": "Сохранение...",
+        "delete": "Удалить",
+        "edit": "Редактировать",
+        "cancel": "Отмена",
+        "close": "Закрыть"
+    },
+    "admin": {
+        "products": {
+            "title": "Товары",
+            "basicInfo": "Основная информация",
+            "basicInfoDescription": "Основная информация о товаре.",
+            "name": "Название",
+            "slug": "Slug",
+            "category": "Категория",
+            "status": "Статус",
+            "description": "Описание",
+            "currentPrice": "Текущая цена",
+            "productUpdated": "Товар успешно обновлён",
+
+            "translations": "Переводы",
+            "translationsDescription": "Управление переводами названия и описания товара.",
+            "defaultLanguage": "Язык по умолчанию",
+            "namePlaceholder": "Введите название товара",
+            "descriptionPlaceholder": "Введите описание товара",
+
+            "prices": "Цены",
+            "pricesDescription": "Цены товара в разных валютах.",
+            "defaultCurrency": "Валюта по умолчанию",
+
+            "variants": "Варианты",
+            "variantsDescription": "Управление вариантами и остатками товара.",
+            "addVariant": "Добавить вариант",
+            "noVariants": "У товара пока нет вариантов.",
+            "unnamedVariant": "Без названия",
+            "stock": "Остаток",
+            "variantName": "Название варианта",
+            "variantPrice": "Цена варианта",
+            "sku": "SKU",
+
+            "variantPrices": "Цены варианта",
+            "variantPricesDescription": "Цены варианта в разных валютах.",
+
+            "imageUrl": "URL изображения",
+            "imageAlt": "Описание изображения",
+            "imageAltPlaceholder": "Введите описание изображения",
+            "imagePosition": "Позиция",
+            "imagesDescription": "Управление изображениями товара.",
+            "addImage": "Добавить изображение",
+            "imageLimit": "Достигнут лимит изображений.",
+            "noImages": "У товара пока нет изображений."
+        }
     }
 }
