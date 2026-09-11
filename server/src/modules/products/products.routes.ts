@@ -12,6 +12,7 @@ import {
     getProducts,
     updateProduct,
 } from './products.controller';
+
 import {
     addProductImage,
     addProductVariant,
@@ -23,22 +24,36 @@ import {
     updateProductVariant,
 } from './product-relations.controller';
 
+import productTranslationsRouter from './translations/product-translations.routes';
+import productPricesRouter from './prices/product-prices.routes';
+import productVariantPricesRouter from './variant-prices/product-variant-prices.routes';
+
 const router = Router();
 
-// Admin routes must come before /:slug
+/**
+ * Admin product list/details
+ */
 router.get('/admin/list', requireAuth, requireAdmin, getAdminProducts);
 
 router.get('/admin/:slug', requireAuth, requireAdmin, getAdminProductBySlug);
 
+/**
+ * Admin product CRUD
+ */
 router.post('/', requireAuth, requireAdmin, createProduct);
 
 router.patch('/:id', requireAuth, requireAdmin, updateProduct);
 
 router.delete('/:id', requireAuth, requireAdmin, deleteProduct);
 
-// Public catalog
+/**
+ * Public catalog
+ */
 router.get('/', getProducts);
 
+/**
+ * Admin product images
+ */
 router.get(
     '/admin/:productId/images',
     requireAuth,
@@ -67,6 +82,9 @@ router.delete(
     deleteProductImage,
 );
 
+/**
+ * Admin product variants
+ */
 router.get(
     '/admin/:productId/variants',
     requireAuth,
@@ -95,6 +113,27 @@ router.delete(
     deleteProductVariant,
 );
 
+/**
+ * Admin product translations
+ */
+router.use('/admin/:productId/translations', productTranslationsRouter);
+
+/**
+ * Admin product prices
+ */
+router.use('/admin/:productId/prices', productPricesRouter);
+
+/**
+ * Admin product variant prices
+ */
+router.use(
+    '/admin/:productId/variants/:variantId/prices',
+    productVariantPricesRouter,
+);
+
+/**
+ * Public product by slug
+ */
 router.get('/:slug', getProductBySlug);
 
 export default router;

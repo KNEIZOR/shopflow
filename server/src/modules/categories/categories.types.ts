@@ -7,3 +7,7 @@ export type CategoryResponse = {
     createdAt: Date;
     updatedAt: Date;
 };
+
+export type CategoryListResponse = {
+    items: CategoryResponse[];
+};

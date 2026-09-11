@@ -1,7 +1,4 @@
 {
-    "language": {
-        "label": "Выбор языка"
-    },
     "home": {
         "eyebrow": "Добро пожаловать в ShopFlow",
         "title": "Всё необходимое в одном месте",
@@ -11,7 +8,14 @@
         "navigation": "Навигация",
         "home": "Главная",
         "catalog": "Каталог",
-        "cart": "Корзина"
+        "cart": "Корзина",
+        "account": "Аккаунт",
+        "language": "Язык",
+        "currency": "Валюта",
+        "switchToRussian": "Переключить на русский",
+        "switchToEnglish": "Переключить на английский",
+        "russian": "Русский",
+        "english": "Английский"
     },
     "footer": {
         "description": "Интернет-магазин ShopFlow"
@@ -24,6 +28,7 @@
     "product": {
         "noImage": "Нет изображения"
     },
+    "currency": "Валюта",
     "catalog": {
         "eyebrow": "Каталог",
         "title": "Все товары",
@@ -34,8 +39,10 @@
         "filters": {
             "search": "Поиск",
             "searchPlaceholder": "Найти товар...",
-            "minPrice": "Цена от",
-            "maxPrice": "Цена до",
+            "category": "Категория",
+            "allCategories": "Все категории",
+            "minPrice": "От",
+            "maxPrice": "До",
             "sort": "Сортировка",
             "newest": "Сначала новые",
             "oldest": "Сначала старые",

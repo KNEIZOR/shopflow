@@ -4,17 +4,14 @@ import { initReactI18next } from 'react-i18next';
 import en from './locales/en.json';
 import ru from './locales/ru.json';
 
-const getInitialLanguage = () => {
-    const savedLanguage = localStorage.getItem('shopflow-language');
+import type { LanguageCode } from '@/shared/config/languages';
 
-    if (savedLanguage === 'ru' || savedLanguage === 'en') {
-        return savedLanguage;
-    }
+const STORAGE_KEY = 'shopflow-language';
 
-    const browserLanguage = navigator.language.toLowerCase();
+const savedLanguage = localStorage.getItem(STORAGE_KEY);
 
-    return browserLanguage.startsWith('ru') ? 'ru' : 'en';
-};
+const initialLanguage: LanguageCode =
+    savedLanguage === 'ru' || savedLanguage === 'en' ? savedLanguage : 'en';
 
 void i18n.use(initReactI18next).init({
     resources: {
@@ -26,7 +23,8 @@ void i18n.use(initReactI18next).init({
         },
     },
 
-    lng: getInitialLanguage(),
+    lng: initialLanguage,
+
     fallbackLng: 'en',
 
     interpolation: {
@@ -34,12 +32,10 @@ void i18n.use(initReactI18next).init({
     },
 });
 
-i18n.on('languageChanged', (language) => {
-    localStorage.setItem('shopflow-language', language);
+export const changeLanguage = async (language: LanguageCode): Promise<void> => {
+    await i18n.changeLanguage(language);
 
-    document.documentElement.lang = language;
-});
-
-document.documentElement.lang = i18n.language;
+    localStorage.setItem(STORAGE_KEY, language);
+};
 
 export default i18n;

@@ -13,7 +13,6 @@
 
         display: flex;
         align-items: center;
-        justify-content: space-between;
 
         gap: 32px;
     }
@@ -24,25 +23,15 @@
         font-size: 24px;
         font-weight: 800;
         letter-spacing: -0.04em;
-        white-space: nowrap;
-    }
-
-    &__right {
-        min-width: 0;
-
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-
-        gap: 28px;
     }
 
     &__nav {
-        min-width: 0;
-
         display: flex;
         align-items: center;
+
         gap: 28px;
+
+        margin-left: auto;
     }
 
     &__link {
@@ -50,7 +39,8 @@
 
         padding: 8px 0;
 
-        color: #666666;
+        color: #666;
+
         font-size: 15px;
         font-weight: 500;
 
@@ -59,12 +49,12 @@
         transition: color 0.2s ease;
 
         &:hover {
-            color: #111111;
+            color: #111;
         }
     }
 
     &__linkActive {
-        color: #111111;
+        color: #111;
         font-weight: 600;
 
         &::after {
@@ -77,8 +67,194 @@
 
             height: 2px;
 
-            background: #111111;
+            background: #111;
         }
+    }
+
+    &__actions {
+        display: flex;
+        align-items: center;
+
+        gap: 8px;
+
+        flex-shrink: 0;
+    }
+
+    &__localeControl {
+        display: flex;
+        align-items: center;
+
+        gap: 2px;
+    }
+
+    &__iconLink {
+        position: relative;
+
+        width: 40px;
+        height: 40px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 8px;
+
+        background: transparent;
+        color: #555;
+
+        transition:
+            background 0.2s ease,
+            color 0.2s ease;
+
+        &:hover {
+            background: #f5f5f5;
+            color: #111;
+        }
+    }
+
+    &__iconLinkActive {
+        background: #f5f5f5;
+        color: #111;
+    }
+
+    &__cartCount {
+        position: absolute;
+        top: 3px;
+        right: 2px;
+
+        min-width: 15px;
+        height: 15px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 0 3px;
+
+        border-radius: 999px;
+
+        background: #111;
+        color: #fff;
+
+        font-size: 9px;
+        font-weight: 700;
+        line-height: 1;
+    }
+}
+
+.language,
+.currency {
+    position: relative;
+
+    &__trigger {
+        height: 40px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 5px;
+
+        padding: 0 9px;
+
+        border-radius: 8px;
+
+        background: transparent;
+        color: #555;
+
+        font-size: 12px;
+        font-weight: 600;
+
+        transition:
+            background 0.2s ease,
+            color 0.2s ease;
+
+        &:hover {
+            background: #f5f5f5;
+            color: #111;
+        }
+    }
+
+    &__dropdown {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+
+        min-width: 150px;
+
+        padding: 6px;
+
+        border: 1px solid #e5e5e5;
+        border-radius: 10px;
+
+        background: #fff;
+
+        box-shadow:
+            0 10px 30px rgba(0, 0, 0, 0.08),
+            0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    &__option {
+        width: 100%;
+        min-height: 38px;
+
+        display: flex;
+        align-items: center;
+
+        gap: 10px;
+
+        padding: 0 10px;
+
+        border-radius: 7px;
+
+        background: transparent;
+        color: #555;
+
+        font-size: 13px;
+        text-align: left;
+
+        transition:
+            background 0.2s ease,
+            color 0.2s ease;
+
+        &:hover {
+            background: #f5f5f5;
+            color: #111;
+        }
+    }
+
+    &__optionActive {
+        background: #f5f5f5;
+        color: #111;
+        font-weight: 600;
+    }
+
+    &__arrowOpen {
+        transform: rotate(180deg);
+    }
+}
+
+.currency {
+    &__trigger {
+        min-width: 64px;
+    }
+
+    &__dropdown {
+        min-width: 120px;
+    }
+
+    &__option {
+        justify-content: flex-start;
+    }
+
+    &__symbol {
+        width: 18px;
+
+        color: #777;
+
+        font-size: 15px;
+        font-weight: 600;
+        text-align: center;
     }
 }
 
@@ -87,10 +263,6 @@
         &__inner {
             min-height: 64px;
 
-            gap: 20px;
-        }
-
-        &__right {
             gap: 16px;
         }
 
@@ -107,62 +279,77 @@
 @media (max-width: 560px) {
     .header {
         &__inner {
-            min-height: auto;
+            width: min(100% - 20px, 1280px);
 
-            display: grid;
-            grid-template-columns: 1fr auto;
-            grid-template-areas:
-                'logo language'
-                'nav nav';
-
-            gap: 10px 16px;
-
-            padding-top: 12px;
-            padding-bottom: 12px;
+            gap: 8px;
         }
 
         &__logo {
-            grid-area: logo;
-
-            font-size: 21px;
-        }
-
-        &__right {
-            display: contents;
+            font-size: 20px;
         }
 
         &__nav {
-            grid-area: nav;
-
-            width: 100%;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
             gap: 12px;
         }
 
         &__link {
-            padding: 5px 0;
-
             font-size: 13px;
+        }
+
+        &__actions {
+            gap: 2px;
+        }
+
+        &__localeControl {
+            gap: 0;
+        }
+
+        &__iconLink {
+            width: 36px;
+            height: 36px;
+        }
+    }
+
+    .language,
+    .currency {
+        &__trigger {
+            height: 36px;
+
+            padding: 0 7px;
+        }
+
+        &__dropdown {
+            right: -4px;
+        }
+    }
+
+    .currency {
+        &__trigger {
+            min-width: 58px;
+        }
+
+        &__dropdown {
+            min-width: 110px;
         }
     }
 }
 
-@media (max-width: 360px) {
+@media (max-width: 400px) {
     .header {
-        &__inner {
-            column-gap: 10px;
-        }
-
         &__nav {
             gap: 8px;
         }
 
         &__link {
             font-size: 12px;
+        }
+
+        &__logo {
+            font-size: 18px;
+        }
+
+        &__localeControl {
+            display: none;
         }
     }
 }

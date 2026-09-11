@@ -1,6 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
 import { getProducts, type GetProductsParams } from '@/entities/product';
+import { useLocale } from '@/entities/locale';
 
 export const catalogQueryKeys = {
     all: ['products'] as const,
@@ -10,8 +11,19 @@ export const catalogQueryKeys = {
 };
 
 export const useCatalog = (params: GetProductsParams = {}) => {
+    const { language, currency } = useLocale();
+
+    const queryParams: GetProductsParams = {
+        ...params,
+        language,
+        currency,
+    };
+
     return useQuery({
-        queryKey: catalogQueryKeys.list(params),
-        queryFn: () => getProducts(params),
+        queryKey: catalogQueryKeys.list(queryParams),
+
+        queryFn: () => getProducts(queryParams),
+
+        placeholderData: keepPreviousData,
     });
 };

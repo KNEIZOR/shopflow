@@ -1,6 +1,9 @@
 export { getProductBySlug, getProducts } from './api/product-api';
 
-export type { GetProductsParams } from './api/product-api';
+export type {
+    GetProductBySlugParams,
+    GetProductsParams,
+} from './api/product-api';
 
 export type {
     Product,

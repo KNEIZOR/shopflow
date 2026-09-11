@@ -1,17 +1,21 @@
 {
-    "language": {
-        "label": "Language selection"
-    },
     "home": {
         "eyebrow": "Welcome to ShopFlow",
         "title": "Everything you need in one place",
-        "description": "Discover our products and enjoy a simple and secure shopping experience."
+        "description": "Discover our products and enjoy a fast and secure shopping experience."
     },
     "header": {
         "navigation": "Navigation",
         "home": "Home",
         "catalog": "Catalog",
-        "cart": "Cart"
+        "cart": "Cart",
+        "account": "Account",
+        "language": "Language",
+        "currency": "Currency",
+        "switchToRussian": "Switch to Russian",
+        "switchToEnglish": "Switch to English",
+        "russian": "Russian",
+        "english": "English"
     },
     "footer": {
         "description": "ShopFlow online store"
@@ -24,6 +28,7 @@
     "product": {
         "noImage": "No image"
     },
+    "currency": "Currency",
     "catalog": {
         "eyebrow": "Catalog",
         "title": "All products",
@@ -33,12 +38,14 @@
         "empty": "No products yet.",
         "filters": {
             "search": "Search",
-            "searchPlaceholder": "Find a product...",
-            "minPrice": "Min price",
-            "maxPrice": "Max price",
-            "sort": "Sort by",
-            "newest": "Newest first",
-            "oldest": "Oldest first",
+            "searchPlaceholder": "Search products...",
+            "category": "Category",
+            "allCategories": "All categories",
+            "minPrice": "From",
+            "maxPrice": "To",
+            "sort": "Sort",
+            "newest": "Newest",
+            "oldest": "Oldest",
             "priceAsc": "Price: low to high",
             "priceDesc": "Price: high to low",
             "nameAsc": "Name: A–Z",

@@ -2,6 +2,7 @@ import type { Request, Response, NextFunction } from 'express';
 
 import {
     categoryIdSchema,
+    categoryLanguageQuerySchema,
     categorySlugSchema,
     createCategorySchema,
     updateCategorySchema,
@@ -10,16 +11,18 @@ import {
 import * as categoriesService from './categories.service';
 
 export const getCategories = async (
-    _req: Request,
+    req: Request,
     res: Response,
     next: NextFunction,
 ) => {
     try {
-        const categories = await categoriesService.getCategories();
+        const query = categoryLanguageQuerySchema.parse(req.query);
+
+        const result = await categoriesService.getCategories(query);
 
         res.json({
             success: true,
-            categories,
+            categories: result.items,
         });
     } catch (error) {
         next(error);
@@ -34,7 +37,12 @@ export const getCategoryBySlug = async (
     try {
         const { slug } = categorySlugSchema.parse(req.params);
 
-        const category = await categoriesService.getCategoryBySlug(slug);
+        const { language } = categoryLanguageQuerySchema.parse(req.query);
+
+        const category = await categoriesService.getCategoryBySlug(
+            slug,
+            language,
+        );
 
         res.json({
             success: true,

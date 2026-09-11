@@ -37,7 +37,19 @@ export const getProductBySlug = async (
     try {
         const { slug } = productSlugSchema.parse(req.params);
 
-        const product = await productsService.getProductBySlug(slug);
+        const query = productListQuerySchema
+            .pick({
+                language: true,
+                currency: true,
+            })
+            .parse(req.query);
+
+        const product = await productsService.getProductBySlug(
+            slug,
+            false,
+            query.language,
+            query.currency,
+        );
 
         res.json({
             success: true,
@@ -56,7 +68,19 @@ export const getAdminProductBySlug = async (
     try {
         const { slug } = productSlugSchema.parse(req.params);
 
-        const product = await productsService.getProductBySlug(slug, true);
+        const query = productListQuerySchema
+            .pick({
+                language: true,
+                currency: true,
+            })
+            .parse(req.query);
+
+        const product = await productsService.getProductBySlug(
+            slug,
+            true,
+            query.language,
+            query.currency,
+        );
 
         res.json({
             success: true,

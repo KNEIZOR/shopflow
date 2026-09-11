@@ -11,13 +11,28 @@ import {
     updateCategory,
 } from './categories.controller';
 
+import categoryTranslationsRouter from './translations/category-translations.routes';
+
 const router = Router();
 
-// Public
+/**
+ * Public
+ */
 router.get('/', getCategories);
+
+/**
+ * Admin category translations
+ */
+router.use('/:categoryId/translations', categoryTranslationsRouter);
+
+/**
+ * Public category by slug
+ */
 router.get('/:slug', getCategoryBySlug);
 
-// Admin
+/**
+ * Admin
+ */
 router.post('/', requireAuth, requireAdmin, createCategory);
 
 router.patch('/:id', requireAuth, requireAdmin, updateCategory);

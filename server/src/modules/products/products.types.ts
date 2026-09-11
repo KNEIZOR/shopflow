@@ -1,3 +1,5 @@
+import type { CurrencyCode } from '@prisma/client';
+
 export type ProductImageResponse = {
     id: string;
     url: string;
@@ -10,6 +12,7 @@ export type ProductVariantResponse = {
     name: string;
     sku: string;
     price: string | null;
+    currency: CurrencyCode;
     stock: number;
 };
 
@@ -24,7 +27,10 @@ export type ProductResponse = {
     name: string;
     slug: string;
     description: string | null;
+
     price: string;
+    currency: CurrencyCode;
+
     status: 'DRAFT' | 'ACTIVE' | 'ARCHIVED';
 
     category: ProductCategoryResponse;
@@ -38,6 +44,7 @@ export type ProductResponse = {
 
 export type ProductListResponse = {
     items: ProductResponse[];
+
     pagination: {
         page: number;
         limit: number;

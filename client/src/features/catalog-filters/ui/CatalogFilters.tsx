@@ -30,6 +30,22 @@ export const CatalogFilters = ({
     const minPriceTimeoutRef = useRef<number | null>(null);
     const maxPriceTimeoutRef = useRef<number | null>(null);
 
+    const searchValueRef = useRef(filters.search);
+    const minPriceValueRef = useRef(filters.minPrice);
+    const maxPriceValueRef = useRef(filters.maxPrice);
+
+    useEffect(() => {
+        searchValueRef.current = filters.search;
+    }, [filters.search]);
+
+    useEffect(() => {
+        minPriceValueRef.current = filters.minPrice;
+    }, [filters.minPrice]);
+
+    useEffect(() => {
+        maxPriceValueRef.current = filters.maxPrice;
+    }, [filters.maxPrice]);
+
     useEffect(() => {
         return () => {
             if (searchTimeoutRef.current !== null) {
@@ -47,13 +63,15 @@ export const CatalogFilters = ({
     }, []);
 
     const handleSearchChange = (value: string) => {
+        searchValueRef.current = value;
+
         if (searchTimeoutRef.current !== null) {
             window.clearTimeout(searchTimeoutRef.current);
         }
 
         searchTimeoutRef.current = window.setTimeout(() => {
             onChange({
-                search: value,
+                search: searchValueRef.current,
             });
         }, 300);
     };
@@ -65,13 +83,15 @@ export const CatalogFilters = ({
             return;
         }
 
+        minPriceValueRef.current = normalizedValue;
+
         if (minPriceTimeoutRef.current !== null) {
             window.clearTimeout(minPriceTimeoutRef.current);
         }
 
         minPriceTimeoutRef.current = window.setTimeout(() => {
             onChange({
-                minPrice: normalizedValue,
+                minPrice: minPriceValueRef.current,
             });
         }, 500);
     };
@@ -83,15 +103,49 @@ export const CatalogFilters = ({
             return;
         }
 
+        maxPriceValueRef.current = normalizedValue;
+
         if (maxPriceTimeoutRef.current !== null) {
             window.clearTimeout(maxPriceTimeoutRef.current);
         }
 
         maxPriceTimeoutRef.current = window.setTimeout(() => {
             onChange({
-                maxPrice: normalizedValue,
+                maxPrice: maxPriceValueRef.current,
             });
         }, 500);
+    };
+
+    const handleCategoryChange = (value: string) => {
+        onChange({
+            category: value,
+        });
+    };
+
+    const handleSortChange = (value: string) => {
+        onChange({
+            sort: value as CatalogFiltersState['sort'],
+        });
+    };
+
+    const handleReset = () => {
+        if (searchTimeoutRef.current !== null) {
+            window.clearTimeout(searchTimeoutRef.current);
+        }
+
+        if (minPriceTimeoutRef.current !== null) {
+            window.clearTimeout(minPriceTimeoutRef.current);
+        }
+
+        if (maxPriceTimeoutRef.current !== null) {
+            window.clearTimeout(maxPriceTimeoutRef.current);
+        }
+
+        searchValueRef.current = '';
+        minPriceValueRef.current = '';
+        maxPriceValueRef.current = '';
+
+        onReset();
     };
 
     return (
@@ -110,6 +164,24 @@ export const CatalogFilters = ({
                         handleSearchChange(event.target.value);
                     }}
                 />
+            </div>
+
+            <div className={styles.category}>
+                <label htmlFor="catalog-category">
+                    {t('catalog.filters.category')}
+                </label>
+
+                <select
+                    id="catalog-category"
+                    value={filters.category}
+                    onChange={(event) => {
+                        handleCategoryChange(event.target.value);
+                    }}
+                >
+                    <option value="">
+                        {t('catalog.filters.allCategories')}
+                    </option>
+                </select>
             </div>
 
             <div className={styles.price}>
@@ -157,10 +229,7 @@ export const CatalogFilters = ({
                     id="catalog-sort"
                     value={filters.sort}
                     onChange={(event) => {
-                        onChange({
-                            sort: event.target
-                                .value as CatalogFiltersState['sort'],
-                        });
+                        handleSortChange(event.target.value);
                     }}
                 >
                     <option value="newest">
@@ -189,7 +258,11 @@ export const CatalogFilters = ({
                 </select>
             </div>
 
-            <button type="button" className={styles.reset} onClick={onReset}>
+            <button
+                type="button"
+                className={styles.reset}
+                onClick={handleReset}
+            >
                 {t('catalog.filters.reset')}
             </button>
         </section>

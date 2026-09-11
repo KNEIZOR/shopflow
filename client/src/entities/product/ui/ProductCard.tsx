@@ -1,7 +1,9 @@
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 import type { Product } from '../model/types';
+
+import { formatCurrency } from '@/shared/lib/formatCurrency';
 
 import styles from './ProductCard.module.scss';
 
@@ -11,6 +13,7 @@ type ProductCardProps = {
 
 export const ProductCard = ({ product }: ProductCardProps) => {
     const { t } = useTranslation();
+
     const image = product.images[0];
 
     return (
@@ -43,7 +46,9 @@ export const ProductCard = ({ product }: ProductCardProps) => {
                     {product.name}
                 </Link>
 
-                <span className={styles.price}>{product.price}</span>
+                <span className={styles.price}>
+                    {formatCurrency(product.price, product.currency)}
+                </span>
             </div>
         </article>
     );
