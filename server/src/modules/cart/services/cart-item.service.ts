@@ -1,19 +1,43 @@
 import { prisma } from '../../../lib/prisma';
 import { AppError } from '../../../errors/app-error';
 
+import { CART_LIMITS } from '../cart.constants';
+import type { AddCartItemInput, UpdateCartItemInput } from '../cart.types';
+
 import { validateProductVariant } from './cart-validation.service';
 
-import type { AddCartItemInput, UpdateCartItemInput } from '../cart.types';
+const cartItemInclude = {
+    product: {
+        select: {
+            id: true,
+            name: true,
+            slug: true,
+        },
+    },
+
+    variant: {
+        select: {
+            id: true,
+            name: true,
+            sku: true,
+            price: true,
+            stock: true,
+        },
+    },
+} as const;
 
 const getUserCart = async (userId: string) => {
     return prisma.cart.upsert({
         where: {
             userId,
         },
+
         create: {
             userId,
         },
+
         update: {},
+
         select: {
             id: true,
         },
@@ -36,13 +60,24 @@ export const addCartItem = async (userId: string, input: AddCartItemInput) => {
                 variantId: input.variantId,
             },
         },
+
         select: {
             id: true,
             quantity: true,
         },
     });
 
-    const newQuantity = (existingItem?.quantity ?? 0) + input.quantity;
+    const currentQuantity = existingItem?.quantity ?? 0;
+
+    const newQuantity = currentQuantity + input.quantity;
+
+    if (newQuantity > CART_LIMITS.MAX_ITEM_QUANTITY) {
+        throw new AppError(
+            400,
+            'CART_ITEM_QUANTITY_LIMIT_EXCEEDED',
+            `Cart item quantity cannot exceed ${CART_LIMITS.MAX_ITEM_QUANTITY}`,
+        );
+    }
 
     if (newQuantity > variant.stock) {
         throw new AppError(
@@ -57,27 +92,12 @@ export const addCartItem = async (userId: string, input: AddCartItemInput) => {
             where: {
                 id: existingItem.id,
             },
+
             data: {
                 quantity: newQuantity,
             },
-            include: {
-                product: {
-                    select: {
-                        id: true,
-                        name: true,
-                        slug: true,
-                    },
-                },
-                variant: {
-                    select: {
-                        id: true,
-                        name: true,
-                        sku: true,
-                        price: true,
-                        stock: true,
-                    },
-                },
-            },
+
+            include: cartItemInclude,
         });
     }
 
@@ -88,24 +108,8 @@ export const addCartItem = async (userId: string, input: AddCartItemInput) => {
             variantId: input.variantId,
             quantity: input.quantity,
         },
-        include: {
-            product: {
-                select: {
-                    id: true,
-                    name: true,
-                    slug: true,
-                },
-            },
-            variant: {
-                select: {
-                    id: true,
-                    name: true,
-                    sku: true,
-                    price: true,
-                    stock: true,
-                },
-            },
-        },
+
+        include: cartItemInclude,
     });
 };
 
@@ -117,10 +121,12 @@ export const updateCartItem = async (
     const item = await prisma.cartItem.findFirst({
         where: {
             id: itemId,
+
             cart: {
                 userId,
             },
         },
+
         select: {
             id: true,
             productId: true,
@@ -142,38 +148,28 @@ export const updateCartItem = async (
         where: {
             id: item.id,
         },
+
         data: {
             quantity: input.quantity,
         },
-        include: {
-            product: {
-                select: {
-                    id: true,
-                    name: true,
-                    slug: true,
-                },
-            },
-            variant: {
-                select: {
-                    id: true,
-                    name: true,
-                    sku: true,
-                    price: true,
-                    stock: true,
-                },
-            },
-        },
+
+        include: cartItemInclude,
     });
 };
 
-export const removeCartItem = async (userId: string, itemId: string) => {
+export const removeCartItem = async (
+    userId: string,
+    itemId: string,
+): Promise<void> => {
     const item = await prisma.cartItem.findFirst({
         where: {
             id: itemId,
+
             cart: {
                 userId,
             },
         },
+
         select: {
             id: true,
         },
@@ -190,11 +186,12 @@ export const removeCartItem = async (userId: string, itemId: string) => {
     });
 };
 
-export const clearCart = async (userId: string) => {
+export const clearCart = async (userId: string): Promise<void> => {
     const cart = await prisma.cart.findUnique({
         where: {
             userId,
         },
+
         select: {
             id: true,
         },

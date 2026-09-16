@@ -16,6 +16,8 @@ import {
     ensureProductTypeExists,
 } from './product-validation.service';
 
+import { validateProductCanBeActivated } from './product-activation-validation.service';
+
 const DEFAULT_LANGUAGE = 'ru';
 
 const DEFAULT_CURRENCY: CurrencyCode = 'RUB';
@@ -31,6 +33,8 @@ export const createProduct = async (
         await ensureProductTypeExists(input.productTypeId);
     }
 
+    const requestedStatus = input.status;
+
     const product = await prisma.$transaction(async (tx) => {
         const price = new Prisma.Decimal(input.price.toFixed(2));
 
@@ -43,7 +47,13 @@ export const createProduct = async (
 
             price,
 
-            status: input.status,
+            // A newly created product is
+            // always persisted as DRAFT first.
+            //
+            // This allows activation validation
+            // to run against the actual persisted
+            // product and its relations.
+            status: 'DRAFT',
 
             category: {
                 connect: {
@@ -96,6 +106,24 @@ export const createProduct = async (
             include: createProductInclude(DEFAULT_LANGUAGE, DEFAULT_CURRENCY),
         });
     });
+
+    if (requestedStatus === 'ACTIVE') {
+        await validateProductCanBeActivated(product.id, input.productTypeId);
+
+        const activatedProduct = await prisma.product.update({
+            where: {
+                id: product.id,
+            },
+
+            data: {
+                status: 'ACTIVE',
+            },
+
+            include: createProductInclude(DEFAULT_LANGUAGE, DEFAULT_CURRENCY),
+        });
+
+        return mapProduct(activatedProduct, DEFAULT_CURRENCY);
+    }
 
     return mapProduct(product, DEFAULT_CURRENCY);
 };

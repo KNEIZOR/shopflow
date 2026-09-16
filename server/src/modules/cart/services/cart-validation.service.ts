@@ -3,24 +3,46 @@ import { ProductStatus } from '@prisma/client';
 import { prisma } from '../../../lib/prisma';
 import { AppError } from '../../../errors/app-error';
 
+import { CART_LIMITS } from '../cart.constants';
+
+type ValidateProductVariantInput = {
+    productId: string;
+    variantId: string;
+    quantity: number;
+};
+
+const validateQuantity = (quantity: number): void => {
+    if (
+        !Number.isInteger(quantity) ||
+        quantity < 1 ||
+        quantity > CART_LIMITS.MAX_ITEM_QUANTITY
+    ) {
+        throw new AppError(
+            400,
+            'INVALID_CART_QUANTITY',
+            `Cart item quantity must be between 1 and ${CART_LIMITS.MAX_ITEM_QUANTITY}`,
+        );
+    }
+};
+
 export const validateProductVariant = async ({
     productId,
     variantId,
     quantity,
-}: {
-    productId: string;
-    variantId: string;
-    quantity: number;
-}) => {
+}: ValidateProductVariantInput) => {
+    validateQuantity(quantity);
+
     const variant = await prisma.productVariant.findUnique({
         where: {
             id: variantId,
         },
+
         select: {
             id: true,
             productId: true,
             price: true,
             stock: true,
+
             product: {
                 select: {
                     id: true,

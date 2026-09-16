@@ -18,8 +18,8 @@ const PRICES = [
         amount: '32.99',
     },
     {
-        currency: CurrencyCode.GBP,
-        amount: '25.99',
+        currency: CurrencyCode.AMD,
+        amount: '2999.00',
     },
 ] as const;
 

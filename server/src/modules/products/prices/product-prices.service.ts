@@ -13,7 +13,7 @@ const DEFAULT_CURRENCY = 'RUB';
 type ProductPriceRecord = {
     id: string;
     productId: string;
-    currency: 'RUB' | 'EUR' | 'USD' | 'GBP';
+    currency: 'RUB' | 'EUR' | 'USD' | 'AMD';
     amount: unknown;
     createdAt: Date;
     updatedAt: Date;

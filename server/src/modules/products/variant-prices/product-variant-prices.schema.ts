@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const currencySchema = z.enum(['RUB', 'EUR', 'USD', 'GBP']);
+const currencySchema = z.enum(['RUB', 'EUR', 'USD', 'AMD']);
 
 const positivePriceSchema = z.coerce
     .number()

@@ -17,6 +17,8 @@ import {
     ensureProductTypeExists,
 } from './product-validation.service';
 
+import { validateProductCanBeActivated } from './product-activation-validation.service';
+
 const DEFAULT_LANGUAGE = 'ru';
 
 const DEFAULT_CURRENCY: CurrencyCode = 'RUB';
@@ -36,6 +38,17 @@ export const updateProduct = async (
     }
 
     await ensureProductNameOrSlugAvailable(input.name, input.slug, id);
+
+    const targetStatus = input.status ?? existingProduct.status;
+
+    const targetProductTypeId =
+        input.productTypeId !== undefined
+            ? input.productTypeId
+            : existingProduct.productTypeId;
+
+    if (targetStatus === 'ACTIVE') {
+        await validateProductCanBeActivated(id, targetProductTypeId);
+    }
 
     await prisma.$transaction(async (tx) => {
         const data: Prisma.ProductUpdateInput = {};

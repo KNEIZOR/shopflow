@@ -1,7 +1,7 @@
 import type { CurrencyCode } from './currencies';
 import type { LanguageCode } from './languages';
 
-export type CountryCode = 'RU' | 'US' | 'GB' | 'DE' | 'FR';
+export type CountryCode = 'RU' | 'US' | 'AM' | 'DE' | 'FR';
 
 export type RegionConfig = {
     country: CountryCode;
@@ -24,10 +24,10 @@ export const REGIONS: RegionConfig[] = [
         locale: 'en-US',
     },
     {
-        country: 'GB',
+        country: 'AM',
         language: 'en',
-        currency: 'GBP',
-        locale: 'en-GB',
+        currency: 'AMD',
+        locale: 'en-AM',
     },
     {
         country: 'DE',

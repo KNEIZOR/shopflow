@@ -1,0 +1,3 @@
+
+ALTER TYPE "CurrencyCode" RENAME VALUE 'GBP' TO 'AMD';
+

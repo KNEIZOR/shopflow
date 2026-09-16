@@ -1,16 +1,17 @@
 import type { Request, Response, NextFunction } from 'express';
 
+import { AppError } from '../../errors/app-error';
+
 import { createOrderSchema, orderIdParamsSchema } from './order.schema';
 
 import { createOrder } from './services/order.service';
+
 import {
     getUserOrderById,
     getUserOrders,
 } from './services/order-query.service';
 
-import { AppError } from '../../errors/app-error';
-
-const getAuthenticatedUserId = (req: Request) => {
+const getAuthenticatedUserId = (req: Request): string => {
     if (!req.userId) {
         throw new AppError(401, 'UNAUTHORIZED', 'Authentication required');
     }

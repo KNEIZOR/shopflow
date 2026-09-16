@@ -12,6 +12,7 @@ export const ensureProductExists = async (productId: string) => {
             name: true,
             description: true,
             productTypeId: true,
+            status: true,
         },
     });
 

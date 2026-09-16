@@ -1,4 +1,4 @@
-export type CurrencyCode = 'USD' | 'EUR' | 'GBP' | 'RUB';
+export type CurrencyCode = 'USD' | 'EUR' | 'AMD' | 'RUB';
 
 export type CurrencyConfig = {
     code: CurrencyCode;
@@ -18,8 +18,8 @@ export const CURRENCIES: CurrencyConfig[] = [
         fractionDigits: 2,
     },
     {
-        code: 'GBP',
-        symbol: '£',
+        code: 'AMD',
+        symbol: '֏',
         fractionDigits: 2,
     },
     {

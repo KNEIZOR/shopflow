@@ -1,9 +1,11 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, type CurrencyCode } from '@prisma/client';
 
 import { prisma } from '../../../lib/prisma';
 import { AppError } from '../../../errors/app-error';
 
 import type { CreateOrderInput } from '../order.types';
+
+const DEFAULT_CURRENCY: CurrencyCode = 'RUB';
 
 const orderItemSelect = {
     id: true,
@@ -17,15 +19,15 @@ export const createOrder = async (userId: string, input: CreateOrderInput) => {
     return prisma.$transaction(
         async (tx) => {
             /*
-             * The address must belong to the authenticated user.
-             * A user must never be able to create an order
-             * using somebody else's address.
+             * The address must belong to the
+             * authenticated user.
              */
             const address = await tx.address.findFirst({
                 where: {
                     id: input.addressId,
                     userId,
                 },
+
                 select: {
                     id: true,
                 },
@@ -40,69 +42,74 @@ export const createOrder = async (userId: string, input: CreateOrderInput) => {
             }
 
             /*
-             * Prevent duplicate variants in a single order.
+             * Load the user's cart together
+             * with all required product data.
              *
-             * Example:
-             *
-             * [
-             *   { variantId: "abc", quantity: 1 },
-             *   { variantId: "abc", quantity: 2 }
-             * ]
-             *
-             * becomes invalid instead of creating ambiguous order data.
+             * The cart is the single source of
+             * truth for which products are ordered.
              */
-            const variantIds = input.items.map((item) => item.variantId);
-
-            if (new Set(variantIds).size !== variantIds.length) {
-                throw new AppError(
-                    400,
-                    'DUPLICATE_ORDER_ITEMS',
-                    'Duplicate product variants are not allowed',
-                );
-            }
-
-            /*
-             * Load all variants in one query.
-             *
-             * Prices come exclusively from the database.
-             * Client-provided prices are completely ignored.
-             */
-            const variants = await tx.productVariant.findMany({
+            const cart = await tx.cart.findUnique({
                 where: {
-                    id: {
-                        in: variantIds,
-                    },
-                    product: {
-                        status: 'ACTIVE',
-                    },
+                    userId,
                 },
+
                 select: {
                     id: true,
-                    productId: true,
-                    name: true,
-                    price: true,
-                    stock: true,
-                    product: {
+
+                    items: {
+                        orderBy: {
+                            createdAt: 'asc',
+                        },
+
                         select: {
                             id: true,
-                            name: true,
-                            price: true,
+                            quantity: true,
+                            productId: true,
+                            variantId: true,
+
+                            product: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                    price: true,
+                                    status: true,
+                                },
+                            },
+
+                            variant: {
+                                select: {
+                                    id: true,
+                                    productId: true,
+                                    name: true,
+                                    price: true,
+                                    stock: true,
+                                },
+                            },
                         },
                     },
                 },
             });
 
-            if (variants.length !== input.items.length) {
-                throw new AppError(
-                    400,
-                    'INVALID_ORDER_ITEMS',
-                    'One or more product variants are unavailable',
-                );
+            if (!cart) {
+                throw new AppError(400, 'CART_EMPTY', 'Cart is empty');
             }
 
-            const variantsById = new Map(
-                variants.map((variant) => [variant.id, variant]),
-            );
+            if (cart.items.length === 0) {
+                throw new AppError(400, 'CART_EMPTY', 'Cart is empty');
+            }
+
+            /*
+             * Keep a defensive limit on the number
+             * of different cart items that can be
+             * converted into one order.
+             */
+            if (cart.items.length > 50) {
+                throw new AppError(
+                    400,
+                    'TOO_MANY_ORDER_ITEMS',
+                    'Order contains too many items',
+                );
+            }
 
             let total = new Prisma.Decimal(0);
 
@@ -113,61 +120,118 @@ export const createOrder = async (userId: string, input: CreateOrderInput) => {
                 price: Prisma.Decimal;
             }> = [];
 
-            for (const inputItem of input.items) {
-                const variant = variantsById.get(inputItem.variantId);
-
-                if (!variant) {
+            /*
+             * Validate every cart item and calculate
+             * the order total exclusively from
+             * database values.
+             */
+            for (const cartItem of cart.items) {
+                if (cartItem.product.id !== cartItem.productId) {
                     throw new AppError(
                         400,
-                        'VARIANT_NOT_FOUND',
-                        'Product variant not found',
+                        'INVALID_CART_ITEM',
+                        'Cart contains an invalid product reference',
                     );
                 }
 
-                if (inputItem.quantity > variant.stock) {
+                if (cartItem.variant.id !== cartItem.variantId) {
                     throw new AppError(
                         400,
+                        'INVALID_CART_ITEM',
+                        'Cart contains an invalid variant reference',
+                    );
+                }
+
+                if (cartItem.variant.productId !== cartItem.productId) {
+                    throw new AppError(
+                        400,
+                        'VARIANT_PRODUCT_MISMATCH',
+                        'Product variant does not belong to the cart product',
+                    );
+                }
+
+                if (cartItem.quantity < 1 || cartItem.quantity > 100) {
+                    throw new AppError(
+                        400,
+                        'INVALID_CART_QUANTITY',
+                        'Cart contains an invalid quantity',
+                    );
+                }
+
+                if (cartItem.product.status !== 'ACTIVE') {
+                    throw new AppError(
+                        400,
+                        'PRODUCT_NOT_AVAILABLE',
+                        `Product "${cartItem.product.name}" is no longer available`,
+                    );
+                }
+
+                if (cartItem.variant.stock < cartItem.quantity) {
+                    throw new AppError(
+                        409,
                         'INSUFFICIENT_STOCK',
-                        `Insufficient stock for variant ${variant.id}`,
+                        `Insufficient stock for variant "${cartItem.variant.name}"`,
                     );
                 }
 
-                const price = variant.price ?? variant.product.price;
+                /*
+                 * Variant price has priority.
+                 * Product price is the fallback.
+                 *
+                 * Neither value comes from the client.
+                 */
+                const price = cartItem.variant.price ?? cartItem.product.price;
 
-                const itemTotal = price.mul(inputItem.quantity);
+                if (price.lessThan(0)) {
+                    throw new AppError(
+                        500,
+                        'INVALID_PRODUCT_PRICE',
+                        'Product contains an invalid price',
+                    );
+                }
+
+                const itemTotal = price.mul(cartItem.quantity);
 
                 total = total.add(itemTotal);
 
                 orderItemsData.push({
-                    productId: variant.productId,
-                    variantId: variant.id,
-                    quantity: inputItem.quantity,
+                    productId: cartItem.productId,
+
+                    variantId: cartItem.variantId,
+
+                    quantity: cartItem.quantity,
+
                     price,
                 });
             }
 
             /*
-             * Create the order and all order items in the same
-             * database transaction.
-             *
-             * If any operation fails, PostgreSQL rolls everything back.
+             * Create the order and all order items
+             * inside the same transaction.
              */
             const order = await tx.order.create({
                 data: {
                     userId,
+
                     addressId: address.id,
+
                     total,
 
+                    currency: DEFAULT_CURRENCY,
+
                     status: 'PENDING',
+
                     paymentStatus: 'PENDING',
 
                     items: {
                         create: orderItemsData,
                     },
                 },
+
                 select: {
                     id: true,
                     total: true,
+                    currency: true,
                     status: true,
                     paymentStatus: true,
                     createdAt: true,
@@ -179,32 +243,28 @@ export const createOrder = async (userId: string, input: CreateOrderInput) => {
             });
 
             /*
-             * Decrease stock only after the order has been created.
+             * Atomically reserve the stock.
              *
-             * updateMany with a stock condition protects against
-             * overselling when multiple requests arrive concurrently.
+             * The stock condition is intentionally
+             * repeated here even though stock was
+             * checked above.
+             *
+             * This protects against stock changing
+             * between the initial read and this update.
              */
-            for (const inputItem of input.items) {
-                const variant = variantsById.get(inputItem.variantId);
-
-                if (!variant) {
-                    throw new AppError(
-                        400,
-                        'VARIANT_NOT_FOUND',
-                        'Product variant not found',
-                    );
-                }
-
+            for (const cartItem of cart.items) {
                 const updated = await tx.productVariant.updateMany({
                     where: {
-                        id: variant.id,
+                        id: cartItem.variantId,
+
                         stock: {
-                            gte: inputItem.quantity,
+                            gte: cartItem.quantity,
                         },
                     },
+
                     data: {
                         stock: {
-                            decrement: inputItem.quantity,
+                            decrement: cartItem.quantity,
                         },
                     },
                 });
@@ -218,21 +278,48 @@ export const createOrder = async (userId: string, input: CreateOrderInput) => {
                 }
             }
 
+            /*
+             * The order was successfully created
+             * and stock was successfully reserved.
+             *
+             * Clear the cart inside the same
+             * transaction so the user cannot
+             * accidentally order the same cart
+             * twice.
+             */
+            await tx.cartItem.deleteMany({
+                where: {
+                    cartId: cart.id,
+                },
+            });
+
             return {
                 id: order.id,
+
                 total: order.total.toFixed(2),
+
+                currency: order.currency,
+
                 status: order.status,
+
                 paymentStatus: order.paymentStatus,
+
                 createdAt: order.createdAt,
+
                 items: order.items.map((item) => ({
                     id: item.id,
+
                     productId: item.productId,
+
                     variantId: item.variantId,
+
                     quantity: item.quantity,
+
                     price: item.price.toFixed(2),
                 })),
             };
         },
+
         {
             isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
         },

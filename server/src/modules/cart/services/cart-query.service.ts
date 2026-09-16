@@ -1,95 +1,57 @@
 import { prisma } from '../../../lib/prisma';
 
+const cartItemInclude = {
+    product: {
+        select: {
+            id: true,
+            name: true,
+            slug: true,
+            status: true,
+            price: true,
+            images: {
+                select: {
+                    id: true,
+                    url: true,
+                    alt: true,
+                    position: true,
+                },
+
+                orderBy: {
+                    position: 'asc' as const,
+                },
+
+                take: 1,
+            },
+        },
+    },
+
+    variant: {
+        select: {
+            id: true,
+            name: true,
+            sku: true,
+            price: true,
+            stock: true,
+        },
+    },
+} as const;
+
 export const getCartByUserId = async (userId: string) => {
-    let cart = await prisma.cart.findUnique({
+    return prisma.cart.findUnique({
         where: {
             userId,
         },
-        include: {
+
+        select: {
+            id: true,
+
             items: {
-                include: {
-                    product: {
-                        select: {
-                            id: true,
-                            name: true,
-                            slug: true,
-                            status: true,
-                            images: {
-                                select: {
-                                    id: true,
-                                    url: true,
-                                    alt: true,
-                                    position: true,
-                                },
-                                orderBy: {
-                                    position: 'asc',
-                                },
-                                take: 1,
-                            },
-                        },
-                    },
-                    variant: {
-                        select: {
-                            id: true,
-                            name: true,
-                            sku: true,
-                            price: true,
-                            stock: true,
-                        },
-                    },
-                },
+                include: cartItemInclude,
+
                 orderBy: {
                     createdAt: 'asc',
                 },
             },
         },
     });
-
-    if (!cart) {
-        cart = await prisma.cart.create({
-            data: {
-                userId,
-            },
-            include: {
-                items: {
-                    include: {
-                        product: {
-                            select: {
-                                id: true,
-                                name: true,
-                                slug: true,
-                                status: true,
-                                images: {
-                                    select: {
-                                        id: true,
-                                        url: true,
-                                        alt: true,
-                                        position: true,
-                                    },
-                                    orderBy: {
-                                        position: 'asc',
-                                    },
-                                    take: 1,
-                                },
-                            },
-                        },
-                        variant: {
-                            select: {
-                                id: true,
-                                name: true,
-                                sku: true,
-                                price: true,
-                                stock: true,
-                            },
-                        },
-                    },
-                    orderBy: {
-                        createdAt: 'asc',
-                    },
-                },
-            },
-        });
-    }
-
-    return cart;
 };

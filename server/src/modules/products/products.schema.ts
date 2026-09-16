@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const productStatusSchema = z.enum(['DRAFT', 'ACTIVE', 'ARCHIVED']);
 
-const currencySchema = z.enum(['RUB', 'EUR', 'USD', 'GBP']);
+const currencySchema = z.enum(['RUB', 'EUR', 'USD', 'AMD']);
 
 const languageSchema = z
     .string()

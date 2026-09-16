@@ -1,7 +1,7 @@
 export type ProductPriceResponse = {
     id: string;
     productId: string;
-    currency: 'RUB' | 'EUR' | 'USD' | 'GBP';
+    currency: 'RUB' | 'EUR' | 'USD' | 'AMD';
     amount: string;
     createdAt: Date;
     updatedAt: Date;

@@ -11,13 +11,13 @@ import type { CurrencyCode } from '@/shared/config/currencies';
 
 import styles from './ProductVariantPrices.module.scss';
 
-const CURRENCIES: CurrencyCode[] = ['RUB', 'EUR', 'USD', 'GBP'];
+const CURRENCIES: CurrencyCode[] = ['RUB', 'EUR', 'USD', 'AMD'];
 
 const CURRENCY_SYMBOLS: Record<CurrencyCode, string> = {
     RUB: '₽',
     EUR: '€',
     USD: '$',
-    GBP: '£',
+    AMD: '֏',
 };
 
 type ProductVariantPricesProps = {
