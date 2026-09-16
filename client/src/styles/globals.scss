@@ -1,4 +1,8 @@
 :root {
+    /*
+     * Typography
+     */
+
     font-family:
         Inter,
         -apple-system,
@@ -6,13 +10,154 @@
         'Segoe UI',
         sans-serif;
 
-    color: #111111;
-    background: #ffffff;
-
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    /*
+     * ShopFlow — Luxury Light Theme
+     */
+
+    --color-bg: #f7f5f1;
+    --color-bg-secondary: #f1eee8;
+
+    --color-surface: #fcfbf8;
+    --color-surface-secondary: #f5f2ec;
+    --color-surface-elevated: #ffffff;
+
+    --color-text: #171614;
+    --color-text-secondary: #5f5b54;
+    --color-text-muted: #89847b;
+    --color-text-inverse: #f8f5ef;
+
+    --color-border: #e3dfd7;
+    --color-border-strong: #d3cec4;
+
+    /*
+     * Luxury champagne / bronze accent
+     */
+
+    --color-accent: #a9784d;
+    --color-accent-hover: #8f633f;
+    --color-accent-soft: #eee4d8;
+    --color-accent-border: #d5bda3;
+
+    /*
+     * Semantic colors
+     */
+
+    --color-success: #617d68;
+    --color-warning: #a9854f;
+    --color-danger: #a55f58;
+    --color-info: #63778a;
+
+    /*
+     * Shadows
+     */
+
+    --shadow-xs: 0 1px 2px rgb(25 22 18 / 4%);
+    --shadow-sm: 0 4px 14px rgb(25 22 18 / 6%), 0 1px 3px rgb(25 22 18 / 4%);
+    --shadow-md: 0 14px 35px rgb(25 22 18 / 8%), 0 3px 10px rgb(25 22 18 / 5%);
+    --shadow-lg: 0 24px 60px rgb(25 22 18 / 12%), 0 8px 20px rgb(25 22 18 / 6%);
+
+    /*
+     * Overlays
+     */
+
+    --overlay-light: rgb(255 255 255 / 72%);
+    --overlay-dark: rgb(17 16 14 / 12%);
+
+    /*
+     * Focus
+     */
+
+    --focus-ring: rgb(169 120 77 / 32%);
+
+    /*
+     * Motion
+     */
+
+    --transition-fast: 180ms ease;
+    --transition-base: 280ms ease;
+    --transition-slow: 450ms ease;
+
+    color: var(--color-text);
+    background: var(--color-bg);
+}
+
+:root[data-theme='dark'] {
+    /*
+     * ShopFlow — Luxury Dark Theme
+     *
+     * Obsidian + graphite + ivory + champagne.
+     */
+
+    --color-bg: #0b0c0c;
+    --color-bg-secondary: #111211;
+
+    --color-surface: #151716;
+    --color-surface-secondary: #1b1d1b;
+    --color-surface-elevated: #222421;
+
+    /*
+     * Typography
+     */
+
+    --color-text: #f5f2eb;
+    --color-text-secondary: #c4c0b8;
+    --color-text-muted: #9d9991;
+    --color-text-inverse: #121311;
+
+    /*
+     * Borders
+     */
+
+    --color-border: #333530;
+    --color-border-strong: #474943;
+
+    /*
+     * Champagne accent
+     */
+
+    --color-accent: #d1aa76;
+    --color-accent-hover: #e0bc89;
+    --color-accent-soft: #30271c;
+    --color-accent-border: #705a3e;
+
+    /*
+     * Semantic colors
+     */
+
+    --color-success: #8daa91;
+    --color-warning: #d0a96e;
+    --color-danger: #d07b73;
+    --color-info: #91a6bb;
+
+    /*
+     * Shadows
+     */
+
+    --shadow-xs: 0 1px 2px rgb(0 0 0 / 28%);
+
+    --shadow-sm: 0 6px 20px rgb(0 0 0 / 28%), 0 1px 3px rgb(0 0 0 / 20%);
+
+    --shadow-md: 0 18px 45px rgb(0 0 0 / 36%), 0 5px 14px rgb(0 0 0 / 24%);
+
+    --shadow-lg: 0 30px 80px rgb(0 0 0 / 45%), 0 12px 30px rgb(0 0 0 / 28%);
+
+    /*
+     * Overlays
+     */
+
+    --overlay-light: rgb(255 255 255 / 6%);
+    --overlay-dark: rgb(0 0 0 / 42%);
+
+    /*
+     * Focus
+     */
+
+    --focus-ring: rgb(209 170 118 / 38%);
 }
 
 *,
@@ -23,11 +168,25 @@
 
 html {
     scroll-behavior: smooth;
+    background: var(--color-bg);
+    color-scheme: light;
+}
+
+html[data-theme='dark'] {
+    color-scheme: dark;
 }
 
 body {
     margin: 0;
     min-width: 320px;
+    min-height: 100vh;
+
+    color: var(--color-text);
+    background: var(--color-bg);
+
+    transition:
+        color var(--transition-base),
+        background-color var(--transition-base);
 }
 
 button,
@@ -66,8 +225,33 @@ img {
     margin-inline: auto;
 }
 
+:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 4px var(--focus-ring);
+}
+
+::selection {
+    color: var(--color-text-inverse);
+    background: var(--color-accent);
+}
+
 @media (max-width: 640px) {
     .container {
         width: min(100% - 24px, 1280px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
     }
 }

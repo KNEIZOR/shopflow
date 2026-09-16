@@ -14,6 +14,20 @@ import {
 } from './products.controller';
 
 import {
+    createProductAttribute,
+    deleteProductAttribute,
+    getProductAttributes,
+    updateProductAttribute,
+} from './product-attributes.controller';
+
+import {
+    createProductVariantAttribute,
+    deleteProductVariantAttribute,
+    getProductVariantAttributes,
+    updateProductVariantAttribute,
+} from './product-variant-attributes.controller';
+
+import {
     addProductImage,
     addProductVariant,
     deleteProductImage,
@@ -111,6 +125,68 @@ router.delete(
     requireAuth,
     requireAdmin,
     deleteProductVariant,
+);
+
+/**
+ * Admin product attributes
+ */
+router.get(
+    '/admin/:productId/attributes',
+    requireAuth,
+    requireAdmin,
+    getProductAttributes,
+);
+
+router.post(
+    '/admin/:productId/attributes',
+    requireAuth,
+    requireAdmin,
+    createProductAttribute,
+);
+
+router.patch(
+    '/admin/:productId/attributes/:attributeId',
+    requireAuth,
+    requireAdmin,
+    updateProductAttribute,
+);
+
+router.delete(
+    '/admin/:productId/attributes/:attributeId',
+    requireAuth,
+    requireAdmin,
+    deleteProductAttribute,
+);
+
+/**
+ * Admin product variant attributes
+ */
+router.get(
+    '/admin/:productId/variants/:variantId/attributes',
+    requireAuth,
+    requireAdmin,
+    getProductVariantAttributes,
+);
+
+router.post(
+    '/admin/:productId/variants/:variantId/attributes',
+    requireAuth,
+    requireAdmin,
+    createProductVariantAttribute,
+);
+
+router.patch(
+    '/admin/:productId/variants/:variantId/attributes/:attributeId',
+    requireAuth,
+    requireAdmin,
+    updateProductVariantAttribute,
+);
+
+router.delete(
+    '/admin/:productId/variants/:variantId/attributes/:attributeId',
+    requireAuth,
+    requireAdmin,
+    deleteProductVariantAttribute,
 );
 
 /**

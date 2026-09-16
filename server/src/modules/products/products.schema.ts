@@ -21,6 +21,8 @@ const positivePriceSchema = z.coerce
         'Price must have no more than 2 decimal places',
     );
 
+const productTypeIdOptionalSchema = z.string().trim().min(1).optional();
+
 export const createProductSchema = z.object({
     name: z.string().trim().min(2).max(200),
 
@@ -45,6 +47,8 @@ export const createProductSchema = z.object({
     status: productStatusSchema.default('DRAFT'),
 
     categoryId: z.string().trim().min(1),
+
+    productTypeId: productTypeIdOptionalSchema,
 });
 
 export const updateProductSchema = createProductSchema.partial();

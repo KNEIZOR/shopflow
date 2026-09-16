@@ -1,5 +1,14 @@
 .footer {
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid var(--color-border);
+
+    background: var(--color-bg);
+
+    color: var(--color-text);
+
+    transition:
+        background-color var(--transition-base),
+        border-color var(--transition-base),
+        color var(--transition-base);
 
     &__inner {
         min-height: 88px;
@@ -15,8 +24,15 @@
     &__text {
         margin: 0;
 
-        color: #666666;
+        color: var(--color-text-muted);
         font-size: 14px;
+        line-height: 1.5;
+
+        transition: color var(--transition-base);
+    }
+
+    &__copyright {
+        color: var(--color-text-secondary);
     }
 }
 
@@ -32,5 +48,13 @@
 
             gap: 8px;
         }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .footer,
+    .footer__copyright,
+    .footer__text {
+        transition: none;
     }
 }

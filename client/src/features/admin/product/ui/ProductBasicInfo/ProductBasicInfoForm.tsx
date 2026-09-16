@@ -17,6 +17,9 @@ type ProductBasicInfoFormProps = {
 
 const PRODUCT_STATUSES: ProductStatus[] = ['DRAFT', 'ACTIVE', 'ARCHIVED'];
 
+const getStatusTranslationKey = (status: ProductStatus) =>
+    `admin.products.status.${status.toLowerCase()}`;
+
 export const ProductBasicInfoForm = ({
     product,
     onClose,
@@ -153,18 +156,21 @@ export const ProductBasicInfoForm = ({
                 </label>
 
                 <label className={styles.field}>
-                    <span>{t('admin.products.status')}</span>
+                    <span>{t('admin.products.status.label')}</span>
 
                     <select
                         value={status}
-                        onChange={(event) =>
-                            setStatus(event.target.value as ProductStatus)
-                        }
+                        onChange={(event) => {
+                            const nextStatus = event.target
+                                .value as ProductStatus;
+
+                            setStatus(nextStatus);
+                        }}
                         disabled={isSaving}
                     >
                         {PRODUCT_STATUSES.map((item) => (
                             <option key={item} value={item}>
-                                {item}
+                                {t(getStatusTranslationKey(item))}
                             </option>
                         ))}
                     </select>

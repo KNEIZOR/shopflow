@@ -10,7 +10,9 @@ import {
     upsertProductPrice,
 } from './product-prices.controller';
 
-const router = Router();
+const router = Router({
+    mergeParams: true,
+});
 
 router.use(requireAuth, requireAdmin);
 

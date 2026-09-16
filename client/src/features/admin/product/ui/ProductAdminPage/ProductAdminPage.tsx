@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useAdminProduct } from '../../model';
 
+import { ProductBasicInfo } from '../ProductBasicInfo/ProductBasicInfo';
 import { ProductImages } from '../ProductImages/ProductImages';
 import { ProductPrices } from '../ProductPrices/ProductPrices';
 import { ProductTranslations } from '../ProductTranslations/ProductTranslations';
@@ -50,50 +51,12 @@ export const ProductAdminPage = () => {
                         styles[`status${product.status}`]
                     }`}
                 >
-                    {product.status}
+                    {t(`admin.products.status.${product.status.toLowerCase()}`)}
                 </span>
             </header>
 
             <div className={styles.grid}>
-                <section className={styles.card}>
-                    <h2 className={styles.cardTitle}>
-                        {t('admin.products.basicInfo')}
-                    </h2>
-
-                    <div className={styles.infoList}>
-                        <div className={styles.infoRow}>
-                            <span>{t('admin.products.name')}</span>
-
-                            <strong>{product.name}</strong>
-                        </div>
-
-                        <div className={styles.infoRow}>
-                            <span>{t('admin.products.slug')}</span>
-
-                            <strong>{product.slug}</strong>
-                        </div>
-
-                        <div className={styles.infoRow}>
-                            <span>{t('admin.products.category')}</span>
-
-                            <strong>{product.category.name}</strong>
-                        </div>
-
-                        <div className={styles.infoRow}>
-                            <span>{t('admin.products.status')}</span>
-
-                            <strong>{product.status}</strong>
-                        </div>
-                    </div>
-
-                    {product.description && (
-                        <div className={styles.description}>
-                            <span>{t('admin.products.description')}</span>
-
-                            <p>{product.description}</p>
-                        </div>
-                    )}
-                </section>
+                <ProductBasicInfo product={product} />
 
                 <section className={styles.card}>
                     <h2 className={styles.cardTitle}>

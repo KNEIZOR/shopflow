@@ -1,0 +1,465 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+}
+
+.header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.eyebrow {
+    margin: 0 0 6px;
+    color: #a15f3c;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.title {
+    margin: 0;
+    color: #292725;
+    font-size: 30px;
+    line-height: 1.15;
+}
+
+.description {
+    max-width: 620px;
+    margin: 8px 0 0;
+    color: #77736d;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.createButton,
+.emptyButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 18px;
+    border: 1px solid #a15f3c;
+    border-radius: 8px;
+    background: #a15f3c;
+    color: #fff;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.createButton:hover,
+.emptyButton:hover {
+    background: #8f5132;
+    border-color: #8f5132;
+    transform: translateY(-1px);
+}
+
+.toolbar {
+    display: grid;
+    grid-template-columns: minmax(220px, 2fr) repeat(3, minmax(150px, 1fr));
+    gap: 14px;
+    padding: 18px;
+    border: 1px solid #e7e2db;
+    border-radius: 10px;
+    background: #fff;
+}
+
+.field,
+.searchField {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.label {
+    color: #6d6861;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.input,
+.select {
+    width: 100%;
+    min-height: 40px;
+    padding: 0 12px;
+    border: 1px solid #ddd7cf;
+    border-radius: 7px;
+    outline: none;
+    background: #fff;
+    color: #292725;
+    font: inherit;
+    font-size: 13px;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.input:focus,
+.select:focus {
+    border-color: #a15f3c;
+    box-shadow: 0 0 0 3px rgba(161, 95, 60, 0.1);
+}
+
+.card {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid #e7e2db;
+    border-radius: 10px;
+    background: #fff;
+}
+
+.state {
+    min-height: 280px;
+    display: grid;
+    place-items: center;
+    padding: 32px;
+    color: #77736d;
+    font-size: 14px;
+}
+
+.empty {
+    min-height: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    text-align: center;
+}
+
+.emptyTitle {
+    margin: 0;
+    color: #292725;
+    font-size: 20px;
+}
+
+.emptyDescription {
+    max-width: 440px;
+    margin: 8px 0 20px;
+    color: #77736d;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.tableWrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+}
+
+.table th {
+    padding: 14px 16px;
+    border-bottom: 1px solid #e7e2db;
+    background: #faf8f5;
+    color: #77736d;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #eeeae4;
+    color: #4e4a45;
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.table tbody tr:hover {
+    background: #fcfaf8;
+}
+
+.productCell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 250px;
+}
+
+.image {
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    border: 1px solid #e5dfd8;
+    border-radius: 7px;
+    background: #f7f4f0;
+    color: #aaa39a;
+}
+
+.image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.productInfo {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.productInfo strong {
+    overflow: hidden;
+    color: #292725;
+    font-size: 13px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.productInfo span {
+    overflow: hidden;
+    color: #aaa39a;
+    font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.category {
+    color: #625d56;
+    white-space: nowrap;
+}
+
+.price {
+    color: #292725;
+    font-size: 13px;
+}
+
+.currency {
+    margin-left: 4px;
+    color: #99928a;
+    font-size: 11px;
+}
+
+.status {
+    display: inline-flex;
+    align-items: center;
+    min-height: 25px;
+    padding: 0 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.statusACTIVE {
+    background: #edf7ef;
+    color: #397348;
+}
+
+.statusDRAFT {
+    background: #f5f1e8;
+    color: #866b31;
+}
+
+.statusARCHIVED {
+    background: #f3eeee;
+    color: #865b5b;
+}
+
+.statusDefault {
+    background: #f2f0ed;
+    color: #6d6861;
+}
+
+.variantCount {
+    display: inline-flex;
+    min-width: 28px;
+    min-height: 25px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 7px;
+    border-radius: 999px;
+    background: #f5f2ee;
+    color: #625d56;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.actionsHeader {
+    text-align: right !important;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.editButton,
+.deleteButton {
+    min-height: 32px;
+    padding: 0 10px;
+    border-radius: 6px;
+    font: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.editButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ddd7cf;
+    background: #fff;
+    color: #625d56;
+}
+
+.editButton:hover {
+    border-color: #a15f3c;
+    background: #faf7f4;
+    color: #a15f3c;
+}
+
+.deleteButton {
+    border: 1px solid #ead8d8;
+    background: #fff;
+    color: #a05d5d;
+}
+
+.deleteButton:hover:not(:disabled) {
+    border-color: #c98d8d;
+    background: #fbf4f4;
+}
+
+.deleteButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 18px;
+    border-top: 1px solid #e7e2db;
+}
+
+.paginationInfo {
+    color: #77736d;
+    font-size: 12px;
+}
+
+.paginationControls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pageButton,
+.currentPage {
+    min-width: 34px;
+    min-height: 32px;
+    padding: 0 9px;
+    border-radius: 6px;
+    font: inherit;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.pageButton {
+    border: 1px solid #ddd7cf;
+    background: #fff;
+    color: #625d56;
+    cursor: pointer;
+}
+
+.pageButton:hover:not(:disabled) {
+    border-color: #a15f3c;
+    color: #a15f3c;
+}
+
+.pageButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+.currentPage {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #a15f3c;
+    background: #a15f3c;
+    color: #fff;
+}
+
+@media (max-width: 1100px) {
+    .toolbar {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .searchField {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 700px) {
+    .header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .title {
+        font-size: 25px;
+    }
+
+    .toolbar {
+        grid-template-columns: 1fr;
+    }
+
+    .searchField {
+        grid-column: auto;
+    }
+
+    .pagination {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .paginationControls {
+        justify-content: space-between;
+    }
+}

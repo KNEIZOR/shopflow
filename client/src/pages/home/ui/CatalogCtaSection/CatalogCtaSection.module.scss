@@ -1,0 +1,803 @@
+.section {
+    padding: 0 0 120px;
+}
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.card {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    min-height: 380px;
+
+    overflow: hidden;
+
+    padding: 64px 72px;
+
+    background:
+        radial-gradient(
+            circle at 82% 50%,
+            color-mix(in srgb, var(--color-accent) 13%, transparent),
+            transparent 30%
+        ),
+        #1c1b19;
+
+    color: #fff;
+
+    isolation: isolate;
+}
+
+/*
+ * Dark theme keeps the CTA deep and restrained.
+ * It should feel like a premium dark surface,
+ * not like a bright contrasting block.
+ */
+:global(html[data-theme='dark']) .card {
+    background:
+        radial-gradient(
+            circle at 82% 50%,
+            rgb(209 170 118 / 8%),
+            transparent 30%
+        ),
+        #111211;
+
+    color: var(--color-text);
+}
+
+/*
+ * The whole CTA enters slightly from below.
+ */
+.card {
+    animation: cardEntrance 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* =========================================================
+   BACKGROUND
+   ========================================================= */
+
+.background {
+    position: absolute;
+    inset: 0;
+
+    overflow: hidden;
+
+    pointer-events: none;
+}
+
+.glow {
+    position: absolute;
+    top: 50%;
+    right: 8%;
+
+    width: 360px;
+    height: 360px;
+
+    border-radius: 50%;
+
+    background: rgb(161 95 60 / 13%);
+
+    filter: blur(70px);
+
+    opacity: 0;
+
+    transform: translate(20px, -50%) scale(0.85);
+
+    animation: glowEntrance 1200ms 250ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+
+    transition:
+        opacity 0.6s ease,
+        transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:global(html[data-theme='dark']) .glow {
+    background: rgb(209 170 118 / 8%);
+}
+
+.card:hover .glow {
+    opacity: 0.9;
+
+    transform: translate(0, -50%) scale(1);
+}
+
+/* =========================================================
+   DECORATIVE RINGS
+   ========================================================= */
+
+.decor {
+    position: absolute;
+    top: 50%;
+    right: -70px;
+
+    width: 470px;
+    height: 470px;
+
+    transform: translateY(-50%);
+
+    animation: decorEntrance 1100ms 150ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.ring {
+    position: absolute;
+
+    display: block;
+
+    border: 1px solid rgb(255 255 255 / 8%);
+    border-radius: 50%;
+
+    transition:
+        border-color 0.5s ease,
+        transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ring.outer {
+    inset: 0;
+
+    animation: ringFloat 9s ease-in-out infinite;
+}
+
+.ring.middle {
+    inset: 55px;
+
+    border-color: rgb(255 255 255 / 7%);
+
+    animation: ringFloatReverse 8s ease-in-out 0.4s infinite;
+}
+
+.ring.inner {
+    inset: 115px;
+
+    border-color: rgb(161 95 60 / 18%);
+
+    animation: ringFloat 7s ease-in-out 0.8s infinite;
+}
+
+:global(html[data-theme='dark']) .ring {
+    border-color: rgb(255 255 255 / 5%);
+}
+
+:global(html[data-theme='dark']) .ring.middle {
+    border-color: rgb(255 255 255 / 4%);
+}
+
+:global(html[data-theme='dark']) .ring.inner {
+    border-color: rgb(209 170 118 / 12%);
+}
+
+.card:hover .ring {
+    border-color: rgb(161 95 60 / 20%);
+}
+
+:global(html[data-theme='dark']) .card:hover .ring {
+    border-color: rgb(209 170 118 / 14%);
+}
+
+.card:hover .ring.inner {
+    transform: scale(1.04);
+}
+
+/* =========================================================
+   DOTS
+   ========================================================= */
+
+.dots {
+    position: absolute;
+    inset: 0;
+}
+
+.dot {
+    position: absolute;
+
+    display: block;
+
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: #c98967;
+
+    box-shadow: 0 0 18px rgb(201 137 103 / 45%);
+
+    opacity: 0;
+}
+
+:global(html[data-theme='dark']) .dot {
+    background: #c49b68;
+
+    box-shadow: 0 0 18px rgb(196 155 104 / 30%);
+}
+
+.dot.one {
+    top: 23%;
+    right: 29%;
+
+    animation:
+        dotEntrance 700ms 500ms cubic-bezier(0.22, 1, 0.36, 1) forwards,
+        dotFloat 4s ease-in-out 1.2s infinite;
+}
+
+.dot.two {
+    top: 69%;
+    right: 38%;
+
+    width: 3px;
+    height: 3px;
+
+    animation:
+        dotEntrance 700ms 650ms cubic-bezier(0.22, 1, 0.36, 1) forwards,
+        dotFloat 5s ease-in-out 1.4s infinite reverse;
+}
+
+.dot.three {
+    top: 36%;
+    right: 12%;
+
+    width: 3px;
+    height: 3px;
+
+    animation:
+        dotEntrance 700ms 800ms cubic-bezier(0.22, 1, 0.36, 1) forwards,
+        dotFloat 4.5s ease-in-out 1.6s infinite;
+}
+
+/* =========================================================
+   GRID LINES
+   ========================================================= */
+
+.gridLineHorizontal,
+.gridLineVertical {
+    position: absolute;
+
+    display: block;
+
+    background: rgb(255 255 255 / 4%);
+
+    opacity: 0;
+
+    animation: lineEntrance 1000ms 450ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+:global(html[data-theme='dark']) .gridLineHorizontal,
+:global(html[data-theme='dark']) .gridLineVertical {
+    background: rgb(255 255 255 / 3%);
+}
+
+.gridLineHorizontal {
+    top: 50%;
+    right: 0;
+    left: 42%;
+
+    height: 1px;
+}
+
+.gridLineVertical {
+    top: 0;
+    right: 28%;
+
+    width: 1px;
+    height: 100%;
+}
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
+
+.content {
+    position: relative;
+    z-index: 2;
+
+    max-width: 680px;
+}
+
+.eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin: 0 0 18px;
+
+    color: #c98967;
+
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.4;
+
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+
+    opacity: 0;
+
+    animation: contentFadeUp 700ms 250ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+:global(html[data-theme='dark']) .eyebrow {
+    color: #c49b68;
+}
+
+.eyebrowLine {
+    display: block;
+
+    width: 28px;
+    height: 1px;
+
+    background: currentColor;
+
+    transform: scaleX(0);
+
+    transform-origin: left;
+
+    animation: lineReveal 600ms 500ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.title {
+    max-width: 650px;
+
+    margin: 0;
+
+    color: #fff;
+
+    font-size: clamp(34px, 5vw, 58px);
+    font-weight: 600;
+    line-height: 1.02;
+
+    letter-spacing: -0.045em;
+
+    opacity: 0;
+
+    animation: contentFadeUp 850ms 350ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.description {
+    max-width: 520px;
+
+    margin: 24px 0 0;
+
+    color: rgb(255 255 255 / 62%);
+
+    font-size: 15px;
+    line-height: 1.7;
+
+    opacity: 0;
+
+    animation: contentFadeUp 750ms 500ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* =========================================================
+   BUTTON
+   ========================================================= */
+
+.button {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 24px;
+
+    min-height: 50px;
+
+    margin-top: 34px;
+    padding: 0 18px 0 22px;
+
+    overflow: hidden;
+
+    border: 1px solid rgb(255 255 255 / 20%);
+
+    background: #a15f3c;
+    color: #fff;
+
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
+
+    text-decoration: none;
+
+    opacity: 0;
+
+    animation: buttonEntrance 750ms 650ms cubic-bezier(0.22, 1, 0.36, 1)
+        forwards;
+
+    transition:
+        background-color 0.3s ease,
+        border-color 0.3s ease,
+        transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.4s ease;
+}
+
+:global(html[data-theme='dark']) .button {
+    background: #a9784d;
+}
+
+.button::before {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -70%;
+
+    width: 45%;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgb(255 255 255 / 25%),
+        transparent
+    );
+
+    content: '';
+
+    transform: skewX(-20deg);
+
+    transition: left 0.7s ease;
+}
+
+.button:hover {
+    border-color: rgb(255 255 255 / 35%);
+
+    background: #b56e49;
+
+    box-shadow: 0 14px 30px rgb(0 0 0 / 20%);
+
+    transform: translateY(-3px);
+}
+
+:global(html[data-theme='dark']) .button:hover {
+    background: #b88a5c;
+
+    box-shadow: 0 14px 30px rgb(0 0 0 / 30%);
+}
+
+.button:hover::before {
+    left: 130%;
+}
+
+.button:focus-visible {
+    outline: 3px solid rgb(255 255 255 / 30%);
+    outline-offset: 4px;
+}
+
+.arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 28px;
+    height: 28px;
+
+    border: 1px solid rgb(255 255 255 / 25%);
+    border-radius: 50%;
+
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1;
+
+    transition:
+        background-color 0.3s ease,
+        border-color 0.3s ease,
+        transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.button:hover .arrow {
+    border-color: transparent;
+
+    background: rgb(255 255 255 / 15%);
+
+    transform: translateX(4px);
+}
+
+/* =========================================================
+   CORNER DETAIL
+   ========================================================= */
+
+.corner {
+    position: absolute;
+    right: 28px;
+    bottom: 28px;
+    z-index: 2;
+
+    width: 52px;
+    height: 52px;
+
+    border-right: 1px solid rgb(255 255 255 / 12%);
+    border-bottom: 1px solid rgb(255 255 255 / 12%);
+
+    opacity: 0;
+
+    animation: cornerEntrance 700ms 850ms cubic-bezier(0.22, 1, 0.36, 1)
+        forwards;
+}
+
+:global(html[data-theme='dark']) .corner {
+    border-color: rgb(255 255 255 / 8%);
+}
+
+/* =========================================================
+   KEYFRAMES
+   ========================================================= */
+
+@keyframes cardEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(35px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes contentFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes buttonEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes decorEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(-50%) translateX(60px) scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(-50%) translateX(0) scale(1);
+    }
+}
+
+@keyframes glowEntrance {
+    from {
+        opacity: 0;
+        transform: translate(20px, -50%) scale(0.85);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(0, -50%) scale(1);
+    }
+}
+
+@keyframes dotEntrance {
+    from {
+        opacity: 0;
+        transform: scale(0);
+    }
+
+    to {
+        opacity: 0.8;
+        transform: scale(1);
+    }
+}
+
+@keyframes lineEntrance {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes lineReveal {
+    from {
+        transform: scaleX(0);
+    }
+
+    to {
+        transform: scaleX(1);
+    }
+}
+
+@keyframes ringFloat {
+    0%,
+    100% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(-8px, 6px);
+    }
+}
+
+@keyframes ringFloatReverse {
+    0%,
+    100% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(7px, -5px);
+    }
+}
+
+@keyframes dotFloat {
+    0%,
+    100% {
+        margin-top: 0;
+    }
+
+    50% {
+        margin-top: -8px;
+    }
+}
+
+@keyframes cornerEntrance {
+    from {
+        opacity: 0;
+        transform: translate(12px, 12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 768px) {
+    .section {
+        padding-bottom: 90px;
+    }
+
+    .card {
+        min-height: 360px;
+
+        padding: 48px 32px;
+    }
+
+    .decor {
+        right: -180px;
+    }
+
+    .glow {
+        right: -5%;
+    }
+
+    .gridLineHorizontal {
+        left: 25%;
+    }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+    .card {
+        min-height: 390px;
+
+        padding: 42px 24px;
+    }
+
+    .content {
+        max-width: 100%;
+    }
+
+    .description {
+        font-size: 14px;
+    }
+
+    .button {
+        width: 100%;
+
+        justify-content: space-between;
+    }
+
+    .decor {
+        right: -245px;
+
+        width: 400px;
+        height: 400px;
+    }
+
+    .glow {
+        right: -30%;
+
+        width: 300px;
+        height: 300px;
+    }
+
+    .gridLineHorizontal {
+        left: 0;
+    }
+
+    .gridLineVertical {
+        right: 18%;
+    }
+
+    .corner {
+        right: 18px;
+        bottom: 18px;
+
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    .card,
+    .content,
+    .eyebrow,
+    .title,
+    .description,
+    .button,
+    .decor,
+    .glow,
+    .ring,
+    .dot,
+    .gridLineHorizontal,
+    .gridLineVertical,
+    .eyebrowLine,
+    .corner {
+        animation: none;
+    }
+
+    .card,
+    .eyebrow,
+    .title,
+    .description,
+    .button,
+    .dot,
+    .gridLineHorizontal,
+    .gridLineVertical,
+    .corner {
+        opacity: 1;
+    }
+
+    .decor {
+        opacity: 1;
+
+        transform: translateY(-50%);
+    }
+
+    .glow {
+        opacity: 1;
+
+        transform: translate(0, -50%) scale(1);
+    }
+
+    .eyebrowLine {
+        transform: scaleX(1);
+    }
+
+    .button,
+    .arrow {
+        transition: none;
+    }
+
+    .button:hover {
+        transform: none;
+    }
+
+    .button:hover .arrow {
+        transform: none;
+    }
+}

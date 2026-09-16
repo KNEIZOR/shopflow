@@ -22,23 +22,37 @@ export type ProductCategoryResponse = {
     slug: string;
 };
 
-export type ProductResponse = {
+export type ProductTypeResponse = {
     id: string;
     name: string;
     slug: string;
+};
+
+export type ProductResponse = {
+    id: string;
+
+    name: string;
+
+    slug: string;
+
     description: string | null;
 
     price: string;
+
     currency: CurrencyCode;
 
     status: 'DRAFT' | 'ACTIVE' | 'ARCHIVED';
 
     category: ProductCategoryResponse;
 
+    productType: ProductTypeResponse | null;
+
     images: ProductImageResponse[];
+
     variants: ProductVariantResponse[];
 
     createdAt: Date;
+
     updatedAt: Date;
 };
 

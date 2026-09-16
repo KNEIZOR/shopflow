@@ -8,7 +8,7 @@ import {
     updateProductSchema,
 } from './products.schema';
 
-import * as productsService from './products.service';
+import * as productService from './products.service';
 
 export const getProducts = async (
     req: Request,
@@ -18,7 +18,7 @@ export const getProducts = async (
     try {
         const query = productListQuerySchema.parse(req.query);
 
-        const products = await productsService.getProducts(query);
+        const products = await productService.getProducts(query);
 
         res.json({
             success: true,
@@ -44,7 +44,7 @@ export const getProductBySlug = async (
             })
             .parse(req.query);
 
-        const product = await productsService.getProductBySlug(
+        const product = await productService.getProductBySlug(
             slug,
             false,
             query.language,
@@ -75,7 +75,7 @@ export const getAdminProductBySlug = async (
             })
             .parse(req.query);
 
-        const product = await productsService.getProductBySlug(
+        const product = await productService.getProductBySlug(
             slug,
             true,
             query.language,
@@ -99,7 +99,7 @@ export const getAdminProducts = async (
     try {
         const query = productListQuerySchema.parse(req.query);
 
-        const products = await productsService.getProducts(query, true);
+        const products = await productService.getProducts(query, true);
 
         res.json({
             success: true,
@@ -118,7 +118,7 @@ export const createProduct = async (
     try {
         const input = createProductSchema.parse(req.body);
 
-        const product = await productsService.createProduct(input);
+        const product = await productService.createProduct(input);
 
         res.status(201).json({
             success: true,
@@ -139,7 +139,7 @@ export const updateProduct = async (
 
         const input = updateProductSchema.parse(req.body);
 
-        const product = await productsService.updateProduct(id, input);
+        const product = await productService.updateProduct(id, input);
 
         res.json({
             success: true,
@@ -158,7 +158,7 @@ export const deleteProduct = async (
     try {
         const { id } = productIdSchema.parse(req.params);
 
-        await productsService.deleteProduct(id);
+        await productService.deleteProduct(id);
 
         res.status(204).send();
     } catch (error) {

@@ -11,6 +11,10 @@ type ProductBasicInfoProps = {
     product: Product;
 };
 
+const getStatusTranslationKey = (status: Product['status']) => {
+    return `admin.products.status.${status.toLowerCase()}`;
+};
+
 export const ProductBasicInfo = ({ product }: ProductBasicInfoProps) => {
     const { t } = useTranslation();
 
@@ -81,14 +85,14 @@ export const ProductBasicInfo = ({ product }: ProductBasicInfoProps) => {
                 </div>
 
                 <div className={styles.infoRow}>
-                    <span>{t('admin.products.status')}</span>
+                    <span>{t('admin.products.status.label')}</span>
 
                     <span
                         className={`${styles.status} ${
                             styles[`status${product.status}`]
                         }`}
                     >
-                        {product.status}
+                        {t(getStatusTranslationKey(product.status))}
                     </span>
                 </div>
             </div>

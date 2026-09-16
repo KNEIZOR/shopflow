@@ -2,7 +2,63 @@
     "home": {
         "eyebrow": "Welcome to ShopFlow",
         "title": "Everything you need in one place",
-        "description": "Discover our products and enjoy a fast and secure shopping experience."
+        "description": "Discover our products and enjoy a fast and secure shopping experience.",
+        "catalogButton": "Browse catalog",
+        "stats": {
+            "products": "products",
+            "support": "support",
+            "secure": "secure shopping"
+        },
+        "categories": {
+            "eyebrow": "Categories",
+            "title": "Shop by category",
+            "description": "From flagship devices to everyday accessories — everything in one place.",
+            "viewAll": "View all",
+            "explore": "Explore",
+            "empty": "No categories available yet"
+        },
+        "newProducts": {
+            "eyebrow": "New arrivals",
+            "title": "New products",
+            "description": "Discover the latest products added to our catalog.",
+            "viewAll": "View all products",
+            "loading": "Loading products...",
+            "error": "Failed to load products.",
+            "empty": "No new products yet."
+        },
+        "benefits": {
+            "eyebrow": "Why ShopFlow",
+            "title": "Shopping should be simple",
+            "description": "We create a convenient shopping experience — from choosing a product to receiving your order.",
+            "items": {
+                "delivery": {
+                    "title": "Fast delivery",
+                    "description": "Get your orders quickly and conveniently."
+                },
+                "secure": {
+                    "title": "Secure payment",
+                    "description": "Protected payments powered by Stripe."
+                },
+                "returns": {
+                    "title": "Easy returns",
+                    "description": "A simple and convenient return process."
+                },
+                "support": {
+                    "title": "Support",
+                    "description": "We are here to help with any questions."
+                }
+            }
+        },
+        "cta": {
+            "eyebrow": "Start shopping",
+            "title": "Find what you really need",
+            "description": "Explore the ShopFlow catalog and find products that are right for you.",
+            "button": "Browse catalog"
+        },
+        "cards": {
+            "featured": "Featured",
+            "popular": "Popular"
+        }
     },
     "header": {
         "navigation": "Navigation",
@@ -15,7 +71,11 @@
         "switchToRussian": "Switch to Russian",
         "switchToEnglish": "Switch to English",
         "russian": "Russian",
-        "english": "English"
+        "english": "English",
+        "theme": {
+            "light": "Switch to light theme",
+            "dark": "Switch to dark theme"
+        }
     },
     "footer": {
         "description": "ShopFlow online store"
@@ -64,6 +124,22 @@
         "close": "Close"
     },
     "admin": {
+        "auth": {
+            "brandLabel": "Admin panel",
+            "eyebrow": "Secure sign in",
+            "title": "Admin sign in",
+            "description": "Sign in with an administrator account to manage your store.",
+            "email": "Email",
+            "emailPlaceholder": "admin@example.com",
+            "password": "Password",
+            "passwordPlaceholder": "Enter your password",
+            "signIn": "Sign in",
+            "signingIn": "Signing in...",
+            "backToStore": "Back to store",
+            "validation": "Enter your email and password.",
+            "invalidCredentials": "Invalid email or password.",
+            "accessDenied": "This account does not have access to the admin panel."
+        },
         "products": {
             "title": "Products",
             "basicInfo": "Basic information",
@@ -106,7 +182,132 @@
             "imagesDescription": "Manage product images.",
             "addImage": "Add image",
             "imageLimit": "The image limit has been reached.",
-            "noImages": "This product has no images yet."
+            "noImages": "This product has no images yet.",
+            "list": {
+                "eyebrow": "Catalog",
+                "description": "Manage products, prices, categories and statuses.",
+                "create": "Add product",
+                "edit": "Edit",
+                "delete": "Delete",
+                "deleting": "Deleting...",
+                "deleteConfirm": "Delete product “{{name}}”?",
+                "deleteSuccess": "Product deleted successfully.",
+                "emptyTitle": "No products yet",
+                "emptyDescription": "Create your first product or change the filters.",
+                "filters": {
+                    "search": "Search",
+                    "searchPlaceholder": "Name or description...",
+                    "category": "Category",
+                    "allCategories": "All categories",
+                    "status": "Status",
+                    "allStatuses": "All statuses",
+                    "sort": "Sort"
+                },
+                "sort": {
+                    "newest": "Newest first",
+                    "oldest": "Oldest first",
+                    "priceAsc": "Price: low to high",
+                    "priceDesc": "Price: high to low",
+                    "nameAsc": "Name: A–Z",
+                    "nameDesc": "Name: Z–A"
+                },
+                "table": {
+                    "product": "Product",
+                    "category": "Category",
+                    "price": "Price",
+                    "status": "Status",
+                    "variants": "Variants",
+                    "actions": "Actions"
+                },
+                "pagination": {
+                    "info": "Page {{page}} of {{totalPages}} · {{total}} total",
+                    "previous": "Previous",
+                    "next": "Next"
+                }
+            },
+            "status": {
+                "active": "Active",
+                "draft": "Draft",
+                "archived": "Archived"
+            },
+            "create": {
+                "eyebrow": "New product",
+                "title": "Create product",
+                "description": "Create the basic product information. After saving, you can add images, variants, translations and prices.",
+                "back": "Back to products",
+                "basic": {
+                    "eyebrow": "Basic information",
+                    "title": "Product details"
+                },
+                "catalog": {
+                    "eyebrow": "Catalog",
+                    "title": "Category and price"
+                },
+                "fields": {
+                    "name": "Name",
+                    "namePlaceholder": "For example, iPhone 17 Pro",
+                    "slug": "Slug",
+                    "slugPlaceholder": "iphone-17-pro",
+                    "description": "Description",
+                    "descriptionPlaceholder": "Describe the product...",
+                    "category": "Category",
+                    "categoryPlaceholder": "Select a category",
+                    "status": "Status",
+                    "price": "Base price",
+                    "priceHelper": "The base price is stored in RUB. Additional currencies can be added after creating the product."
+                },
+                "validation": {
+                    "nameRequired": "Enter the product name.",
+                    "nameMin": "The name must contain at least 2 characters.",
+                    "slugRequired": "Enter the product slug.",
+                    "slugFormat": "The slug can contain only Latin letters, numbers and hyphens.",
+                    "priceRequired": "Enter a valid price.",
+                    "categoryRequired": "Select a category."
+                },
+                "cancel": "Cancel",
+                "submit": "Create product",
+                "creating": "Creating...",
+                "success": "Product created successfully."
+            }
+        },
+        "navigation": {
+            "title": "Navigation",
+            "dashboard": "Dashboard",
+            "products": "Products",
+            "categories": "Categories",
+            "orders": "Orders",
+            "users": "Users",
+            "reviews": "Reviews"
+        },
+        "sidebar": {
+            "label": "Admin panel",
+            "backToStore": "Back to store"
+        },
+        "header": {
+            "eyebrow": "Admin panel",
+            "title": "Administration",
+            "admin": "Administrator",
+            "role": "Administrator",
+            "logout": "Sign out",
+            "loggingOut": "Signing out..."
+        },
+        "dashboard": {
+            "eyebrow": "Overview",
+            "title": "Welcome to ShopFlow",
+            "description": "Manage your store, products, orders and users from one place.",
+            "stats": {
+                "products": "Products",
+                "orders": "Orders",
+                "users": "Users",
+                "revenue": "Revenue"
+            },
+            "recentOrders": "Recent orders",
+            "noRecentOrders": "There are no recent orders yet.",
+            "quickActions": "Quick actions",
+            "actions": {
+                "products": "Manage products",
+                "categories": "Manage categories"
+            }
         }
     }
 }

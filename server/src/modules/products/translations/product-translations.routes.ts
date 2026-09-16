@@ -10,7 +10,9 @@ import {
     upsertProductTranslation,
 } from './product-translations.controller';
 
-const router = Router();
+const router = Router({
+    mergeParams: true,
+});
 
 router.use(requireAuth, requireAdmin);
 

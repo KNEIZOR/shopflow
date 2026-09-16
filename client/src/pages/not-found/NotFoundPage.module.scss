@@ -1,5 +1,11 @@
 .notFoundPage {
     padding: 120px 0;
+
+    color: var(--color-text);
+
+    transition:
+        background-color var(--transition-base),
+        color var(--transition-base);
 }
 
 .content {
@@ -9,56 +15,102 @@
 .code {
     margin: 0 0 16px;
 
-    color: #666666;
+    color: var(--color-accent);
 
     font-size: 14px;
     font-weight: 700;
 
+    line-height: 1.4;
     letter-spacing: 0.08em;
+
+    transition: color var(--transition-base);
 }
 
 .title {
     margin: 0;
 
+    color: var(--color-text);
+
     font-size: clamp(40px, 6vw, 64px);
     line-height: 1;
 
     letter-spacing: -0.04em;
+
+    transition: color var(--transition-base);
 }
 
 .description {
     margin: 24px 0 0;
 
-    color: #666666;
+    color: var(--color-text-secondary);
 
     font-size: 18px;
     line-height: 1.6;
+
+    transition: color var(--transition-base);
 }
 
 .link {
     display: inline-flex;
+    align-items: center;
+    justify-content: center;
 
     margin-top: 32px;
     padding: 12px 20px;
 
-    border: 1px solid #111111;
+    border: 1px solid var(--color-accent);
     border-radius: 8px;
 
-    background: #111111;
-    color: #ffffff;
+    background: var(--color-accent);
+    color: var(--color-text-inverse);
 
     font-size: 15px;
     font-weight: 600;
 
-    transition: opacity 0.2s ease;
+    text-decoration: none;
+
+    transition:
+        background-color var(--transition-fast),
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast),
+        transform var(--transition-fast);
 
     &:hover {
-        opacity: 0.85;
+        border-color: var(--color-accent-hover);
+        background: var(--color-accent-hover);
+
+        box-shadow: var(--shadow-sm);
+
+        transform: translateY(-2px);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+
+    &:focus-visible {
+        outline: 3px solid var(--focus-ring);
+        outline-offset: 3px;
     }
 }
 
 @media (max-width: 640px) {
     .notFoundPage {
         padding: 80px 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .notFoundPage,
+    .code,
+    .title,
+    .description,
+    .link {
+        transition: none;
+    }
+
+    .link:hover,
+    .link:active {
+        transform: none;
     }
 }

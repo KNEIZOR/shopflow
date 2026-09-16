@@ -1,0 +1,209 @@
+.sidebar {
+    position: fixed;
+    z-index: 20;
+    top: 0;
+    bottom: 0;
+    left: 0;
+
+    width: 250px;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 24px 16px;
+
+    background: var(--admin-sidebar-bg, #1c1b19);
+    color: var(--admin-sidebar-text, #ffffff);
+
+    border-right: 1px solid var(--admin-sidebar-border, rgb(255 255 255 / 6%));
+
+    transition:
+        background-color var(--transition-base),
+        border-color var(--transition-base),
+        color var(--transition-base);
+}
+
+.brand {
+    display: flex;
+
+    align-items: center;
+    gap: 12px;
+
+    padding: 4px 8px 28px;
+}
+
+.brandMark {
+    display: flex;
+
+    width: 38px;
+    height: 38px;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+
+    background: var(--color-accent);
+    color: var(--color-text-inverse);
+
+    font-size: 17px;
+    font-weight: 700;
+
+    box-shadow: 0 6px 18px rgb(0 0 0 / 16%);
+
+    transition:
+        background-color var(--transition-base),
+        color var(--transition-base),
+        box-shadow var(--transition-base);
+}
+
+.brandName {
+    display: block;
+
+    color: var(--admin-sidebar-text, #ffffff);
+
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.brandLabel {
+    display: block;
+
+    margin-top: 3px;
+
+    color: var(--admin-sidebar-text-muted, rgb(255 255 255 / 42%));
+
+    font-size: 11px;
+}
+
+.navigation {
+    flex: 1;
+
+    min-height: 0;
+}
+
+.navigationLabel {
+    margin: 0 10px 10px;
+
+    color: var(--admin-sidebar-label, rgb(255 255 255 / 35%));
+
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.links {
+    display: flex;
+
+    flex-direction: column;
+    gap: 4px;
+}
+
+.link,
+.storeLink {
+    display: flex;
+
+    align-items: center;
+    gap: 12px;
+
+    min-height: 44px;
+
+    padding: 0 12px;
+
+    border-radius: 8px;
+
+    color: var(--admin-sidebar-link, rgb(255 255 255 / 58%));
+
+    font-size: 13px;
+    font-weight: 500;
+
+    text-decoration: none;
+
+    transition:
+        background-color var(--transition-fast),
+        color var(--transition-fast),
+        transform var(--transition-fast);
+}
+
+.link svg,
+.storeLink svg {
+    width: 19px;
+    height: 19px;
+
+    flex-shrink: 0;
+
+    transition:
+        color var(--transition-fast),
+        transform var(--transition-fast);
+}
+
+.link:hover,
+.storeLink:hover {
+    background: var(--admin-sidebar-hover, rgb(255 255 255 / 6%));
+    color: var(--admin-sidebar-text, #ffffff);
+}
+
+.link:hover svg,
+.storeLink:hover svg {
+    transform: translateX(1px);
+}
+
+.link.active {
+    background: var(--admin-sidebar-active-bg, rgb(169 120 77 / 18%));
+    color: var(--admin-sidebar-active-text, var(--color-accent));
+}
+
+.link.active svg {
+    color: var(--admin-sidebar-active-text, var(--color-accent));
+}
+
+.storeLink {
+    margin-top: 16px;
+
+    padding-top: 20px;
+
+    border-top: 1px solid var(--admin-sidebar-divider, rgb(255 255 255 / 8%));
+
+    border-radius: 0;
+}
+
+.storeLink:hover {
+    background: transparent;
+    color: var(--admin-sidebar-active-text, var(--color-accent));
+}
+
+.storeLink:hover svg {
+    transform: translateX(2px);
+}
+
+.link:focus-visible,
+.storeLink:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+    .sidebar {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sidebar,
+    .brandMark,
+    .link,
+    .storeLink,
+    .link svg,
+    .storeLink svg {
+        transition: none;
+    }
+
+    .link:hover svg,
+    .storeLink:hover svg {
+        transform: none;
+    }
+}

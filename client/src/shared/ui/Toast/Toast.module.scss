@@ -1,11 +1,13 @@
 .container {
     position: fixed;
     z-index: 9999;
+
     top: 20px;
     right: 20px;
 
     display: flex;
     flex-direction: column;
+
     gap: 10px;
 
     width: min(400px, calc(100vw - 40px));
@@ -17,6 +19,7 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+
     gap: 16px;
 
     padding: 14px 16px;
@@ -24,18 +27,26 @@
     border: 1px solid;
     border-radius: 12px;
 
-    background: #fff;
+    background: var(--color-surface-elevated);
+    color: var(--color-text);
 
-    box-shadow: 0 10px 30px rgb(0 0 0 / 10%);
+    box-shadow: var(--shadow-lg);
 
     pointer-events: auto;
 
     animation: toastEnter 0.2s ease-out;
+
+    transition:
+        background-color var(--transition-base),
+        border-color var(--transition-base),
+        color var(--transition-base),
+        box-shadow var(--transition-base);
 }
 
 .content {
     display: flex;
     align-items: flex-start;
+
     gap: 10px;
 
     min-width: 0;
@@ -55,6 +66,11 @@
 
     font-size: 13px;
     font-weight: 700;
+    line-height: 1;
+
+    transition:
+        background-color var(--transition-base),
+        color var(--transition-base);
 }
 
 .message {
@@ -62,12 +78,20 @@
 
     overflow-wrap: anywhere;
 
+    color: var(--color-text);
+
     font-size: 14px;
     line-height: 1.45;
+
+    transition: color var(--transition-base);
 }
 
 .closeButton {
+    display: inline-flex;
     flex: 0 0 auto;
+
+    align-items: center;
+    justify-content: center;
 
     width: 24px;
     height: 24px;
@@ -79,44 +103,90 @@
 
     background: transparent;
 
-    color: #77736d;
+    color: var(--color-text-muted);
 
     font-size: 20px;
     line-height: 1;
 
     cursor: pointer;
+
+    transition:
+        background-color var(--transition-fast),
+        color var(--transition-fast),
+        transform var(--transition-fast);
+
+    &:hover {
+        background: var(--color-surface-secondary);
+        color: var(--color-text);
+    }
+
+    &:focus-visible {
+        outline: 3px solid var(--focus-ring);
+        outline-offset: 2px;
+    }
+
+    &:active {
+        transform: scale(0.92);
+    }
 }
 
-.closeButton:hover {
-    background: #f3f1ed;
-}
+/* =========================================================
+   SUCCESS
+   ========================================================= */
 
 .success {
-    border-color: #c8e6c9;
+    border-color: color-mix(
+        in srgb,
+        var(--color-success) 42%,
+        var(--color-border)
+    );
 }
 
 .success .icon {
-    background: #e8f5e9;
-    color: #2e7d32;
+    background: color-mix(in srgb, var(--color-success) 16%, transparent);
+
+    color: var(--color-success);
 }
 
+/* =========================================================
+   ERROR
+   ========================================================= */
+
 .error {
-    border-color: #efcaca;
+    border-color: color-mix(
+        in srgb,
+        var(--color-danger) 42%,
+        var(--color-border)
+    );
 }
 
 .error .icon {
-    background: #fbeaea;
-    color: #a04444;
+    background: color-mix(in srgb, var(--color-danger) 16%, transparent);
+
+    color: var(--color-danger);
 }
 
+/* =========================================================
+   INFO
+   ========================================================= */
+
 .info {
-    border-color: #d8d0c7;
+    border-color: color-mix(
+        in srgb,
+        var(--color-info) 38%,
+        var(--color-border)
+    );
 }
 
 .info .icon {
-    background: #f3f1ed;
-    color: #77736d;
+    background: color-mix(in srgb, var(--color-info) 14%, transparent);
+
+    color: var(--color-info);
 }
+
+/* =========================================================
+   ANIMATION
+   ========================================================= */
 
 @keyframes toastEnter {
     from {
@@ -130,6 +200,10 @@
     }
 }
 
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
 @media (max-width: 640px) {
     .container {
         top: 12px;
@@ -140,5 +214,27 @@
 
     .toast {
         padding: 12px 14px;
+    }
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    .toast {
+        animation: none;
+
+        transition: none;
+    }
+
+    .icon,
+    .message,
+    .closeButton {
+        transition: none;
+    }
+
+    .closeButton:active {
+        transform: none;
     }
 }
