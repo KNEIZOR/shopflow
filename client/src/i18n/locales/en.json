@@ -121,7 +121,9 @@
         "delete": "Delete",
         "edit": "Edit",
         "cancel": "Cancel",
-        "close": "Close"
+        "close": "Close",
+        "enabled": "Enabled",
+        "disabled": "Disabled"
     },
     "admin": {
         "auth": {
@@ -140,6 +142,125 @@
             "invalidCredentials": "Invalid email or password.",
             "accessDenied": "This account does not have access to the admin panel."
         },
+        "productTypes": {
+            "eyebrow": "Catalog configuration",
+            "title": "Product types",
+            "description": "Define reusable product types and their attributes.",
+            "create": "Add product type",
+            "deleting": "Deleting...",
+            "retry": "Try again",
+            "deleteConfirm": "Delete product type “{{name}}”?",
+            "emptyTitle": "No product types yet",
+            "emptyDescription": "Create your first product type to define reusable product attributes.",
+            "attributeCount_one": "{{count}} attribute",
+            "attributeCount_other": "{{count}} attributes",
+            "errors": {
+                "load": "Failed to load product types.",
+                "save": "Failed to save the product type.",
+                "delete": "Failed to delete the product type."
+            },
+            "validation": {
+                "nameMin": "The name must contain at least 2 characters.",
+                "slugRequired": "Enter the product type slug.",
+                "slugFormat": "The slug can contain only lowercase Latin letters, numbers and hyphens."
+            },
+            "form": {
+                "createEyebrow": "New product type",
+                "createTitle": "Create product type",
+                "editEyebrow": "Product type",
+                "editTitle": "Edit product type"
+            },
+            "fields": {
+                "name": "Name",
+                "namePlaceholder": "For example, Smartphone",
+                "slug": "Slug",
+                "slugPlaceholder": "smartphone",
+                "description": "Description",
+                "descriptionPlaceholder": "Describe what this product type is used for..."
+            },
+            "attributes": {
+                "title": "Product attributes",
+                "description": "Define reusable attributes for products of this type.",
+                "create": "Add attribute",
+                "required": "Required",
+                "deleting": "Deleting...",
+                "retry": "Try again",
+                "deleteConfirm": "Delete attribute “{{name}}”?",
+                "emptyTitle": "No attributes yet",
+                "emptyDescription": "Add attributes that products of this type should use.",
+                "errors": {
+                    "load": "Failed to load product attributes.",
+                    "save": "Failed to save the product attribute.",
+                    "delete": "Failed to delete the product attribute."
+                },
+                "options": {
+                    "title": "Options",
+                    "description": "Manage available choices for this select attribute.",
+                    "create": "Add option",
+                    "deleting": "Deleting...",
+                    "retry": "Retry",
+                    "deleteConfirm": "Are you sure you want to delete the option \"{{name}}\"?",
+                    "empty": "No options have been added yet.",
+                    "errors": {
+                        "load": "Failed to load options.",
+                        "save": "Failed to save the option.",
+                        "delete": "Failed to delete the option."
+                    },
+                    "validation": {
+                        "valueRequired": "Value is required.",
+                        "labelRequired": "Label is required.",
+                        "position": "Position must be a non-negative integer."
+                    },
+                    "fields": {
+                        "value": "Value",
+                        "valuePlaceholder": "e.g. black",
+                        "label": "Label",
+                        "labelPlaceholder": "e.g. Black",
+                        "position": "Position"
+                    }
+                },
+                "validation": {
+                    "nameMin": "The name must contain at least 2 characters.",
+                    "slugRequired": "Enter the attribute slug.",
+                    "slugFormat": "The slug can contain only lowercase Latin letters, numbers and hyphens.",
+                    "position": "Position must be a non-negative integer."
+                },
+                "form": {
+                    "createEyebrow": "New attribute",
+                    "createTitle": "Create product attribute",
+                    "editEyebrow": "Product attribute",
+                    "editTitle": "Edit product attribute"
+                },
+                "fields": {
+                    "name": "Name",
+                    "namePlaceholder": "For example, Screen size",
+                    "slug": "Slug",
+                    "slugPlaceholder": "screen-size",
+                    "type": "Type",
+                    "scope": "Scope",
+                    "position": "Position",
+                    "required": "Required attribute",
+                    "description": "Description",
+                    "descriptionPlaceholder": "Describe what this attribute represents..."
+                },
+                "types": {
+                    "TEXT": "Text",
+                    "NUMBER": "Number",
+                    "BOOLEAN": "Yes / No",
+                    "SELECT": "Select",
+                    "unknown": "Unknown"
+                },
+                "scopes": {
+                    "PRODUCT": "Product",
+                    "VARIANT": "Variant",
+                    "BOTH": "Product and variant"
+                }
+            },
+            "list": {
+                "title": "Product types",
+                "description": "Reusable definitions used by products in your catalog."
+            }
+        },
         "products": {
             "title": "Products",
             "basicInfo": "Basic information",
@@ -147,7 +268,13 @@
             "name": "Name",
             "slug": "Slug",
             "category": "Category",
-            "status": "Status",
+            "images": "Images",
+            "status": {
+                "label": "Status",
+                "active": "Active",
+                "draft": "Draft",
+                "archived": "Archived"
+            },
             "description": "Description",
             "currentPrice": "Current price",
             "productUpdated": "Product updated successfully",
@@ -175,6 +302,29 @@
             "variantPrices": "Variant prices",
             "variantPricesDescription": "Variant prices in different currencies.",
 
+            "variantAttributes": "Variant attributes",
+            "variantAttributesDescription": "Manage attributes specific to this variant.",
+            "variantAttributesUpdated": "Variant attributes updated successfully.",
+            "variantAttributeRequired": "The attribute “{{name}}” is required.",
+            "variantAttributeNumberInvalid": "Enter a valid number for “{{name}}”.",
+
+            "attributes": {
+                "title": "Product attributes",
+                "description": "Manage attributes specific to this product.",
+                "empty": "This product type has no product attributes.",
+                "selectProductType": "Select a product type to manage attributes.",
+                "required": "Required",
+                "invalidNumber": "Enter a valid number.",
+                "saved": "Product attributes saved successfully.",
+                "selectPlaceholder": "Select a value",
+                "types": {
+                    "text": "Text",
+                    "number": "Number",
+                    "boolean": "Yes / No",
+                    "select": "Select"
+                }
+            },
+
             "imageUrl": "Image URL",
             "imageAlt": "Image description",
             "imageAltPlaceholder": "Enter image description",
@@ -183,6 +333,7 @@
             "addImage": "Add image",
             "imageLimit": "The image limit has been reached.",
             "noImages": "This product has no images yet.",
+
             "list": {
                 "eyebrow": "Catalog",
                 "description": "Manage products, prices, categories and statuses.",
@@ -225,11 +376,14 @@
                     "next": "Next"
                 }
             },
+
             "status": {
+                "label": "Status",
                 "active": "Active",
                 "draft": "Draft",
                 "archived": "Archived"
             },
+
             "create": {
                 "eyebrow": "New product",
                 "title": "Create product",
@@ -270,6 +424,7 @@
                 "success": "Product created successfully."
             }
         },
+
         "navigation": {
             "title": "Navigation",
             "dashboard": "Dashboard",
@@ -277,12 +432,15 @@
             "categories": "Categories",
             "orders": "Orders",
             "users": "Users",
-            "reviews": "Reviews"
+            "reviews": "Reviews",
+            "productTypes": "Product type"
         },
+
         "sidebar": {
             "label": "Admin panel",
             "backToStore": "Back to store"
         },
+
         "header": {
             "eyebrow": "Admin panel",
             "title": "Administration",
@@ -291,6 +449,7 @@
             "logout": "Sign out",
             "loggingOut": "Signing out..."
         },
+
         "dashboard": {
             "eyebrow": "Overview",
             "title": "Welcome to ShopFlow",

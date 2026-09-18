@@ -44,12 +44,17 @@ export const ProductImages = ({ productId }: ProductImagesProps) => {
     }
 
     const images = data.items;
+    const hasReachedLimit = images.length >= MAX_IMAGES;
 
     const handleDelete = async (imageId: string) => {
         await deleteImage.mutateAsync({
             productId,
             imageId,
         });
+    };
+
+    const handleCreateClose = () => {
+        setIsCreating(false);
     };
 
     return (
@@ -65,10 +70,11 @@ export const ProductImages = ({ productId }: ProductImagesProps) => {
                     </p>
                 </div>
 
-                {!isCreating && images.length < MAX_IMAGES && (
+                {!isCreating && !hasReachedLimit && (
                     <button
                         type="button"
                         className={styles.addButton}
+                        disabled={deleteImage.isPending}
                         onClick={() => setIsCreating(true)}
                     >
                         {t('admin.products.addImage')}
@@ -76,7 +82,7 @@ export const ProductImages = ({ productId }: ProductImagesProps) => {
                 )}
             </div>
 
-            {images.length >= MAX_IMAGES && (
+            {hasReachedLimit && (
                 <p className={styles.limitMessage}>
                     {t('admin.products.imageLimit')}
                 </p>
@@ -87,7 +93,7 @@ export const ProductImages = ({ productId }: ProductImagesProps) => {
                     <ProductImageForm
                         productId={productId}
                         nextPosition={images.length}
-                        onClose={() => setIsCreating(false)}
+                        onClose={handleCreateClose}
                     />
                 </div>
             )}

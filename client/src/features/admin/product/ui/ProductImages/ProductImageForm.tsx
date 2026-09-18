@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useAddProductImage, useUpdateProductImage } from '../../model';
 
 import type { ProductImage } from '@/entities/product';
+import { useToast } from '@/shared/ui/Toast';
 
 import styles from './ProductImages.module.scss';
 
@@ -21,14 +22,13 @@ export const ProductImageForm = ({
     onClose,
 }: ProductImageFormProps) => {
     const { t } = useTranslation();
+    const { showToast } = useToast();
 
     const addImage = useAddProductImage();
     const updateImage = useUpdateProductImage();
 
     const [url, setUrl] = useState(image?.url ?? '');
-
     const [alt, setAlt] = useState(image?.alt ?? '');
-
     const [position, setPosition] = useState(
         String(image?.position ?? nextPosition),
     );
@@ -40,43 +40,72 @@ export const ProductImageForm = ({
 
         const trimmedUrl = url.trim();
         const trimmedAlt = alt.trim();
+        const trimmedPosition = position.trim();
 
-        if (!trimmedUrl) {
+        if (!trimmedUrl || !trimmedPosition) {
             return;
         }
 
-        const parsedPosition = Number(position);
+        try {
+            const parsedUrl = new URL(trimmedUrl);
+
+            if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+                return;
+            }
+        } catch {
+            return;
+        }
+
+        const parsedPosition = Number(trimmedPosition);
 
         if (!Number.isInteger(parsedPosition) || parsedPosition < 0) {
             return;
         }
 
-        if (image) {
-            await updateImage.mutateAsync({
+        try {
+            if (image) {
+                await updateImage.mutateAsync({
+                    productId,
+                    imageId: image.id,
+                    input: {
+                        url: trimmedUrl,
+                        alt: trimmedAlt || null,
+                        position: parsedPosition,
+                    },
+                });
+
+                showToast({
+                    type: 'success',
+                    message: t('admin.products.imageUpdated'),
+                });
+
+                onClose();
+
+                return;
+            }
+
+            await addImage.mutateAsync({
                 productId,
-                imageId: image.id,
                 input: {
                     url: trimmedUrl,
-                    alt: trimmedAlt || null,
+                    alt: trimmedAlt || undefined,
                     position: parsedPosition,
                 },
             });
 
+            showToast({
+                type: 'success',
+                message: t('admin.products.imageAdded'),
+            });
+
             onClose();
-
-            return;
+        } catch (error) {
+            showToast({
+                type: 'error',
+                message:
+                    error instanceof Error ? error.message : t('common.error'),
+            });
         }
-
-        await addImage.mutateAsync({
-            productId,
-            input: {
-                url: trimmedUrl,
-                alt: trimmedAlt || undefined,
-                position: parsedPosition,
-            },
-        });
-
-        onClose();
     };
 
     return (
@@ -126,7 +155,7 @@ export const ProductImageForm = ({
                 <button
                     type="submit"
                     className={styles.saveButton}
-                    disabled={isSaving || !url.trim()}
+                    disabled={isSaving || !url.trim() || !position.trim()}
                 >
                     {isSaving ? t('common.saving') : t('common.save')}
                 </button>

@@ -1,7 +1,7 @@
 import { ProductAttributeScope, ProductAttributeType } from '@prisma/client';
 
-import { prisma } from '../../../lib/prisma';
 import { AppError } from '../../../errors/app-error';
+import { prisma } from '../../../lib/prisma';
 
 export type CreateProductTypeAttributeInput = {
     name: string;
@@ -103,6 +103,55 @@ const getAttributeBySlug = async (slug: string) => {
     });
 };
 
+const mapProductTypeAttribute = (
+    relation: Awaited<
+        ReturnType<typeof prisma.productTypeAttribute.findFirst>
+    > & {
+        attribute: {
+            id: string;
+            name: string;
+            slug: string;
+            description: string | null;
+            type: ProductAttributeType;
+            scope: ProductAttributeScope;
+        };
+        options: Array<{
+            id: string;
+            value: string;
+            label: string;
+            position: number;
+        }>;
+    },
+) => ({
+    id: relation.id,
+
+    attributeId: relation.attributeId,
+
+    name: relation.attribute.name,
+
+    slug: relation.attribute.slug,
+
+    description: relation.attribute.description,
+
+    type: relation.attribute.type,
+
+    scope: relation.attribute.scope,
+
+    isRequired: relation.isRequired,
+
+    position: relation.position,
+
+    options: relation.options.map((option) => ({
+        id: option.id,
+
+        value: option.value,
+
+        label: option.label,
+
+        position: option.position,
+    })),
+});
+
 export const createProductTypeAttribute = async (
     productTypeId: string,
     input: CreateProductTypeAttributeInput,
@@ -176,13 +225,13 @@ export const createProductTypeAttribute = async (
         });
     });
 
-    return productTypeAttribute;
+    return mapProductTypeAttribute(productTypeAttribute);
 };
 
 export const getProductTypeAttributes = async (productTypeId: string) => {
     await ensureProductTypeExists(productTypeId);
 
-    return prisma.productTypeAttribute.findMany({
+    const attributes = await prisma.productTypeAttribute.findMany({
         where: {
             productTypeId,
         },
@@ -193,6 +242,8 @@ export const getProductTypeAttributes = async (productTypeId: string) => {
             position: 'asc',
         },
     });
+
+    return attributes.map(mapProductTypeAttribute);
 };
 
 export const getProductTypeAttributeById = async (
@@ -216,7 +267,7 @@ export const getProductTypeAttributeById = async (
         );
     }
 
-    return productTypeAttribute;
+    return mapProductTypeAttribute(productTypeAttribute);
 };
 
 export const updateProductTypeAttribute = async (
@@ -224,10 +275,23 @@ export const updateProductTypeAttribute = async (
     productTypeAttributeId: string,
     input: UpdateProductTypeAttributeInput,
 ) => {
-    const existingProductTypeAttribute = await getProductTypeAttributeById(
-        productTypeId,
-        productTypeAttributeId,
-    );
+    const existingProductTypeAttribute =
+        await prisma.productTypeAttribute.findFirst({
+            where: {
+                id: productTypeAttributeId,
+                productTypeId,
+            },
+
+            include: attributeInclude,
+        });
+
+    if (!existingProductTypeAttribute) {
+        throw new AppError(
+            404,
+            'PRODUCT_TYPE_ATTRIBUTE_NOT_FOUND',
+            'Product type attribute not found',
+        );
+    }
 
     if (input.slug !== undefined) {
         await ensureAttributeSlugAvailable(
@@ -334,10 +398,22 @@ export const deleteProductTypeAttribute = async (
     productTypeId: string,
     productTypeAttributeId: string,
 ): Promise<void> => {
-    const productTypeAttribute = await getProductTypeAttributeById(
-        productTypeId,
-        productTypeAttributeId,
-    );
+    const productTypeAttribute = await prisma.productTypeAttribute.findFirst({
+        where: {
+            id: productTypeAttributeId,
+            productTypeId,
+        },
+
+        include: attributeInclude,
+    });
+
+    if (!productTypeAttribute) {
+        throw new AppError(
+            404,
+            'PRODUCT_TYPE_ATTRIBUTE_NOT_FOUND',
+            'Product type attribute not found',
+        );
+    }
 
     const attributeUsage = await prisma.productAttributeValue.findFirst({
         where: {

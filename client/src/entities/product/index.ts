@@ -59,6 +59,20 @@ export type {
     UpsertProductVariantPriceInput,
 } from './api/product-variant-prices-api';
 
+export {
+    getProductVariantAttributes,
+    createProductVariantAttributeValue,
+    updateProductVariantAttributeValue,
+    deleteProductVariantAttributeValue,
+} from './api/product-variant-attributes-api';
+
+export type {
+    ProductVariantAttributeValue,
+    ProductVariantAttributesResponse,
+    CreateProductVariantAttributeValueInput,
+    UpdateProductVariantAttributeValueInput,
+} from './api/product-variant-attributes-api';
+
 export type {
     Product,
     ProductCategory,
@@ -66,6 +80,7 @@ export type {
     ProductListResponse,
     ProductStatus,
     ProductVariant,
+    ProductType,
 } from './model/types';
 
 export { ProductCard, ProductGrid } from './ui';
@@ -95,3 +110,17 @@ export type {
     CreateProductImageInput,
     UpdateProductImageInput,
 } from './api/product-images-api';
+
+export {
+    getProductAttributes,
+    createProductAttributeValue,
+    deleteProductAttributeValue,
+    updateProductAttributeValue,
+} from './api/product-attributes-api';
+
+export type {
+    CreateProductAttributeValueInput,
+    ProductAttributeValue,
+    ProductAttributesResponse,
+    UpdateProductAttributeValueInput,
+} from './api/product-attributes-api';

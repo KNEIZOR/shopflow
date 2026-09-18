@@ -2,9 +2,10 @@
     grid-column: 1 / -1;
     min-width: 0;
     padding: 24px;
-    border: 1px solid #e7e3dd;
+    border: 1px solid var(--color-border);
     border-radius: 16px;
-    background: #fff;
+    background: var(--color-surface);
+    color: var(--color-text);
 }
 
 .header {
@@ -23,7 +24,7 @@
 
 .description {
     margin: 8px 0 0;
-    color: #77736d;
+    color: var(--color-text-muted);
     font-size: 14px;
     line-height: 1.5;
 }
@@ -38,32 +39,51 @@
     border-radius: 8px;
     cursor: pointer;
     font: inherit;
+    transition:
+        background 0.15s ease,
+        color 0.15s ease,
+        opacity 0.15s ease;
 }
 
 .addButton {
     flex-shrink: 0;
-    background: #a15f3c;
-    color: #fff;
+    background: var(--color-accent);
+    color: var(--color-text-inverse);
 }
 
-.editButton {
-    background: #f3f1ed;
-    color: #55514c;
+.addButton:hover:not(:disabled),
+.saveButton:hover:not(:disabled) {
+    background: var(--color-accent-hover);
+}
+
+.editButton,
+.cancelButton {
+    background: var(--color-surface-secondary);
+    color: var(--color-text-secondary);
+}
+
+.editButton:hover:not(:disabled),
+.cancelButton:hover:not(:disabled) {
+    background: var(--color-surface-elevated);
+    color: var(--color-text);
 }
 
 .deleteButton {
-    background: #f3e8e5;
-    color: #a04444;
+    background: var(--color-danger-soft);
+    color: var(--color-danger);
+}
+
+.deleteButton:hover:not(:disabled) {
+    background: color-mix(
+        in srgb,
+        var(--color-danger) 16%,
+        var(--color-surface-secondary)
+    );
 }
 
 .saveButton {
-    background: #a15f3c;
-    color: #fff;
-}
-
-.cancelButton {
-    background: #f3f1ed;
-    color: #55514c;
+    background: var(--color-accent);
+    color: var(--color-text-inverse);
 }
 
 .addButton:disabled,
@@ -91,9 +111,9 @@
     align-items: center;
     gap: 20px;
     padding: 16px;
-    border: 1px solid #eeeae4;
+    border: 1px solid var(--color-border);
     border-radius: 12px;
-    background: #faf9f7;
+    background: var(--color-surface-secondary);
 }
 
 .previewWrapper {
@@ -101,7 +121,7 @@
     height: 90px;
     overflow: hidden;
     border-radius: 8px;
-    background: #f3f1ed;
+    background: var(--color-surface-elevated);
 }
 
 .preview {
@@ -116,13 +136,14 @@
 }
 
 .imageHeader {
+    color: var(--color-text);
     font-size: 14px;
 }
 
 .imageUrl {
     margin: 7px 0 0;
     overflow: hidden;
-    color: #77736d;
+    color: var(--color-text-muted);
     font-size: 12px;
     line-height: 1.4;
     text-overflow: ellipsis;
@@ -131,7 +152,8 @@
 
 .imageAlt {
     margin: 5px 0 0;
-    color: #55514c;
+    overflow-wrap: anywhere;
+    color: var(--color-text-secondary);
     font-size: 13px;
 }
 
@@ -146,31 +168,32 @@
     align-items: center;
     justify-content: center;
     min-height: 120px;
-    border: 1px dashed #ddd8d0;
+    border: 1px dashed var(--color-border-strong);
     border-radius: 12px;
-    background: #faf9f7;
+    background: var(--color-surface-secondary);
 }
 
 .empty p {
     margin: 0;
-    color: #77736d;
+    color: var(--color-text-muted);
     font-size: 14px;
 }
 
 .limitMessage {
     margin: 0 0 16px;
     padding: 10px 12px;
+    border: 1px solid var(--color-border);
     border-radius: 8px;
-    background: #f3f1ed;
-    color: #77736d;
+    background: var(--color-surface-secondary);
+    color: var(--color-text-muted);
     font-size: 13px;
 }
 
 .form {
     padding: 20px;
-    border: 1px solid #eeeae4;
+    border: 1px solid var(--color-border);
     border-radius: 12px;
-    background: #faf9f7;
+    background: var(--color-surface-secondary);
 }
 
 .formGrid {
@@ -189,7 +212,7 @@
 }
 
 .field > span {
-    color: #55514c;
+    color: var(--color-text-secondary);
     font-size: 13px;
     font-weight: 600;
 }
@@ -198,17 +221,25 @@
     width: 100%;
     box-sizing: border-box;
     padding: 11px 12px;
-    border: 1px solid #ddd8d0;
+    border: 1px solid var(--color-border-strong);
     border-radius: 8px;
     outline: none;
-    background: #fff;
-    color: inherit;
+    background: var(--color-surface);
+    color: var(--color-text);
     font: inherit;
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.field input::placeholder {
+    color: var(--color-text-muted);
 }
 
 .field input:focus {
-    border-color: #a15f3c;
-    box-shadow: 0 0 0 3px rgb(161 95 60 / 10%);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px
+        color-mix(in srgb, var(--color-accent) 10%, transparent);
 }
 
 .field input:disabled {
@@ -225,12 +256,12 @@
 
 .muted {
     margin: 0;
-    color: #77736d;
+    color: var(--color-text-muted);
 }
 
 .error {
     margin: 0;
-    color: #a04444;
+    color: var(--color-danger);
 }
 
 @media (max-width: 800px) {

@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { ProductVariant } from '@/entities/product';
+import { CURRENCIES, type CurrencyCode } from '@/shared/config/currencies';
 
+import { ProductVariantAttributes } from './ProductVariantAttributes/ProductVariantAttributes';
 import { ProductVariantForm } from './ProductVariantForm';
 import { ProductVariantPrices } from './ProductVariantPrices/ProductVariantPrices';
 
@@ -10,13 +12,21 @@ import styles from './ProductVariants.module.scss';
 
 type ProductVariantItemProps = {
     productId: string;
+    productTypeId: string | null;
     variant: ProductVariant;
     isDeleting: boolean;
     onDelete: () => Promise<void>;
 };
 
+const getCurrencySymbol = (currency: CurrencyCode): string => {
+    return (
+        CURRENCIES.find((item) => item.code === currency)?.symbol ?? currency
+    );
+};
+
 export const ProductVariantItem = ({
     productId,
+    productTypeId,
     variant,
     isDeleting,
     onDelete,
@@ -24,6 +34,8 @@ export const ProductVariantItem = ({
     const { t } = useTranslation();
 
     const [isEditing, setIsEditing] = useState(false);
+    const [isPricesOpen, setIsPricesOpen] = useState(false);
+    const [isAttributesOpen, setIsAttributesOpen] = useState(false);
 
     if (isEditing) {
         return (
@@ -57,7 +69,8 @@ export const ProductVariantItem = ({
 
                     {variant.price !== null && (
                         <div className={styles.variantPrice}>
-                            {variant.price} {variant.currency}
+                            {variant.price}{' '}
+                            {getCurrencySymbol(variant.currency)}
                         </div>
                     )}
                 </div>
@@ -82,10 +95,74 @@ export const ProductVariantItem = ({
                     </button>
                 </div>
 
-                <ProductVariantPrices
-                    productId={productId}
-                    variantId={variant.id}
-                />
+                <div className={styles.expandActions}>
+                    <button
+                        type="button"
+                        className={`${styles.expandButton} ${
+                            isPricesOpen ? styles.expandButtonActive : ''
+                        }`}
+                        aria-expanded={isPricesOpen}
+                        onClick={() => setIsPricesOpen((current) => !current)}
+                    >
+                        <span>{t('admin.products.variantPrices')}</span>
+
+                        <span
+                            className={`${styles.expandIcon} ${
+                                isPricesOpen ? styles.expandIconOpen : ''
+                            }`}
+                            aria-hidden="true"
+                        >
+                            ›
+                        </span>
+                    </button>
+
+                    {productTypeId && (
+                        <button
+                            type="button"
+                            className={`${styles.expandButton} ${
+                                isAttributesOpen
+                                    ? styles.expandButtonActive
+                                    : ''
+                            }`}
+                            aria-expanded={isAttributesOpen}
+                            onClick={() =>
+                                setIsAttributesOpen((current) => !current)
+                            }
+                        >
+                            <span>{t('admin.products.variantAttributes')}</span>
+
+                            <span
+                                className={`${styles.expandIcon} ${
+                                    isAttributesOpen
+                                        ? styles.expandIconOpen
+                                        : ''
+                                }`}
+                                aria-hidden="true"
+                            >
+                                ›
+                            </span>
+                        </button>
+                    )}
+                </div>
+
+                {isPricesOpen && (
+                    <div className={styles.expandableSection}>
+                        <ProductVariantPrices
+                            productId={productId}
+                            variantId={variant.id}
+                        />
+                    </div>
+                )}
+
+                {isAttributesOpen && productTypeId && (
+                    <div className={styles.expandableSection}>
+                        <ProductVariantAttributes
+                            productId={productId}
+                            variantId={variant.id}
+                            productTypeId={productTypeId}
+                        />
+                    </div>
+                )}
             </div>
         </article>
     );

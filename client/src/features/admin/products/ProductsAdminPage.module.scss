@@ -14,7 +14,7 @@
 
 .eyebrow {
     margin: 0 0 6px;
-    color: #a15f3c;
+    color: var(--color-accent);
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.12em;
@@ -23,7 +23,7 @@
 
 .title {
     margin: 0;
-    color: #292725;
+    color: var(--color-text);
     font-size: 30px;
     line-height: 1.15;
 }
@@ -31,7 +31,7 @@
 .description {
     max-width: 620px;
     margin: 8px 0 0;
-    color: #77736d;
+    color: var(--color-text-secondary);
     font-size: 14px;
     line-height: 1.6;
 }
@@ -43,10 +43,10 @@
     justify-content: center;
     min-height: 42px;
     padding: 0 18px;
-    border: 1px solid #a15f3c;
+    border: 1px solid var(--color-accent);
     border-radius: 8px;
-    background: #a15f3c;
-    color: #fff;
+    background: var(--color-accent);
+    color: var(--color-text-inverse);
     font: inherit;
     font-size: 13px;
     font-weight: 700;
@@ -59,8 +59,8 @@
 
 .createButton:hover,
 .emptyButton:hover {
-    background: #8f5132;
-    border-color: #8f5132;
+    background: var(--color-accent-hover);
+    border-color: var(--color-accent-hover);
     transform: translateY(-1px);
 }
 
@@ -69,9 +69,9 @@
     grid-template-columns: minmax(220px, 2fr) repeat(3, minmax(150px, 1fr));
     gap: 14px;
     padding: 18px;
-    border: 1px solid #e7e2db;
+    border: 1px solid var(--color-border);
     border-radius: 10px;
-    background: #fff;
+    background: var(--color-surface);
 }
 
 .field,
@@ -82,7 +82,7 @@
 }
 
 .label {
-    color: #6d6861;
+    color: var(--color-text-secondary);
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.04em;
@@ -94,30 +94,42 @@
     width: 100%;
     min-height: 40px;
     padding: 0 12px;
-    border: 1px solid #ddd7cf;
+    border: 1px solid var(--color-border-strong);
     border-radius: 7px;
     outline: none;
-    background: #fff;
-    color: #292725;
+    background: var(--color-surface-elevated);
+    color: var(--color-text);
     font: inherit;
     font-size: 13px;
     transition:
         border-color 0.2s ease,
-        box-shadow 0.2s ease;
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.input::placeholder {
+    color: var(--color-text-muted);
 }
 
 .input:focus,
 .select:focus {
-    border-color: #a15f3c;
-    box-shadow: 0 0 0 3px rgba(161, 95, 60, 0.1);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px
+        color-mix(in srgb, var(--color-accent) 12%, transparent);
+}
+
+.input:disabled,
+.select:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
 }
 
 .card {
     min-width: 0;
     overflow: hidden;
-    border: 1px solid #e7e2db;
+    border: 1px solid var(--color-border);
     border-radius: 10px;
-    background: #fff;
+    background: var(--color-surface);
 }
 
 .state {
@@ -125,7 +137,7 @@
     display: grid;
     place-items: center;
     padding: 32px;
-    color: #77736d;
+    color: var(--color-text-secondary);
     font-size: 14px;
 }
 
@@ -141,14 +153,14 @@
 
 .emptyTitle {
     margin: 0;
-    color: #292725;
+    color: var(--color-text);
     font-size: 20px;
 }
 
 .emptyDescription {
     max-width: 440px;
     margin: 8px 0 20px;
-    color: #77736d;
+    color: var(--color-text-secondary);
     font-size: 14px;
     line-height: 1.6;
 }
@@ -166,9 +178,9 @@
 
 .table th {
     padding: 14px 16px;
-    border-bottom: 1px solid #e7e2db;
-    background: #faf8f5;
-    color: #77736d;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface-secondary);
+    color: var(--color-text-muted);
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.07em;
@@ -179,8 +191,8 @@
 
 .table td {
     padding: 14px 16px;
-    border-bottom: 1px solid #eeeae4;
-    color: #4e4a45;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
     font-size: 13px;
     vertical-align: middle;
 }
@@ -194,7 +206,7 @@
 }
 
 .table tbody tr:hover {
-    background: #fcfaf8;
+    background: var(--color-surface-secondary);
 }
 
 .productCell {
@@ -211,16 +223,22 @@
     overflow: hidden;
     display: grid;
     place-items: center;
-    border: 1px solid #e5dfd8;
+    border: 1px solid var(--color-border);
     border-radius: 7px;
-    background: #f7f4f0;
-    color: #aaa39a;
+    background: var(--color-surface-secondary);
+    color: var(--color-text-muted);
 }
 
 .image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+.imagePlaceholder {
+    color: var(--color-text-muted);
+    font-size: 16px;
+    line-height: 1;
 }
 
 .productInfo {
@@ -232,7 +250,7 @@
 
 .productInfo strong {
     overflow: hidden;
-    color: #292725;
+    color: var(--color-text);
     font-size: 13px;
     font-weight: 700;
     text-overflow: ellipsis;
@@ -241,25 +259,25 @@
 
 .productInfo span {
     overflow: hidden;
-    color: #aaa39a;
+    color: var(--color-text-muted);
     font-size: 11px;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .category {
-    color: #625d56;
+    color: var(--color-text-secondary);
     white-space: nowrap;
 }
 
 .price {
-    color: #292725;
+    color: var(--color-text);
     font-size: 13px;
 }
 
 .currency {
     margin-left: 4px;
-    color: #99928a;
+    color: var(--color-text-muted);
     font-size: 11px;
 }
 
@@ -277,23 +295,35 @@
 }
 
 .statusACTIVE {
-    background: #edf7ef;
-    color: #397348;
+    background: color-mix(
+        in srgb,
+        var(--color-success) 14%,
+        var(--color-surface-secondary)
+    );
+    color: var(--color-success);
 }
 
 .statusDRAFT {
-    background: #f5f1e8;
-    color: #866b31;
+    background: color-mix(
+        in srgb,
+        var(--color-warning) 14%,
+        var(--color-surface-secondary)
+    );
+    color: var(--color-warning);
 }
 
 .statusARCHIVED {
-    background: #f3eeee;
-    color: #865b5b;
+    background: color-mix(
+        in srgb,
+        var(--color-danger) 14%,
+        var(--color-surface-secondary)
+    );
+    color: var(--color-danger);
 }
 
 .statusDefault {
-    background: #f2f0ed;
-    color: #6d6861;
+    background: var(--color-surface-secondary);
+    color: var(--color-text-secondary);
 }
 
 .variantCount {
@@ -304,8 +334,8 @@
     justify-content: center;
     padding: 0 7px;
     border-radius: 999px;
-    background: #f5f2ee;
-    color: #625d56;
+    background: var(--color-surface-secondary);
+    color: var(--color-text-secondary);
     font-size: 11px;
     font-weight: 700;
 }
@@ -342,26 +372,31 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #ddd7cf;
-    background: #fff;
-    color: #625d56;
+    border: 1px solid var(--color-border-strong);
+    background: var(--color-surface-elevated);
+    color: var(--color-text-secondary);
 }
 
 .editButton:hover {
-    border-color: #a15f3c;
-    background: #faf7f4;
-    color: #a15f3c;
+    border-color: var(--color-accent);
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
 }
 
 .deleteButton {
-    border: 1px solid #ead8d8;
-    background: #fff;
-    color: #a05d5d;
+    border: 1px solid
+        color-mix(in srgb, var(--color-danger) 30%, var(--color-border));
+    background: var(--color-surface-elevated);
+    color: var(--color-danger);
 }
 
 .deleteButton:hover:not(:disabled) {
-    border-color: #c98d8d;
-    background: #fbf4f4;
+    border-color: var(--color-danger);
+    background: color-mix(
+        in srgb,
+        var(--color-danger) 10%,
+        var(--color-surface-elevated)
+    );
 }
 
 .deleteButton:disabled {
@@ -375,11 +410,11 @@
     justify-content: space-between;
     gap: 16px;
     padding: 16px 18px;
-    border-top: 1px solid #e7e2db;
+    border-top: 1px solid var(--color-border);
 }
 
 .paginationInfo {
-    color: #77736d;
+    color: var(--color-text-secondary);
     font-size: 12px;
 }
 
@@ -401,15 +436,16 @@
 }
 
 .pageButton {
-    border: 1px solid #ddd7cf;
-    background: #fff;
-    color: #625d56;
+    border: 1px solid var(--color-border-strong);
+    background: var(--color-surface-elevated);
+    color: var(--color-text-secondary);
     cursor: pointer;
 }
 
 .pageButton:hover:not(:disabled) {
-    border-color: #a15f3c;
-    color: #a15f3c;
+    border-color: var(--color-accent);
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
 }
 
 .pageButton:disabled {
@@ -421,9 +457,9 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #a15f3c;
-    background: #a15f3c;
-    color: #fff;
+    border: 1px solid var(--color-accent);
+    background: var(--color-accent);
+    color: var(--color-text-inverse);
 }
 
 @media (max-width: 1100px) {

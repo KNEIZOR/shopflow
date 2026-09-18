@@ -1,8 +1,8 @@
 import { apiRequest } from '@/shared/api';
 
-import type { Product, ProductListResponse } from '../model/types';
-
 import type { CurrencyCode } from '@/shared/config/currencies';
+
+import type { Product, ProductListResponse } from '../model/types';
 
 export type ProductStatus = 'DRAFT' | 'ACTIVE' | 'ARCHIVED';
 
@@ -37,9 +37,18 @@ export type CreateProductInput = {
     price: number;
     status?: ProductStatus;
     categoryId: string;
+    productTypeId?: string;
 };
 
-export type UpdateProductInput = Partial<CreateProductInput>;
+export type UpdateProductInput = {
+    name?: string;
+    slug?: string;
+    description?: string;
+    price?: number;
+    status?: ProductStatus;
+    categoryId?: string;
+    productTypeId?: string | null;
+};
 
 const buildQueryString = (params: Record<string, unknown> = {}): string => {
     const searchParams = new URLSearchParams();

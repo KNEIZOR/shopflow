@@ -27,6 +27,13 @@ const ADMIN_NAVIGATION = [
         end: false,
     },
     {
+        id: 'product-types',
+        path: '/admin/product-types',
+        labelKey: 'admin.navigation.productTypes',
+        icon: ProductsIcon,
+        end: false,
+    },
+    {
         id: 'categories',
         path: '/admin/categories',
         labelKey: 'admin.navigation.categories',

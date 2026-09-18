@@ -47,3 +47,14 @@ export {
     type UpsertProductVariantPriceInput,
 } from './product-variant-prices-api';
 
+export {
+    getProductAttributes,
+    createProductAttributeValue,
+    deleteProductAttributeValue,
+    updateProductAttributeValue,
+    type CreateProductAttributeValueInput,
+    type ProductAttributeValue,
+    type ProductAttributesResponse,
+    type UpdateProductAttributeValueInput,
+} from './product-attributes-api';
+

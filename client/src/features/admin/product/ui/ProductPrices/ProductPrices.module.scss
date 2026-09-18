@@ -1,8 +1,10 @@
 .card {
+    min-width: 0;
     padding: 24px;
-    border: 1px solid #e7e3dd;
+    border: 1px solid var(--color-border);
     border-radius: 16px;
-    background: #fff;
+    background: var(--color-surface);
+    color: var(--color-text);
 }
 
 .header {
@@ -17,8 +19,9 @@
 
 .description {
     margin: 8px 0 0;
-    color: #77736d;
+    color: var(--color-text-muted);
     font-size: 14px;
+    line-height: 1.5;
 }
 
 .list {
@@ -32,7 +35,7 @@
     justify-content: space-between;
     gap: 24px;
     padding: 18px 0;
-    border-bottom: 1px solid #eeeae4;
+    border-bottom: 1px solid var(--color-border);
 }
 
 .row:last-child {
@@ -52,8 +55,10 @@
     justify-content: center;
     width: 40px;
     height: 40px;
+    flex-shrink: 0;
     border-radius: 10px;
-    background: #f3f1ed;
+    background: var(--color-surface-secondary);
+    color: var(--color-text);
     font-size: 18px;
     font-weight: 700;
 }
@@ -64,8 +69,12 @@
     gap: 3px;
 }
 
+.currencyInfo strong {
+    font-size: 14px;
+}
+
 .default {
-    color: #77736d;
+    color: var(--color-text-muted);
     font-size: 11px;
 }
 
@@ -81,21 +90,44 @@
     gap: 8px;
     min-width: 150px;
     padding: 0 12px;
-    border: 1px solid #ddd8d0;
+    border: 1px solid var(--color-border-strong);
     border-radius: 8px;
+    background: var(--color-surface);
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.inputWrapper:focus-within {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px
+        color-mix(in srgb, var(--color-accent) 10%, transparent);
 }
 
 .inputWrapper span {
-    color: #77736d;
+    flex-shrink: 0;
+    color: var(--color-text-muted);
+    font-size: 13px;
 }
 
 .input {
     width: 100%;
+    min-width: 0;
     padding: 10px 0;
     border: 0;
     outline: 0;
     background: transparent;
+    color: var(--color-text);
     font: inherit;
+}
+
+.input::placeholder {
+    color: var(--color-text-muted);
+}
+
+.input::-webkit-inner-spin-button,
+.input::-webkit-outer-spin-button {
+    margin: 0;
 }
 
 .saveButton,
@@ -105,16 +137,36 @@
     border-radius: 8px;
     cursor: pointer;
     font: inherit;
+    transition:
+        background 0.15s ease,
+        color 0.15s ease,
+        opacity 0.15s ease;
 }
 
 .saveButton {
-    background: #a15f3c;
-    color: #fff;
+    background: var(--color-accent);
+    color: var(--color-text-inverse);
+}
+
+.saveButton:hover:not(:disabled) {
+    background: var(--color-accent-hover);
 }
 
 .deleteButton {
-    background: #f3e8e5;
-    color: #a04444;
+    background: color-mix(
+        in srgb,
+        var(--color-danger) 12%,
+        var(--color-surface-secondary)
+    );
+    color: var(--color-danger);
+}
+
+.deleteButton:hover:not(:disabled) {
+    background: color-mix(
+        in srgb,
+        var(--color-danger) 18%,
+        var(--color-surface-secondary)
+    );
 }
 
 .saveButton:disabled,
@@ -125,18 +177,27 @@
 
 .muted {
     margin: 0;
-    color: #77736d;
+    color: var(--color-text-muted);
 }
 
 .error {
     margin: 0;
-    color: #a04444;
+    color: var(--color-danger);
 }
 
 @media (max-width: 700px) {
+    .card {
+        padding: 20px;
+    }
+
     .row {
         align-items: stretch;
         flex-direction: column;
+        gap: 14px;
+    }
+
+    .currency {
+        min-width: 0;
     }
 
     .controls {
@@ -145,5 +206,32 @@
 
     .inputWrapper {
         flex: 1;
+        min-width: 0;
+    }
+
+    .saveButton,
+    .deleteButton {
+        flex-shrink: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        padding: 18px;
+    }
+
+    .controls {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .inputWrapper {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .saveButton,
+    .deleteButton {
+        width: 100%;
     }
 }

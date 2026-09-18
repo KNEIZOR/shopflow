@@ -80,7 +80,7 @@ const getStatusClassName = (
 
 export const ProductsAdminPage = () => {
     const { t } = useTranslation();
-    const { language, currency } = useLocale();
+    const { language } = useLocale();
     const { showToast } = useToast();
 
     const [search, setSearch] = useState('');
@@ -88,6 +88,9 @@ export const ProductsAdminPage = () => {
     const [status, setStatus] = useState<ProductStatus | ''>('');
     const [sort, setSort] = useState<SortOption>('newest');
     const [page, setPage] = useState(1);
+    const [deletingProductId, setDeletingProductId] = useState<string | null>(
+        null,
+    );
 
     const categoriesQuery = useCategories(language);
 
@@ -104,7 +107,6 @@ export const ProductsAdminPage = () => {
     );
 
     const productsQuery = useAdminProducts(queryParams);
-
     const deleteProductMutation = useDeleteProduct();
 
     const products = productsQuery.data?.items ?? [];
@@ -141,6 +143,8 @@ export const ProductsAdminPage = () => {
             return;
         }
 
+        setDeletingProductId(productId);
+
         try {
             await deleteProductMutation.mutateAsync(productId);
 
@@ -158,6 +162,8 @@ export const ProductsAdminPage = () => {
                 message:
                     error instanceof Error ? error.message : t('common.error'),
             });
+        } finally {
+            setDeletingProductId(null);
         }
     };
 
@@ -203,6 +209,7 @@ export const ProductsAdminPage = () => {
                             'admin.products.list.filters.searchPlaceholder',
                         )}
                         className={styles.input}
+                        autoComplete="off"
                     />
                 </div>
 
@@ -218,6 +225,7 @@ export const ProductsAdminPage = () => {
                             handleCategoryChange(event.target.value)
                         }
                         className={styles.select}
+                        disabled={categoriesQuery.isLoading}
                     >
                         <option value="">
                             {t('admin.products.list.filters.allCategories')}
@@ -316,26 +324,31 @@ export const ProductsAdminPage = () => {
                                                 'admin.products.list.table.product',
                                             )}
                                         </th>
+
                                         <th>
                                             {t(
                                                 'admin.products.list.table.category',
                                             )}
                                         </th>
+
                                         <th>
                                             {t(
                                                 'admin.products.list.table.price',
                                             )}
                                         </th>
+
                                         <th>
                                             {t(
                                                 'admin.products.list.table.status',
                                             )}
                                         </th>
+
                                         <th>
                                             {t(
                                                 'admin.products.list.table.variants',
                                             )}
                                         </th>
+
                                         <th className={styles.actionsHeader}>
                                             {t(
                                                 'admin.products.list.table.actions',
@@ -347,6 +360,8 @@ export const ProductsAdminPage = () => {
                                 <tbody>
                                     {products.map((product) => {
                                         const image = product.images[0];
+                                        const isDeleting =
+                                            deletingProductId === product.id;
 
                                         return (
                                             <tr key={product.id}>
@@ -370,9 +385,18 @@ export const ProductsAdminPage = () => {
                                                                         image.alt ??
                                                                         product.name
                                                                     }
+                                                                    loading="lazy"
+                                                                    decoding="async"
                                                                 />
                                                             ) : (
-                                                                <span>—</span>
+                                                                <span
+                                                                    className={
+                                                                        styles.imagePlaceholder
+                                                                    }
+                                                                    aria-hidden="true"
+                                                                >
+                                                                    —
+                                                                </span>
                                                             )}
                                                         </div>
 
@@ -414,7 +438,7 @@ export const ProductsAdminPage = () => {
                                                             styles.currency
                                                         }
                                                     >
-                                                        {currency}
+                                                        {product.currency}
                                                     </span>
                                                 </td>
 
@@ -455,6 +479,12 @@ export const ProductsAdminPage = () => {
                                                             className={
                                                                 styles.editButton
                                                             }
+                                                            aria-label={t(
+                                                                'admin.products.list.editProduct',
+                                                                {
+                                                                    name: product.name,
+                                                                },
+                                                            )}
                                                         >
                                                             {t(
                                                                 'admin.products.list.edit',
@@ -475,8 +505,14 @@ export const ProductsAdminPage = () => {
                                                                     product.name,
                                                                 )
                                                             }
+                                                            aria-label={t(
+                                                                'admin.products.list.deleteProduct',
+                                                                {
+                                                                    name: product.name,
+                                                                },
+                                                            )}
                                                         >
-                                                            {deleteProductMutation.isPending
+                                                            {isDeleting
                                                                 ? t(
                                                                       'admin.products.list.deleting',
                                                                   )

@@ -41,6 +41,8 @@ export const ProductImageItem = ({
                     src={image.url}
                     alt={image.alt ?? ''}
                     className={styles.preview}
+                    loading="lazy"
+                    decoding="async"
                 />
             </div>
 

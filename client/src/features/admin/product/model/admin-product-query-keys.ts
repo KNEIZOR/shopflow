@@ -10,4 +10,10 @@ export const adminProductQueryKeys = {
 
     detail: (slug: string, language: string, currency: string) =>
         [...adminProductQueryKeys.details(), slug, language, currency] as const,
+
+    attributes: (productId: string) =>
+        [...adminProductQueryKeys.all, 'attributes', productId] as const,
+
+    attributeList: (productId: string) =>
+        [...adminProductQueryKeys.attributes(productId), 'list'] as const,
 };

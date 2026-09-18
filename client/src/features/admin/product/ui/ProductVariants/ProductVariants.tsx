@@ -10,9 +10,13 @@ import styles from './ProductVariants.module.scss';
 
 type ProductVariantsProps = {
     productId: string;
+    productTypeId: string | null;
 };
 
-export const ProductVariants = ({ productId }: ProductVariantsProps) => {
+export const ProductVariants = ({
+    productId,
+    productTypeId,
+}: ProductVariantsProps) => {
     const { t } = useTranslation();
 
     const { data, isLoading, isError } = useProductVariants(productId);
@@ -41,7 +45,7 @@ export const ProductVariants = ({ productId }: ProductVariantsProps) => {
         );
     }
 
-    const handleDelete = async (variantId: string) => {
+    const handleDelete = async (variantId: string): Promise<void> => {
         await deleteVariant.mutateAsync({
             productId,
             variantId,
@@ -96,6 +100,7 @@ export const ProductVariants = ({ productId }: ProductVariantsProps) => {
                             <ProductVariantItem
                                 key={variant.id}
                                 productId={productId}
+                                productTypeId={productTypeId}
                                 variant={variant}
                                 isDeleting={deleteVariant.isPending}
                                 onDelete={() => handleDelete(variant.id)}

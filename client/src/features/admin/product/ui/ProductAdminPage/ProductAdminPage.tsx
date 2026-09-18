@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useAdminProduct } from '../../model';
 
+import { ProductAttributes } from '../ProductAttributes/ProductAttributes';
 import { ProductBasicInfo } from '../ProductBasicInfo/ProductBasicInfo';
 import { ProductImages } from '../ProductImages/ProductImages';
 import { ProductPrices } from '../ProductPrices/ProductPrices';
@@ -72,7 +73,15 @@ export const ProductAdminPage = () => {
 
                 <ProductPrices productId={product.id} />
 
-                <ProductVariants productId={product.id} />
+                <ProductAttributes
+                    productId={product.id}
+                    productTypeId={product.productType?.id ?? null}
+                />
+
+                <ProductVariants
+                    productId={product.id}
+                    productTypeId={product.productType?.id ?? null}
+                />
 
                 <ProductImages productId={product.id} />
             </div>

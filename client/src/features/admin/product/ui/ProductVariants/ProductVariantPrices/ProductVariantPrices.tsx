@@ -1,5 +1,5 @@
-import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
     useDeleteProductVariantPrice,
@@ -7,18 +7,10 @@ import {
     useUpsertProductVariantPrice,
 } from '../../../model';
 
-import type { CurrencyCode } from '@/shared/config/currencies';
+import { CURRENCIES, type CurrencyCode } from '@/shared/config/currencies';
+import { useToast } from '@/shared/ui/Toast';
 
 import styles from './ProductVariantPrices.module.scss';
-
-const CURRENCIES: CurrencyCode[] = ['RUB', 'EUR', 'USD', 'AMD'];
-
-const CURRENCY_SYMBOLS: Record<CurrencyCode, string> = {
-    RUB: '₽',
-    EUR: '€',
-    USD: '$',
-    AMD: '֏',
-};
 
 type ProductVariantPricesProps = {
     productId: string;
@@ -30,6 +22,7 @@ export const ProductVariantPrices = ({
     variantId,
 }: ProductVariantPricesProps) => {
     const { t } = useTranslation();
+    const { showToast } = useToast();
 
     const { data, isLoading, isError } = useProductVariantPrices(
         productId,
@@ -37,15 +30,14 @@ export const ProductVariantPrices = ({
     );
 
     const upsertPrice = useUpsertProductVariantPrice();
-
     const deletePrice = useDeleteProductVariantPrice();
 
     if (isLoading) {
         return (
             <section className={styles.card}>
-                <h4 className={styles.title}>
+                <h3 className={styles.title}>
                     {t('admin.products.variantPrices')}
-                </h4>
+                </h3>
 
                 <p className={styles.muted}>{t('common.loading')}</p>
             </section>
@@ -55,9 +47,9 @@ export const ProductVariantPrices = ({
     if (isError || !data) {
         return (
             <section className={styles.card}>
-                <h4 className={styles.title}>
+                <h3 className={styles.title}>
                     {t('admin.products.variantPrices')}
-                </h4>
+                </h3>
 
                 <p className={styles.error}>{t('common.error')}</p>
             </section>
@@ -68,13 +60,82 @@ export const ProductVariantPrices = ({
         data.items.map((price) => [price.currency, price]),
     );
 
+    const handleSave = async (
+        currency: CurrencyCode,
+        amount: string,
+    ): Promise<void> => {
+        const trimmedAmount = amount.trim();
+
+        if (!trimmedAmount) {
+            return;
+        }
+
+        const parsedAmount = Number(trimmedAmount);
+
+        if (!Number.isFinite(parsedAmount) || parsedAmount < 0) {
+            showToast({
+                type: 'error',
+                message: t('admin.products.invalidPrice'),
+            });
+
+            return;
+        }
+
+        try {
+            await upsertPrice.mutateAsync({
+                productId,
+                variantId,
+                currency,
+                input: {
+                    amount: parsedAmount,
+                },
+            });
+
+            showToast({
+                type: 'success',
+                message: t('admin.products.priceUpdated'),
+            });
+        } catch (error) {
+            showToast({
+                type: 'error',
+                message:
+                    error instanceof Error ? error.message : t('common.error'),
+            });
+        }
+    };
+
+    const handleDelete = async (currency: CurrencyCode): Promise<void> => {
+        if (currency === 'RUB') {
+            return;
+        }
+
+        try {
+            await deletePrice.mutateAsync({
+                productId,
+                variantId,
+                currency,
+            });
+
+            showToast({
+                type: 'success',
+                message: t('admin.products.priceDeleted'),
+            });
+        } catch (error) {
+            showToast({
+                type: 'error',
+                message:
+                    error instanceof Error ? error.message : t('common.error'),
+            });
+        }
+    };
+
     return (
         <section className={styles.card}>
             <div className={styles.header}>
                 <div>
-                    <h4 className={styles.title}>
+                    <h3 className={styles.title}>
                         {t('admin.products.variantPrices')}
-                    </h4>
+                    </h3>
 
                     <p className={styles.description}>
                         {t('admin.products.variantPricesDescription')}
@@ -83,39 +144,20 @@ export const ProductVariantPrices = ({
             </div>
 
             <div className={styles.list}>
-                {CURRENCIES.map((currency) => {
+                {CURRENCIES.map(({ code: currency, symbol }) => {
                     const price = pricesByCurrency.get(currency);
 
                     return (
-                        <VariantPriceRow
-                            key={currency}
+                        <PriceRow
+                            key={`${currency}-${price?.amount ?? 'empty'}`}
                             currency={currency}
                             amount={price?.amount ?? ''}
-                            symbol={CURRENCY_SYMBOLS[currency]}
+                            symbol={symbol}
                             isDefault={currency === 'RUB'}
                             isSaving={upsertPrice.isPending}
                             isDeleting={deletePrice.isPending}
-                            onSave={(amount) =>
-                                upsertPrice
-                                    .mutateAsync({
-                                        productId,
-                                        variantId,
-                                        currency,
-                                        input: {
-                                            amount,
-                                        },
-                                    })
-                                    .then(() => undefined)
-                            }
-                            onDelete={() =>
-                                deletePrice
-                                    .mutateAsync({
-                                        productId,
-                                        variantId,
-                                        currency,
-                                    })
-                                    .then(() => undefined)
-                            }
+                            onSave={(amount) => handleSave(currency, amount)}
+                            onDelete={() => handleDelete(currency)}
                         />
                     );
                 })}
@@ -124,18 +166,18 @@ export const ProductVariantPrices = ({
     );
 };
 
-type VariantPriceRowProps = {
+type PriceRowProps = {
     currency: CurrencyCode;
     amount: string;
     symbol: string;
     isDefault: boolean;
     isSaving: boolean;
     isDeleting: boolean;
-    onSave: (amount: number) => Promise<void>;
+    onSave: (amount: string) => Promise<void>;
     onDelete: () => Promise<void>;
 };
 
-const VariantPriceRow = ({
+const PriceRow = ({
     currency,
     amount,
     symbol,
@@ -144,27 +186,15 @@ const VariantPriceRow = ({
     isDeleting,
     onSave,
     onDelete,
-}: VariantPriceRowProps) => {
+}: PriceRowProps) => {
     const { t } = useTranslation();
 
     const [value, setValue] = useState(amount);
 
+    const hasValue = value.trim().length > 0;
+
     const handleSave = async () => {
-        const parsedValue = Number(value);
-
-        if (!Number.isFinite(parsedValue) || parsedValue < 0) {
-            return;
-        }
-
-        await onSave(parsedValue);
-    };
-
-    const handleDelete = async () => {
-        if (isDefault) {
-            return;
-        }
-
-        await onDelete();
+        await onSave(value);
     };
 
     return (
@@ -193,6 +223,7 @@ const VariantPriceRow = ({
                         onChange={(event) => setValue(event.target.value)}
                         disabled={isSaving || isDeleting}
                         className={styles.input}
+                        autoComplete="off"
                     />
 
                     <span>{symbol}</span>
@@ -201,7 +232,7 @@ const VariantPriceRow = ({
                 <button
                     type="button"
                     className={styles.saveButton}
-                    disabled={isSaving || isDeleting || !value.trim()}
+                    disabled={isSaving || isDeleting || !hasValue}
                     onClick={handleSave}
                 >
                     {isSaving ? t('common.saving') : t('common.save')}
@@ -212,7 +243,7 @@ const VariantPriceRow = ({
                         type="button"
                         className={styles.deleteButton}
                         disabled={isSaving || isDeleting}
-                        onClick={handleDelete}
+                        onClick={onDelete}
                     >
                         {t('common.delete')}
                     </button>

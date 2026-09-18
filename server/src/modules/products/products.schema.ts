@@ -11,17 +11,53 @@ const languageSchema = z
     .max(10)
     .regex(/^[a-z]{2}(?:-[A-Z]{2})?$/, 'Invalid language code');
 
-const positivePriceSchema = z.coerce
-    .number()
-    .finite()
-    .min(0)
-    .max(99999999.99)
-    .refine(
-        (value) => Number.isInteger(value * 100),
-        'Price must have no more than 2 decimal places',
-    );
+const positivePriceSchema = z
+    .union([z.number().finite(), z.string().trim().min(1)])
+    .transform((value, ctx) => {
+        const normalized =
+            typeof value === 'string'
+                ? value.replace(',', '.').trim()
+                : String(value);
 
-const productTypeIdOptionalSchema = z.string().trim().min(1).optional();
+        if (!/^\d+(?:\.\d{1,2})?$/.test(normalized)) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message:
+                    'Price must be a valid number with no more than 2 decimal places',
+            });
+
+            return z.NEVER;
+        }
+
+        const parsed = Number(normalized);
+
+        if (!Number.isFinite(parsed)) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'Price must be a finite number',
+            });
+
+            return z.NEVER;
+        }
+
+        if (parsed < 0 || parsed > 99999999.99) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'Price must be between 0 and 99999999.99',
+            });
+
+            return z.NEVER;
+        }
+
+        return parsed;
+    });
+
+const productTypeIdOptionalSchema = z
+    .string()
+    .trim()
+    .min(1)
+    .nullable()
+    .optional();
 
 export const createProductSchema = z.object({
     name: z.string().trim().min(2).max(200),

@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { useCategories } from '@/entities/category';
 import { useLocale } from '@/entities/locale';
 import type { Product, ProductStatus } from '@/entities/product';
+import type { ProductType } from '@/entities/product-type';
 import { useToast } from '@/shared/ui/Toast';
 
-import { useUpdateProduct } from '../../model';
+import { useProductTypes, useUpdateProduct } from '../../model';
 
 import styles from './ProductBasicInfo.module.scss';
 
@@ -15,10 +16,21 @@ type ProductBasicInfoFormProps = {
     onClose: () => void;
 };
 
+type FormErrors = {
+    name?: string;
+    slug?: string;
+    categoryId?: string;
+    productTypeId?: string;
+};
+
+type ProductTypeSelection = string | null;
+
 const PRODUCT_STATUSES: ProductStatus[] = ['DRAFT', 'ACTIVE', 'ARCHIVED'];
 
 const getStatusTranslationKey = (status: ProductStatus) =>
     `admin.products.status.${status.toLowerCase()}`;
+
+const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 export const ProductBasicInfoForm = ({
     product,
@@ -38,6 +50,14 @@ export const ProductBasicInfoForm = ({
         isError: isCategoriesError,
     } = useCategories(language);
 
+    const {
+        data: productTypesResponse,
+        isLoading: isProductTypesLoading,
+        isError: isProductTypesError,
+    } = useProductTypes();
+
+    const productTypes = productTypesResponse?.items ?? [];
+
     const [name, setName] = useState(product.name);
 
     const [slug, setSlug] = useState(product.slug);
@@ -48,6 +68,12 @@ export const ProductBasicInfoForm = ({
 
     const [categoryId, setCategoryId] = useState(product.category.id);
 
+    const [productTypeId, setProductTypeId] = useState<ProductTypeSelection>(
+        product.productType?.id ?? null,
+    );
+
+    const [errors, setErrors] = useState<FormErrors>({});
+
     const isSaving = updateProduct.isPending;
 
     const isCategorySelectionDisabled =
@@ -56,34 +82,134 @@ export const ProductBasicInfoForm = ({
         isCategoriesError ||
         categories.length === 0;
 
+    const isProductTypeSelectionDisabled =
+        isSaving || isProductTypesLoading || isProductTypesError;
+
+    const clearError = (field: keyof FormErrors) => {
+        setErrors((current) => {
+            if (!current[field]) {
+                return current;
+            }
+
+            const next = {
+                ...current,
+            };
+
+            delete next[field];
+
+            return next;
+        });
+    };
+
+    const handleNameChange = (value: string) => {
+        setName(value);
+        clearError('name');
+    };
+
+    const handleSlugChange = (value: string) => {
+        setSlug(value);
+        clearError('slug');
+    };
+
+    const handleCategoryChange = (value: string) => {
+        setCategoryId(value);
+        clearError('categoryId');
+    };
+
+    const handleProductTypeChange = (value: string) => {
+        setProductTypeId(value.trim() || null);
+
+        clearError('productTypeId');
+    };
+
+    const validate = (): FormErrors => {
+        const nextErrors: FormErrors = {};
+
+        const trimmedName = name.trim();
+
+        const trimmedSlug = slug.trim();
+
+        if (!trimmedName) {
+            nextErrors.name = t('admin.products.validation.nameRequired');
+        } else if (trimmedName.length < 2) {
+            nextErrors.name = t('admin.products.validation.nameMin');
+        }
+
+        if (!trimmedSlug) {
+            nextErrors.slug = t('admin.products.validation.slugRequired');
+        } else if (!SLUG_PATTERN.test(trimmedSlug)) {
+            nextErrors.slug = t('admin.products.validation.slugFormat');
+        }
+
+        if (!categoryId) {
+            nextErrors.categoryId = t(
+                'admin.products.validation.categoryRequired',
+            );
+        }
+
+        return nextErrors;
+    };
+
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        const trimmedName = name.trim();
-        const trimmedSlug = slug.trim();
-        const trimmedDescription = description.trim();
-
-        if (!trimmedName || !trimmedSlug || !categoryId) {
+        if (isSaving) {
             return;
         }
+
+        const validationErrors = validate();
+
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+
+            return;
+        }
+
+        const trimmedName = name.trim();
+
+        const trimmedSlug = slug.trim();
+
+        const trimmedDescription = description.trim();
 
         const selectedCategory = categories.find(
             (category) => category.id === categoryId,
         );
 
         if (!selectedCategory) {
+            setErrors({
+                categoryId: t('admin.products.validation.categoryRequired'),
+            });
+
+            return;
+        }
+
+        if (
+            productTypeId !== null &&
+            !productTypes.some(
+                (productType: ProductType) => productType.id === productTypeId,
+            )
+        ) {
+            setErrors({
+                productTypeId: t(
+                    'admin.products.validation.productTypeInvalid',
+                ),
+            });
+
             return;
         }
 
         try {
             await updateProduct.mutateAsync({
                 id: product.id,
+
                 input: {
                     name: trimmedName,
                     slug: trimmedSlug,
-                    description: trimmedDescription || undefined,
+                    description: trimmedDescription,
                     status,
                     categoryId,
+
+                    productTypeId: productTypeId,
                 },
             });
 
@@ -103,7 +229,7 @@ export const ProductBasicInfoForm = ({
     };
 
     return (
-        <form className={styles.form} onSubmit={handleSubmit}>
+        <form className={styles.form} onSubmit={handleSubmit} noValidate>
             <div className={styles.formGrid}>
                 <label className={`${styles.field} ${styles.fullWidth}`}>
                     <span>{t('admin.products.name')}</span>
@@ -111,10 +237,17 @@ export const ProductBasicInfoForm = ({
                     <input
                         type="text"
                         value={name}
-                        onChange={(event) => setName(event.target.value)}
+                        onChange={(event) =>
+                            handleNameChange(event.target.value)
+                        }
                         disabled={isSaving}
                         autoComplete="off"
+                        aria-invalid={Boolean(errors.name)}
                     />
+
+                    {errors.name && (
+                        <span className={styles.error}>{errors.name}</span>
+                    )}
                 </label>
 
                 <label className={`${styles.field} ${styles.fullWidth}`}>
@@ -123,10 +256,18 @@ export const ProductBasicInfoForm = ({
                     <input
                         type="text"
                         value={slug}
-                        onChange={(event) => setSlug(event.target.value)}
+                        onChange={(event) =>
+                            handleSlugChange(event.target.value)
+                        }
                         disabled={isSaving}
                         autoComplete="off"
+                        spellCheck={false}
+                        aria-invalid={Boolean(errors.slug)}
                     />
+
+                    {errors.slug && (
+                        <span className={styles.error}>{errors.slug}</span>
+                    )}
                 </label>
 
                 <label className={styles.field}>
@@ -134,8 +275,11 @@ export const ProductBasicInfoForm = ({
 
                     <select
                         value={categoryId}
-                        onChange={(event) => setCategoryId(event.target.value)}
+                        onChange={(event) =>
+                            handleCategoryChange(event.target.value)
+                        }
                         disabled={isCategorySelectionDisabled}
+                        aria-invalid={Boolean(errors.categoryId)}
                     >
                         {isCategoriesLoading && (
                             <option value="">{t('common.loading')}</option>
@@ -153,6 +297,58 @@ export const ProductBasicInfoForm = ({
                                 </option>
                             ))}
                     </select>
+
+                    {errors.categoryId && (
+                        <span className={styles.error}>
+                            {errors.categoryId}
+                        </span>
+                    )}
+                </label>
+
+                <label className={styles.field}>
+                    <span>{t('admin.products.productType')}</span>
+
+                    <select
+                        value={productTypeId ?? ''}
+                        onChange={(event) =>
+                            handleProductTypeChange(event.target.value)
+                        }
+                        disabled={isProductTypeSelectionDisabled}
+                        aria-invalid={Boolean(errors.productTypeId)}
+                    >
+                        <option value="">
+                            {t('admin.products.productTypePlaceholder')}
+                        </option>
+
+                        {isProductTypesLoading && (
+                            <option value="" disabled>
+                                {t('common.loading')}
+                            </option>
+                        )}
+
+                        {!isProductTypesLoading && isProductTypesError && (
+                            <option value="" disabled>
+                                {t('common.error')}
+                            </option>
+                        )}
+
+                        {!isProductTypesLoading &&
+                            !isProductTypesError &&
+                            productTypes.map((productType: ProductType) => (
+                                <option
+                                    key={productType.id}
+                                    value={productType.id}
+                                >
+                                    {productType.name}
+                                </option>
+                            ))}
+                    </select>
+
+                    {errors.productTypeId && (
+                        <span className={styles.error}>
+                            {errors.productTypeId}
+                        </span>
+                    )}
                 </label>
 
                 <label className={styles.field}>
@@ -196,6 +392,8 @@ export const ProductBasicInfoForm = ({
                         isSaving ||
                         isCategoriesLoading ||
                         isCategoriesError ||
+                        isProductTypesLoading ||
+                        isProductTypesError ||
                         !categoryId ||
                         !name.trim() ||
                         !slug.trim()

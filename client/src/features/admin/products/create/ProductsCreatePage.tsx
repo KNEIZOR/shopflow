@@ -8,9 +8,10 @@ import { useCreateProduct } from '@/features/admin/product/model';
 import { useCategories } from '@/entities/category';
 import { useLocale } from '@/entities/locale';
 
-import { useToast } from '@/shared/ui/Toast';
-
 import type { CreateProductInput, ProductStatus } from '@/entities/product';
+
+import { CURRENCIES } from '@/shared/config/currencies';
+import { useToast } from '@/shared/ui/Toast';
 
 import styles from './ProductsCreatePage.module.scss';
 
@@ -36,51 +37,61 @@ const INITIAL_FORM: FormState = {
 
 const PRODUCT_STATUSES: ProductStatus[] = ['DRAFT', 'ACTIVE', 'ARCHIVED'];
 
+const BASE_CURRENCY = 'RUB' as const;
+
+const BASE_CURRENCY_SYMBOL =
+    CURRENCIES.find(({ code }) => code === BASE_CURRENCY)?.symbol ??
+    BASE_CURRENCY;
+
+const CYRILLIC_TO_LATIN: Record<string, string> = {
+    а: 'a',
+    б: 'b',
+    в: 'v',
+    г: 'g',
+    д: 'd',
+    е: 'e',
+    ё: 'e',
+    ж: 'zh',
+    з: 'z',
+    и: 'i',
+    й: 'y',
+    к: 'k',
+    л: 'l',
+    м: 'm',
+    н: 'n',
+    о: 'o',
+    п: 'p',
+    р: 'r',
+    с: 's',
+    т: 't',
+    у: 'u',
+    ф: 'f',
+    х: 'h',
+    ц: 'c',
+    ч: 'ch',
+    ш: 'sh',
+    щ: 'shch',
+    ъ: '',
+    ы: 'y',
+    ь: '',
+    э: 'e',
+    ю: 'yu',
+    я: 'ya',
+};
+
 const createSlug = (value: string): string => {
     return value
         .toLowerCase()
         .trim()
         .replace(/[а-яё]/g, (character) => {
-            const map: Record<string, string> = {
-                а: 'a',
-                б: 'b',
-                в: 'v',
-                г: 'g',
-                д: 'd',
-                е: 'e',
-                ё: 'e',
-                ж: 'zh',
-                з: 'z',
-                и: 'i',
-                й: 'y',
-                к: 'k',
-                л: 'l',
-                м: 'm',
-                н: 'n',
-                о: 'o',
-                п: 'p',
-                р: 'r',
-                с: 's',
-                т: 't',
-                у: 'u',
-                ф: 'f',
-                х: 'h',
-                ц: 'c',
-                ч: 'ch',
-                ш: 'sh',
-                щ: 'shch',
-                ъ: '',
-                ы: 'y',
-                ь: '',
-                э: 'e',
-                ю: 'yu',
-                я: 'ya',
-            };
-
-            return map[character] ?? character;
+            return CYRILLIC_TO_LATIN[character] ?? character;
         })
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '');
+};
+
+const normalizeSlug = (value: string): string => {
+    return createSlug(value);
 };
 
 const parsePrice = (value: string): number | null => {
@@ -92,11 +103,7 @@ const parsePrice = (value: string): number | null => {
 
     const parsed = Number(normalized);
 
-    if (!Number.isFinite(parsed)) {
-        return null;
-    }
-
-    if (parsed < 0) {
+    if (!Number.isFinite(parsed) || parsed < 0) {
         return null;
     }
 
@@ -109,16 +116,19 @@ export const ProductsCreatePage = () => {
 
     const { language } = useLocale();
 
-    const { data: categories = [], isLoading: isCategoriesLoading } =
-        useCategories(language);
+    const {
+        data: categories = [],
+        isLoading: isCategoriesLoading,
+        isError: isCategoriesError,
+    } = useCategories(language);
 
     const { mutateAsync: createProduct, isPending } = useCreateProduct();
 
     const { showToast } = useToast();
 
     const [form, setForm] = useState<FormState>(INITIAL_FORM);
-
     const [errors, setErrors] = useState<FormErrors>({});
+    const [isSlugManuallyEdited, setIsSlugManuallyEdited] = useState(false);
 
     const selectedCategory = useMemo(
         () => categories.find((category) => category.id === form.categoryId),
@@ -155,7 +165,7 @@ export const ProductsCreatePage = () => {
         setForm((current) => ({
             ...current,
             name: value,
-            slug: current.slug || createSlug(value),
+            slug: isSlugManuallyEdited ? current.slug : createSlug(value),
         }));
 
         setErrors((current) => {
@@ -171,6 +181,14 @@ export const ProductsCreatePage = () => {
 
             return next;
         });
+    };
+
+    const handleSlugChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const value = normalizeSlug(event.target.value);
+
+        setIsSlugManuallyEdited(true);
+
+        updateField('slug', value);
     };
 
     const validate = (): FormErrors => {
@@ -214,7 +232,7 @@ export const ProductsCreatePage = () => {
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        if (isPending) {
+        if (isPending || isCategoriesLoading || isCategoriesError) {
             return;
         }
 
@@ -267,6 +285,9 @@ export const ProductsCreatePage = () => {
 
         navigate('/admin/products');
     };
+
+    const isSubmitDisabled =
+        isPending || isCategoriesLoading || isCategoriesError;
 
     return (
         <section className={styles.page}>
@@ -326,6 +347,8 @@ export const ProductsCreatePage = () => {
                                     errors.name ? styles.inputError : undefined
                                 }
                                 disabled={isPending}
+                                autoComplete="off"
+                                autoFocus
                             />
 
                             {errors.name && (
@@ -341,19 +364,17 @@ export const ProductsCreatePage = () => {
                             </span>
 
                             <div className={styles.slugField}>
-                                <span className={styles.slugPrefix}>/</span>
+                                <span
+                                    className={styles.slugPrefix}
+                                    aria-hidden="true"
+                                >
+                                    /
+                                </span>
 
                                 <input
                                     type="text"
                                     value={form.slug}
-                                    onChange={(event) =>
-                                        updateField(
-                                            'slug',
-                                            event.target.value
-                                                .toLowerCase()
-                                                .replace(/\s+/g, '-'),
-                                        )
-                                    }
+                                    onChange={handleSlugChange}
                                     placeholder={t(
                                         'admin.products.create.fields.slugPlaceholder',
                                     )}
@@ -363,6 +384,8 @@ export const ProductsCreatePage = () => {
                                             : undefined
                                     }
                                     disabled={isPending}
+                                    autoComplete="off"
+                                    spellCheck={false}
                                 />
                             </div>
 
@@ -430,7 +453,7 @@ export const ProductsCreatePage = () => {
                                         ? styles.inputError
                                         : undefined
                                 }
-                                disabled={isPending || isCategoriesLoading}
+                                disabled={isSubmitDisabled}
                             >
                                 <option value="">
                                     {isCategoriesLoading
@@ -440,19 +463,27 @@ export const ProductsCreatePage = () => {
                                           )}
                                 </option>
 
-                                {categories.map((category) => (
-                                    <option
-                                        key={category.id}
-                                        value={category.id}
-                                    >
-                                        {category.name}
-                                    </option>
-                                ))}
+                                {!isCategoriesLoading &&
+                                    !isCategoriesError &&
+                                    categories.map((category) => (
+                                        <option
+                                            key={category.id}
+                                            value={category.id}
+                                        >
+                                            {category.name}
+                                        </option>
+                                    ))}
                             </select>
 
                             {errors.categoryId && (
                                 <span className={styles.error}>
                                     {errors.categoryId}
+                                </span>
+                            )}
+
+                            {isCategoriesError && (
+                                <span className={styles.error}>
+                                    {t('common.error')}
                                 </span>
                             )}
 
@@ -508,9 +539,12 @@ export const ProductsCreatePage = () => {
                                             : undefined
                                     }
                                     disabled={isPending}
+                                    autoComplete="off"
                                 />
 
-                                <span className={styles.currency}>RUB</span>
+                                <span className={styles.currency}>
+                                    {BASE_CURRENCY_SYMBOL} {BASE_CURRENCY}
+                                </span>
                             </div>
 
                             {errors.price && (
@@ -539,7 +573,7 @@ export const ProductsCreatePage = () => {
                     <button
                         type="submit"
                         className={styles.primaryButton}
-                        disabled={isPending || isCategoriesLoading}
+                        disabled={isSubmitDisabled}
                     >
                         {isPending
                             ? t('admin.products.create.creating')

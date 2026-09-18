@@ -1,5 +1,4 @@
 import { useState } from 'react';
-
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -8,18 +7,10 @@ import {
     useUpsertProductPrice,
 } from '../../model';
 
-import type { CurrencyCode } from '@/shared/config/currencies';
+import { useToast } from '@/shared/ui/Toast';
+import { CURRENCIES, type CurrencyCode } from '@/shared/config/currencies';
 
 import styles from './ProductPrices.module.scss';
-
-const CURRENCIES: CurrencyCode[] = ['RUB', 'EUR', 'USD', 'AMD'];
-
-const CURRENCY_SYMBOLS: Record<CurrencyCode, string> = {
-    RUB: '₽',
-    EUR: '€',
-    USD: '$',
-    AMD: '֏',
-};
 
 type ProductPricesProps = {
     productId: string;
@@ -27,11 +18,11 @@ type ProductPricesProps = {
 
 export const ProductPrices = ({ productId }: ProductPricesProps) => {
     const { t } = useTranslation();
+    const { showToast } = useToast();
 
     const { data, isLoading, isError } = useProductPrices(productId);
 
     const upsertPrice = useUpsertProductPrice();
-
     const deletePrice = useDeleteProductPrice();
 
     if (isLoading) {
@@ -58,6 +49,70 @@ export const ProductPrices = ({ productId }: ProductPricesProps) => {
         data.items.map((price) => [price.currency, price]),
     );
 
+    const handleSave = async (currency: CurrencyCode, amount: string) => {
+        const trimmedAmount = amount.trim();
+
+        if (!trimmedAmount) {
+            return;
+        }
+
+        const parsedAmount = Number(trimmedAmount);
+
+        if (!Number.isFinite(parsedAmount) || parsedAmount < 0) {
+            showToast({
+                type: 'error',
+                message: t('admin.products.invalidPrice'),
+            });
+
+            return;
+        }
+
+        try {
+            await upsertPrice.mutateAsync({
+                productId,
+                currency,
+                input: {
+                    amount: parsedAmount,
+                },
+            });
+
+            showToast({
+                type: 'success',
+                message: t('admin.products.priceUpdated'),
+            });
+        } catch (error) {
+            showToast({
+                type: 'error',
+                message:
+                    error instanceof Error ? error.message : t('common.error'),
+            });
+        }
+    };
+
+    const handleDelete = async (currency: CurrencyCode) => {
+        if (currency === 'RUB') {
+            return;
+        }
+
+        try {
+            await deletePrice.mutateAsync({
+                productId,
+                currency,
+            });
+
+            showToast({
+                type: 'success',
+                message: t('admin.products.priceDeleted'),
+            });
+        } catch (error) {
+            showToast({
+                type: 'error',
+                message:
+                    error instanceof Error ? error.message : t('common.error'),
+            });
+        }
+    };
+
     return (
         <section className={styles.card}>
             <div className={styles.header}>
@@ -73,42 +128,23 @@ export const ProductPrices = ({ productId }: ProductPricesProps) => {
             </div>
 
             <div className={styles.list}>
-                {CURRENCIES.map((currency) => (
-                    <PriceRow
-                        key={currency}
-                        currency={currency}
-                        amount={pricesByCurrency.get(currency)?.amount ?? ''}
-                        symbol={CURRENCY_SYMBOLS[currency]}
-                        isDefault={currency === 'RUB'}
-                        isSaving={upsertPrice.isPending}
-                        isDeleting={deletePrice.isPending}
-                        onSave={async (amount) => {
-                            const value = Number(amount);
+                {CURRENCIES.map(({ code: currency, symbol }) => {
+                    const price = pricesByCurrency.get(currency);
 
-                            if (!Number.isFinite(value) || value < 0) {
-                                return;
-                            }
-
-                            await upsertPrice.mutateAsync({
-                                productId,
-                                currency,
-                                input: {
-                                    amount: value,
-                                },
-                            });
-                        }}
-                        onDelete={async () => {
-                            if (currency === 'RUB') {
-                                return;
-                            }
-
-                            await deletePrice.mutateAsync({
-                                productId,
-                                currency,
-                            });
-                        }}
-                    />
-                ))}
+                    return (
+                        <PriceRow
+                            key={`${currency}-${price?.amount ?? 'empty'}`}
+                            currency={currency}
+                            amount={price?.amount ?? ''}
+                            symbol={symbol}
+                            isDefault={currency === 'RUB'}
+                            isSaving={upsertPrice.isPending}
+                            isDeleting={deletePrice.isPending}
+                            onSave={(amount) => handleSave(currency, amount)}
+                            onDelete={() => handleDelete(currency)}
+                        />
+                    );
+                })}
             </div>
         </section>
     );
@@ -139,6 +175,8 @@ const PriceRow = ({
 
     const [value, setValue] = useState(amount);
 
+    const hasValue = value.trim().length > 0;
+
     const handleSave = async () => {
         await onSave(value);
     };
@@ -167,7 +205,9 @@ const PriceRow = ({
                         step="0.01"
                         value={value}
                         onChange={(event) => setValue(event.target.value)}
+                        disabled={isSaving || isDeleting}
                         className={styles.input}
+                        autoComplete="off"
                     />
 
                     <span>{symbol}</span>
@@ -176,17 +216,17 @@ const PriceRow = ({
                 <button
                     type="button"
                     className={styles.saveButton}
-                    disabled={isSaving || isDeleting}
+                    disabled={isSaving || isDeleting || !hasValue}
                     onClick={handleSave}
                 >
-                    {t('common.save')}
+                    {isSaving ? t('common.saving') : t('common.save')}
                 </button>
 
                 {!isDefault && (
                     <button
                         type="button"
                         className={styles.deleteButton}
-                        disabled={isSaving || isDeleting || !value}
+                        disabled={isSaving || isDeleting}
                         onClick={onDelete}
                     >
                         {t('common.delete')}

@@ -33,20 +33,21 @@ export const updateProduct = async (
         await ensureCategoryExists(input.categoryId);
     }
 
-    if (input.productTypeId !== undefined) {
+    if (input.productTypeId !== undefined && input.productTypeId !== null) {
         await ensureProductTypeExists(input.productTypeId);
     }
 
     await ensureProductNameOrSlugAvailable(input.name, input.slug, id);
-
-    const targetStatus = input.status ?? existingProduct.status;
 
     const targetProductTypeId =
         input.productTypeId !== undefined
             ? input.productTypeId
             : existingProduct.productTypeId;
 
-    if (targetStatus === 'ACTIVE') {
+    const isActivating =
+        input.status === 'ACTIVE' && existingProduct.status !== 'ACTIVE';
+
+    if (isActivating) {
         await validateProductCanBeActivated(id, targetProductTypeId);
     }
 
@@ -103,11 +104,16 @@ export const updateProduct = async (
         }
 
         if (input.productTypeId !== undefined) {
-            data.productType = {
-                connect: {
-                    id: input.productTypeId,
-                },
-            };
+            data.productType =
+                input.productTypeId === null
+                    ? {
+                          disconnect: true,
+                      }
+                    : {
+                          connect: {
+                              id: input.productTypeId,
+                          },
+                      };
         }
 
         if (Object.keys(data).length > 0) {

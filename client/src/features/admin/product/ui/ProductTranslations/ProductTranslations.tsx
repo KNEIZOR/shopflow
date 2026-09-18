@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
+
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -12,24 +13,26 @@ import styles from './ProductTranslations.module.scss';
 const PRODUCT_LANGUAGES = [
     {
         code: 'ru',
-        label: 'Русский',
+        labelKey: 'header.russian',
+        isDefault: true,
     },
     {
         code: 'en',
-        label: 'English',
+        labelKey: 'header.english',
+        isDefault: false,
     },
 ] as const;
+
+type ProductLanguage = (typeof PRODUCT_LANGUAGES)[number];
 
 type ProductTranslationsProps = {
     productId: string;
 };
 
 type TranslationFormProps = {
-    language: string;
-    languageLabel: string;
+    language: ProductLanguage;
     initialName: string;
     initialDescription: string;
-    isDefault: boolean;
     isSaving: boolean;
     isDeleting: boolean;
     onSave: (name: string, description: string) => Promise<void>;
@@ -44,7 +47,6 @@ export const ProductTranslations = ({
     const { data, isLoading, isError } = useProductTranslations(productId);
 
     const upsertTranslation = useUpsertProductTranslation();
-
     const deleteTranslation = useDeleteProductTranslation();
 
     if (isLoading) {
@@ -129,12 +131,10 @@ export const ProductTranslations = ({
 
                     return (
                         <TranslationForm
-                            key={language.code}
-                            language={language.code}
-                            languageLabel={language.label}
+                            key={`${language.code}-${translation?.id ?? 'empty'}`}
+                            language={language}
                             initialName={translation?.name ?? ''}
                             initialDescription={translation?.description ?? ''}
-                            isDefault={language.code === 'ru'}
                             isSaving={upsertTranslation.isPending}
                             isDeleting={deleteTranslation.isPending}
                             onSave={(name, description) =>
@@ -151,10 +151,8 @@ export const ProductTranslations = ({
 
 const TranslationForm = ({
     language,
-    languageLabel,
     initialName,
     initialDescription,
-    isDefault,
     isSaving,
     isDeleting,
     onSave,
@@ -163,25 +161,40 @@ const TranslationForm = ({
     const { t } = useTranslation();
 
     const [name, setName] = useState(initialName);
-
     const [description, setDescription] = useState(initialDescription);
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        await onSave(name, description);
+        const trimmedName = name.trim();
+
+        if (!trimmedName) {
+            return;
+        }
+
+        await onSave(trimmedName, description);
+    };
+
+    const handleDelete = async () => {
+        if (language.isDefault) {
+            return;
+        }
+
+        await onDelete();
     };
 
     return (
         <form className={styles.translation} onSubmit={handleSubmit}>
             <div className={styles.languageHeader}>
                 <div>
-                    <h3 className={styles.languageTitle}>{languageLabel}</h3>
+                    <h3 className={styles.languageTitle}>
+                        {t(language.labelKey)}
+                    </h3>
 
-                    <span className={styles.languageCode}>{language}</span>
+                    <span className={styles.languageCode}>{language.code}</span>
                 </div>
 
-                {isDefault && (
+                {language.isDefault && (
                     <span className={styles.default}>
                         {t('admin.products.defaultLanguage')}
                     </span>
@@ -198,6 +211,7 @@ const TranslationForm = ({
                         onChange={(event) => setName(event.target.value)}
                         placeholder={t('admin.products.namePlaceholder')}
                         disabled={isSaving || isDeleting}
+                        autoComplete="off"
                     />
                 </label>
 
@@ -223,12 +237,12 @@ const TranslationForm = ({
                     {isSaving ? t('common.saving') : t('common.save')}
                 </button>
 
-                {!isDefault && (
+                {!language.isDefault && (
                     <button
                         type="button"
                         className={styles.deleteButton}
                         disabled={isSaving || isDeleting}
-                        onClick={onDelete}
+                        onClick={handleDelete}
                     >
                         {t('common.delete')}
                     </button>

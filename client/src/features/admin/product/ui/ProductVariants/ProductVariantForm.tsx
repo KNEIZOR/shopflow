@@ -1,9 +1,10 @@
 import { type FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useCreateProductVariant, useUpdateProductVariant } from '../../model';
-
 import type { ProductVariant } from '@/entities/product';
+import { useToast } from '@/shared/ui/Toast';
+
+import { useCreateProductVariant, useUpdateProductVariant } from '../../model';
 
 import styles from './ProductVariants.module.scss';
 
@@ -19,17 +20,14 @@ export const ProductVariantForm = ({
     onClose,
 }: ProductVariantFormProps) => {
     const { t } = useTranslation();
+    const { showToast } = useToast();
 
     const createVariant = useCreateProductVariant();
-
     const updateVariant = useUpdateProductVariant();
 
     const [name, setName] = useState(variant?.name ?? '');
-
     const [sku, setSku] = useState(variant?.sku ?? '');
-
     const [stock, setStock] = useState(String(variant?.stock ?? 0));
-
     const [price, setPrice] = useState(variant?.price ?? '');
 
     const isSaving = createVariant.isPending || updateVariant.isPending;
@@ -39,18 +37,21 @@ export const ProductVariantForm = ({
 
         const trimmedName = name.trim();
         const trimmedSku = sku.trim();
+        const trimmedStock = stock.trim();
+        const trimmedPrice = price.trim();
 
-        if (!trimmedName || !trimmedSku) {
+        if (!trimmedName || !trimmedSku || !trimmedStock) {
             return;
         }
 
-        const parsedStock = Number(stock);
+        const parsedStock = Number(trimmedStock);
 
         if (!Number.isInteger(parsedStock) || parsedStock < 0) {
             return;
         }
 
-        const parsedPrice = price.trim() === '' ? undefined : Number(price);
+        const parsedPrice =
+            trimmedPrice === '' ? undefined : Number(trimmedPrice);
 
         if (
             parsedPrice !== undefined &&
@@ -59,36 +60,53 @@ export const ProductVariantForm = ({
             return;
         }
 
-        if (variant) {
-            await updateVariant.mutateAsync({
+        try {
+            if (variant) {
+                await updateVariant.mutateAsync({
+                    productId,
+                    variantId: variant.id,
+                    input: {
+                        name: trimmedName,
+                        sku: trimmedSku,
+                        stock: parsedStock,
+                        price: parsedPrice ?? null,
+                    },
+                });
+
+                showToast({
+                    type: 'success',
+                    message: t('admin.products.variantUpdated'),
+                });
+
+                onClose();
+                return;
+            }
+
+            await createVariant.mutateAsync({
                 productId,
-                variantId: variant.id,
                 input: {
                     name: trimmedName,
                     sku: trimmedSku,
                     stock: parsedStock,
-                    price: parsedPrice ?? null,
+                    ...(parsedPrice !== undefined && {
+                        price: parsedPrice,
+                    }),
                 },
             });
 
+            showToast({
+                type: 'success',
+                message: t('admin.products.variantCreated'),
+            });
+
             onClose();
-
-            return;
+        } catch (error) {
+            showToast({
+                type: 'error',
+                message:
+                    error instanceof Error ? error.message : t('common.error'),
+            });
         }
-
-        await createVariant.mutateAsync({
-            productId,
-            input: {
-                name: trimmedName,
-                sku: trimmedSku,
-                stock: parsedStock,
-                ...(parsedPrice !== undefined && {
-                    price: parsedPrice,
-                }),
-            },
-        });
-
-        onClose();
     };
 
     return (
@@ -128,6 +146,7 @@ export const ProductVariantForm = ({
                         value={stock}
                         onChange={(event) => setStock(event.target.value)}
                         disabled={isSaving}
+                        autoComplete="off"
                     />
                 </label>
 
@@ -141,6 +160,7 @@ export const ProductVariantForm = ({
                         value={price}
                         onChange={(event) => setPrice(event.target.value)}
                         disabled={isSaving}
+                        autoComplete="off"
                     />
                 </label>
             </div>
@@ -149,7 +169,9 @@ export const ProductVariantForm = ({
                 <button
                     type="submit"
                     className={styles.saveButton}
-                    disabled={isSaving || !name.trim() || !sku.trim()}
+                    disabled={
+                        isSaving || !name.trim() || !sku.trim() || !stock.trim()
+                    }
                 >
                     {isSaving ? t('common.saving') : t('common.save')}
                 </button>

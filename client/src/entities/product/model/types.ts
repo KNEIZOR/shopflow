@@ -24,6 +24,12 @@ export type ProductCategory = {
     slug: string;
 };
 
+export type ProductType = {
+    id: string;
+    name: string;
+    slug: string;
+};
+
 export type Product = {
     id: string;
     name: string;
@@ -36,6 +42,8 @@ export type Product = {
     status: ProductStatus;
 
     category: ProductCategory;
+
+    productType: ProductType | null;
 
     images: ProductImage[];
     variants: ProductVariant[];

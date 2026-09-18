@@ -10,12 +10,16 @@ import {
 } from '@/features/admin';
 
 import { ProductAdminPage } from '@/features/admin/product/ui';
+import { ProductTypesAdminPage } from '@/features/admin/product-types';
 
 import { CatalogPage } from '@/pages/catalog';
 import { HomePage } from '@/pages/home/HomePage';
 import { NotFoundPage } from '@/pages/not-found/NotFoundPage';
 import { ProductPage } from '@/pages/product';
-import { ProductsAdminPage, ProductsCreatePage } from '@/features/admin/products';
+import {
+    ProductsAdminPage,
+    ProductsCreatePage,
+} from '@/features/admin/products';
 
 export const router = createBrowserRouter([
     {
@@ -56,19 +60,28 @@ export const router = createBrowserRouter([
             {
                 path: '/admin',
                 element: <AdminLayout />,
+
                 children: [
                     {
                         index: true,
                         element: <AdminDashboardPage />,
                     },
+
                     {
                         path: 'products',
                         element: <ProductsAdminPage />,
                     },
+
                     {
                         path: 'products/new',
                         element: <ProductsCreatePage />,
                     },
+
+                    {
+                        path: 'product-types',
+                        element: <ProductTypesAdminPage />,
+                    },
+
                     {
                         path: 'product/:slug',
                         element: <ProductAdminPage />,
