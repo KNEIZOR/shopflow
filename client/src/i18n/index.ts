@@ -174,10 +174,56 @@ export const loadCartTranslations = async (
     addTopLevelResource(language, 'cart', cart);
 };
 
+export const loadCheckoutTranslations = async (
+    language: LanguageCode,
+): Promise<void> => {
+    const key = getResourceKey(language, 'checkout');
+
+    if (loadedResources.has(key)) {
+        return;
+    }
+
+    const { default: checkout } = await import(
+        `./locales/${language}/checkout.json`
+    );
+
+    addTopLevelResource(language, 'checkout', checkout);
+};
+
+export const loadAuthTranslations = async (
+    language: LanguageCode,
+): Promise<void> => {
+    const key = getResourceKey(language, 'auth');
+
+    if (loadedResources.has(key)) {
+        return;
+    }
+
+    const { default: auth } = await import(`./locales/${language}/auth.json`);
+
+    addTopLevelResource(language, 'auth', auth);
+};
+
+export const loadOrdersTranslations = async (
+    language: LanguageCode,
+): Promise<void> => {
+    const key = getResourceKey(language, 'orders');
+
+    if (loadedResources.has(key)) {
+        return;
+    }
+
+    const { default: orders } = await import(
+        `./locales/${language}/orders.json`
+    );
+
+    addTopLevelResource(language, 'orders', orders);
+};
+
 export const loadNotFoundTranslations = async (
     language: LanguageCode,
 ): Promise<void> => {
-    const key = getResourceKey(language, 'not-found');
+    const key = getResourceKey(language, 'notFound');
 
     if (loadedResources.has(key)) {
         return;
@@ -242,6 +288,9 @@ const loadAllFeatureTranslations = async (
         loadCatalogTranslations(language),
         loadProductTranslations(language),
         loadCartTranslations(language),
+        loadCheckoutTranslations(language),
+        loadAuthTranslations(language),
+        loadOrdersTranslations(language),
         loadNotFoundTranslations(language),
 
         loadAdminFeatureTranslations(language, 'auth'),
@@ -280,9 +329,7 @@ void i18n.use(initReactI18next).init({
 loadedLanguages.add(initialLanguage);
 
 loadedResources.add(getResourceKey(initialLanguage, 'common'));
-
 loadedResources.add(getResourceKey(initialLanguage, 'header'));
-
 loadedResources.add(getResourceKey(initialLanguage, 'footer'));
 
 export const changeLanguage = async (language: LanguageCode): Promise<void> => {

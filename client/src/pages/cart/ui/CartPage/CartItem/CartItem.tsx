@@ -46,12 +46,33 @@ export const CartItem = ({ item }: CartItemProps) => {
         removeMutation.mutate(item.id);
     };
 
+    const productImageAlt = item.product.image?.alt || item.product.name;
+
     return (
         <article className={styles.item}>
             <div className={styles.product}>
-                <div className={styles.imagePlaceholder}>
-                    <span>{item.product.name.charAt(0)}</span>
-                </div>
+                {item.product.image ? (
+                    <Link
+                        to={`/product/${item.product.slug}`}
+                        className={styles.imageLink}
+                        aria-label={item.product.name}
+                    >
+                        <img
+                            src={item.product.image.url}
+                            alt={productImageAlt}
+                            className={styles.image}
+                            loading="lazy"
+                        />
+                    </Link>
+                ) : (
+                    <Link
+                        to={`/product/${item.product.slug}`}
+                        className={styles.imagePlaceholder}
+                        aria-label={item.product.name}
+                    >
+                        <span>{item.product.name.charAt(0)}</span>
+                    </Link>
+                )}
 
                 <div className={styles.info}>
                     <Link

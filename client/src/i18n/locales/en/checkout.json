@@ -1,0 +1,72 @@
+{
+    "eyebrow": "Checkout",
+    "title": "Checkout",
+    "description": "Review your delivery address and continue to secure payment.",
+
+    "loading": "Loading checkout",
+    "loadingDescription": "Preparing your order details...",
+
+    "deliveryLabel": "Delivery",
+    "deliveryAddress": "Delivery address",
+    "addressCount": "{{count}} addresses",
+    "noAddresses": "You don't have any saved addresses yet.",
+    "addAddress": "Add address",
+
+    "newAddressLabel": "New address",
+    "addDeliveryAddress": "Add delivery address",
+
+    "firstName": "First name",
+    "lastName": "Last name",
+    "phone": "Phone",
+    "country": "Country",
+    "city": "City",
+    "postalCode": "Postal code",
+    "street": "Street and house",
+    "apartment": "Apartment / office",
+
+    "addressCreateError": "Failed to save the address.",
+    "savingAddress": "Saving...",
+    "saveAddress": "Save address",
+    "cancel": "Cancel",
+
+    "orderLabel": "Your order",
+    "yourOrder": "Products",
+    "quantity": "Quantity",
+
+    "summaryLabel": "Order",
+    "orderSummary": "Order summary",
+    "items": "Items",
+    "total": "Total",
+
+    "redirectingToPayment": "Redirecting to payment...",
+    "payNow": "Continue to payment",
+    "paymentNote": "After confirmation, you will be redirected to the secure Stripe payment page.",
+
+    "cartErrorTitle": "Unable to load your cart",
+    "cartErrorDescription": "Please return to your cart and try again.",
+    "backToCart": "Back to cart",
+
+    "emptyTitle": "Your cart is empty",
+    "emptyDescription": "Add products to your cart before checking out.",
+    "backToCatalog": "Go to catalog",
+
+    "addressErrorTitle": "Unable to load addresses",
+    "addressErrorDescription": "We couldn't load your saved addresses. Please try again.",
+    "retry": "Try again",
+
+    "paymentErrorTitle": "Unable to start payment",
+    "paymentErrorDescription": "Please try again. If the problem persists, check your order details.",
+
+    "selectAddressHint": "Select a delivery address to continue.",
+
+    "successLabel": "Payment",
+    "successTitle": "Order successfully placed",
+    "successDescription": "Your payment was successful. Order information is available in your account.",
+    "goToAccount": "Go to account",
+    "continueShopping": "Continue shopping",
+
+    "cancelLabel": "Payment cancelled",
+    "cancelTitle": "Payment was not completed",
+    "cancelDescription": "Your order was not paid. You can return to checkout and try again.",
+    "returnToCheckout": "Return to checkout"
+}

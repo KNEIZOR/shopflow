@@ -4,10 +4,13 @@ import { AppLayout } from '@/components/layout/AppLayout/ui/AppLayout';
 
 import {
     loadAdminFeatureTranslations,
+    loadAuthTranslations,
     loadCartTranslations,
     loadCatalogTranslations,
+    loadCheckoutTranslations,
     loadHomeTranslations,
     loadNotFoundTranslations,
+    loadOrdersTranslations,
     loadProductTranslations,
 } from '@/i18n';
 
@@ -35,6 +38,24 @@ const loadCurrentProductTranslations = async (): Promise<null> => {
 
 const loadCurrentCartTranslations = async (): Promise<null> => {
     await loadCartTranslations(getCurrentLanguage());
+
+    return null;
+};
+
+const loadCurrentCheckoutTranslations = async (): Promise<null> => {
+    await loadCheckoutTranslations(getCurrentLanguage());
+
+    return null;
+};
+
+const loadCurrentAuthTranslations = async (): Promise<null> => {
+    await loadAuthTranslations(getCurrentLanguage());
+
+    return null;
+};
+
+const loadCurrentOrdersTranslations = async (): Promise<null> => {
+    await loadOrdersTranslations(getCurrentLanguage());
 
     return null;
 };
@@ -131,6 +152,124 @@ const cartRoute: RouteObject = {
             Component: CartPage,
         };
     },
+};
+
+const checkoutRoute: RouteObject = {
+    path: '/checkout',
+    loader: loadCurrentCheckoutTranslations,
+
+    lazy: async () => {
+        const { CheckoutPage } = await import('@/pages/checkout');
+
+        return {
+            Component: CheckoutPage,
+        };
+    },
+};
+
+const checkoutSuccessRoute: RouteObject = {
+    path: '/checkout/success',
+    loader: loadCurrentCheckoutTranslations,
+
+    lazy: async () => {
+        const { CheckoutSuccessPage } = await import('@/pages/checkout');
+
+        return {
+            Component: CheckoutSuccessPage,
+        };
+    },
+};
+
+const checkoutCancelRoute: RouteObject = {
+    path: '/checkout/cancel',
+    loader: loadCurrentCheckoutTranslations,
+
+    lazy: async () => {
+        const { CheckoutCancelPage } = await import('@/pages/checkout');
+
+        return {
+            Component: CheckoutCancelPage,
+        };
+    },
+};
+
+const accountLoginRoute: RouteObject = {
+    path: '/account/login',
+    loader: loadCurrentAuthTranslations,
+
+    lazy: async () => {
+        const { LoginPage } = await import('@/pages/account/login/LoginPage');
+
+        return {
+            Component: LoginPage,
+        };
+    },
+};
+
+const accountRegisterRoute: RouteObject = {
+    path: '/account/register',
+    loader: loadCurrentAuthTranslations,
+
+    lazy: async () => {
+        const { RegisterPage } =
+            await import('@/pages/account/register/RegisterPage');
+
+        return {
+            Component: RegisterPage,
+        };
+    },
+};
+
+const accountRoute: RouteObject = {
+    lazy: async () => {
+        const { AccountRoute } = await import('@/features/account/route');
+
+        return {
+            Component: AccountRoute,
+        };
+    },
+
+    children: [
+        {
+            path: '/account',
+            loader: loadCurrentAuthTranslations,
+
+            lazy: async () => {
+                const { AccountPage } =
+                    await import('@/pages/account/AccountPage');
+
+                return {
+                    Component: AccountPage,
+                };
+            },
+        },
+
+        {
+            path: '/account/orders',
+            loader: loadCurrentOrdersTranslations,
+
+            lazy: async () => {
+                const { OrdersPage } = await import('@/pages/account/orders');
+
+                return {
+                    Component: OrdersPage,
+                };
+            },
+        },
+
+        {
+            path: '/account/orders/:orderId',
+            loader: loadCurrentOrdersTranslations,
+
+            lazy: async () => {
+                const { OrderPage } = await import('@/pages/account/orders');
+
+                return {
+                    Component: OrderPage,
+                };
+            },
+        },
+    ],
 };
 
 const notFoundRoute: RouteObject = {
@@ -275,11 +414,18 @@ const adminRoute: RouteObject = {
 export const router = createBrowserRouter([
     {
         element: <AppLayout />,
+
         children: [
             homeRoute,
             catalogRoute,
             productRoute,
             cartRoute,
+            checkoutRoute,
+            checkoutSuccessRoute,
+            checkoutCancelRoute,
+            accountLoginRoute,
+            accountRegisterRoute,
+            accountRoute,
             notFoundRoute,
         ],
     },

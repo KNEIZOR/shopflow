@@ -1,12 +1,21 @@
-import type { Request, Response, NextFunction } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import Stripe from 'stripe';
 
 import { env } from '../../config/env';
+import { AppError } from '../../errors/app-error';
 
+import { createCheckoutSchema } from './payments.schema';
 import { createCheckout } from './services/checkout.service';
+import { stripe, createCheckoutSession } from './services/stripe.service';
 import { handleStripeWebhook } from './services/webhook.service';
 
-import { stripe } from './services/stripe.service';
+const getAuthenticatedUserId = (req: Request): string => {
+    if (!req.userId) {
+        throw new AppError(401, 'UNAUTHORIZED', 'Authentication required');
+    }
+
+    return req.userId;
+};
 
 export const checkout = async (
     req: Request,
@@ -14,29 +23,13 @@ export const checkout = async (
     next: NextFunction,
 ) => {
     try {
-        if (!req.userId) {
-            res.status(401).json({
-                success: false,
-                message: 'Authentication required',
-            });
+        const userId = getAuthenticatedUserId(req);
 
-            return;
-        }
+        const input = createCheckoutSchema.parse(req.body);
 
-        const { addressId } = req.body;
+        const result = await createCheckout(userId, input);
 
-        if (typeof addressId !== 'string' || !addressId) {
-            res.status(400).json({
-                success: false,
-                message: 'addressId is required',
-            });
-
-            return;
-        }
-
-        const result = await createCheckout(req.userId, addressId);
-
-        res.status(201).json({
+        res.status(200).json({
             success: true,
             data: result,
         });
@@ -53,40 +46,27 @@ export const webhook = async (
     try {
         const signature = req.headers['stripe-signature'];
 
-        if (!signature || typeof signature !== 'string') {
-            res.status(400).json({
-                success: false,
-                message: 'Missing Stripe signature',
-            });
-
-            return;
+        if (typeof signature !== 'string' || signature.length === 0) {
+            throw new AppError(
+                400,
+                'STRIPE_SIGNATURE_MISSING',
+                'Stripe signature is missing',
+            );
         }
 
         if (!Buffer.isBuffer(req.body)) {
-            res.status(400).json({
-                success: false,
-                message: 'Invalid Stripe webhook body',
-            });
-
-            return;
-        }
-
-        let event: Stripe.Event;
-
-        try {
-            event = stripe.webhooks.constructEvent(
-                req.body,
-                signature,
-                env.STRIPE_WEBHOOK_SECRET,
+            throw new AppError(
+                400,
+                'STRIPE_RAW_BODY_REQUIRED',
+                'Stripe webhook requires a raw request body',
             );
-        } catch {
-            res.status(400).json({
-                success: false,
-                message: 'Invalid Stripe webhook signature',
-            });
-
-            return;
         }
+
+        const event = stripe.webhooks.constructEvent(
+            req.body,
+            signature,
+            env.STRIPE_WEBHOOK_SECRET,
+        );
 
         await handleStripeWebhook(event);
 
@@ -94,6 +74,18 @@ export const webhook = async (
             received: true,
         });
     } catch (error) {
+        if (error instanceof Stripe.errors.StripeSignatureVerificationError) {
+            next(
+                new AppError(
+                    400,
+                    'STRIPE_SIGNATURE_INVALID',
+                    'Invalid Stripe webhook signature',
+                ),
+            );
+
+            return;
+        }
+
         next(error);
     }
 };

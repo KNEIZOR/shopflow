@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 
-import { prisma } from '../../../lib/prisma';
 import { AppError } from '../../../errors/app-error';
+import { prisma } from '../../../lib/prisma';
 
 export type CreateProductVariantInput = {
     name: string;
@@ -16,6 +16,8 @@ export type UpdateProductVariantInput = {
     price?: number | null;
     stock?: number;
 };
+
+const DEFAULT_CURRENCY = 'RUB';
 
 const getProduct = async (productId: string) => {
     const product = await prisma.product.findUnique({
@@ -70,17 +72,33 @@ export const addProductVariant = async (
         );
     }
 
-    const variant = await prisma.productVariant.create({
-        data: {
-            productId,
-            name: input.name,
-            sku: input.sku,
-            price:
-                input.price === undefined
-                    ? undefined
-                    : new Prisma.Decimal(input.price.toFixed(2)),
-            stock: input.stock ?? 0,
-        },
+    const price =
+        input.price === undefined
+            ? undefined
+            : new Prisma.Decimal(input.price.toFixed(2));
+
+    const variant = await prisma.$transaction(async (tx) => {
+        const createdVariant = await tx.productVariant.create({
+            data: {
+                productId,
+                name: input.name,
+                sku: input.sku,
+                price,
+                stock: input.stock ?? 0,
+            },
+        });
+
+        if (price !== undefined) {
+            await tx.productVariantPrice.create({
+                data: {
+                    variantId: createdVariant.id,
+                    currency: DEFAULT_CURRENCY,
+                    amount: price,
+                },
+            });
+        }
+
+        return createdVariant;
     });
 
     return variant;
@@ -154,11 +172,36 @@ export const updateProductVariant = async (
         data.stock = input.stock;
     }
 
-    return prisma.productVariant.update({
-        where: {
-            id: variantId,
-        },
-        data,
+    return prisma.$transaction(async (tx) => {
+        const updatedVariant = await tx.productVariant.update({
+            where: {
+                id: variantId,
+            },
+            data,
+        });
+
+        if (input.price !== undefined && input.price !== null) {
+            const price = new Prisma.Decimal(input.price.toFixed(2));
+
+            await tx.productVariantPrice.upsert({
+                where: {
+                    variantId_currency: {
+                        variantId,
+                        currency: DEFAULT_CURRENCY,
+                    },
+                },
+                create: {
+                    variantId,
+                    currency: DEFAULT_CURRENCY,
+                    amount: price,
+                },
+                update: {
+                    amount: price,
+                },
+            });
+        }
+
+        return updatedVariant;
     });
 };
 

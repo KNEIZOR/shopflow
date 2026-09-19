@@ -1,6 +1,40 @@
+import { Prisma, type CurrencyCode } from '@prisma/client';
+
+import { AppError } from '../../../errors/app-error';
+
 import { getCartByUserId } from './cart-query.service';
 
-export const getUserCart = async (userId: string) => {
+const getVariantPrice = (
+    item: Awaited<ReturnType<typeof getCartByUserId>> extends infer T
+        ? T extends { items: Array<infer I> }
+            ? I
+            : never
+        : never,
+    currency: CurrencyCode,
+): Prisma.Decimal => {
+    const currencyPrice = item.variant.prices.find(
+        (price) => price.currency === currency,
+    );
+
+    if (currencyPrice) {
+        return currencyPrice.amount;
+    }
+
+    if (currency === 'RUB' && item.variant.price !== null) {
+        return item.variant.price;
+    }
+
+    throw new AppError(
+        400,
+        'PRODUCT_PRICE_NOT_AVAILABLE',
+        `Price is not available in ${currency} for product "${item.product.name}"`,
+    );
+};
+
+export const getUserCart = async (
+    userId: string,
+    currency: CurrencyCode = 'RUB',
+) => {
     const cart = await getCartByUserId(userId);
 
     if (!cart) {
@@ -12,21 +46,20 @@ export const getUserCart = async (userId: string) => {
             summary: {
                 itemsCount: 0,
                 subtotal: '0.00',
+                currency,
             },
         };
     }
 
     let itemsCount = 0;
-    let subtotal = 0;
+    let subtotal = new Prisma.Decimal(0);
 
     const items = cart.items.map((item) => {
-        const price = Number(item.variant.price ?? item.product.price);
+        const price = getVariantPrice(item, currency);
 
-        const itemSubtotal = price * item.quantity;
+        const itemSubtotal = price.mul(item.quantity);
 
         itemsCount += item.quantity;
-
-        subtotal += itemSubtotal;
 
         return {
             id: item.id,
@@ -37,6 +70,14 @@ export const getUserCart = async (userId: string) => {
                 id: item.product.id,
                 name: item.product.name,
                 slug: item.product.slug,
+
+                image: item.product.images[0]
+                    ? {
+                          id: item.product.images[0].id,
+                          url: item.product.images[0].url,
+                          alt: item.product.images[0].alt,
+                      }
+                    : null,
             },
 
             variant: {
@@ -44,7 +85,7 @@ export const getUserCart = async (userId: string) => {
                 name: item.variant.name,
                 sku: item.variant.sku,
 
-                price: item.variant.price?.toFixed(2) ?? null,
+                price: price.toFixed(2),
 
                 stock: item.variant.stock,
             },
@@ -52,6 +93,11 @@ export const getUserCart = async (userId: string) => {
             subtotal: itemSubtotal.toFixed(2),
         };
     });
+
+    subtotal = items.reduce(
+        (total, item) => total.add(new Prisma.Decimal(item.subtotal)),
+        subtotal,
+    );
 
     return {
         id: cart.id,
@@ -62,6 +108,8 @@ export const getUserCart = async (userId: string) => {
             itemsCount,
 
             subtotal: subtotal.toFixed(2),
+
+            currency,
         },
     };
 };

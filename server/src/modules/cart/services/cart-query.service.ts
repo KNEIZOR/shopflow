@@ -8,6 +8,7 @@ const cartItemInclude = {
             slug: true,
             status: true,
             price: true,
+
             images: {
                 select: {
                     id: true,
@@ -32,6 +33,17 @@ const cartItemInclude = {
             sku: true,
             price: true,
             stock: true,
+
+            prices: {
+                select: {
+                    currency: true,
+                    amount: true,
+                },
+
+                orderBy: {
+                    currency: 'asc',
+                },
+            },
         },
     },
 } as const;

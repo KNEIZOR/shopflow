@@ -29,5 +29,11 @@
     "loading": "Loading product...",
     "error": "Failed to load product.",
     "backToCatalog": "Back to catalog",
-    "addedToCart": "Added to cart"
+    "addedToCart": "Added to cart",
+    "goToCart": "Go to cart",
+    "openImage": "Open image",
+    "previousImage": "Previous image",
+    "nextImage": "Next image",
+    "closeImage": "Close image",
+    "zoomImage": "Click to enlarge"
 }

@@ -5,6 +5,7 @@ import { AppError } from '../../errors/app-error';
 import {
     addCartItemSchema,
     cartItemParamsSchema,
+    getCartQuerySchema,
     updateCartItemSchema,
 } from './cart.schema';
 
@@ -25,15 +26,25 @@ const getAuthenticatedUserId = (req: Request): string => {
     return req.userId;
 };
 
-export const getCart = async (req: Request, res: Response) => {
-    const userId = getAuthenticatedUserId(req);
+export const getCart = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const userId = getAuthenticatedUserId(req);
 
-    const cart = await getUserCart(userId);
+        const { currency } = getCartQuerySchema.parse(req.query);
 
-    res.status(200).json({
-        success: true,
-        data: cart,
-    });
+        const cart = await getUserCart(userId, currency);
+
+        res.status(200).json({
+            success: true,
+            data: cart,
+        });
+    } catch (error) {
+        next(error);
+    }
 };
 
 export const addItem = async (

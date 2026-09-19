@@ -381,7 +381,7 @@
     display: flex;
     flex-direction: column;
 
-    gap: 18px;
+    gap: 12px;
 }
 
 .quantity {
@@ -390,6 +390,8 @@
     justify-content: space-between;
 
     gap: 20px;
+
+    margin-bottom: 6px;
 }
 
 .quantityLabel {
@@ -477,9 +479,18 @@
     font-weight: 600;
 }
 
+/*
+ * Primary cart action
+ */
 .cartButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
     width: 100%;
     min-height: 54px;
+
+    padding: 0 20px;
 
     border: 0;
     border-radius: 14px;
@@ -492,6 +503,9 @@
     font-weight: 700;
 
     letter-spacing: 0.08em;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
     text-transform: uppercase;
 
     cursor: pointer;
@@ -500,7 +514,8 @@
         transform var(--transition-fast),
         opacity var(--transition-fast),
         box-shadow var(--transition-fast),
-        background-color var(--transition-fast);
+        background-color var(--transition-fast),
+        border-color var(--transition-fast);
 
     &:hover:not(:disabled) {
         transform: translateY(-1px);
@@ -525,6 +540,9 @@
     }
 }
 
+/*
+ * Successful "Added to cart" state
+ */
 .cartButtonSuccess {
     background: #2d8757;
 
@@ -537,8 +555,82 @@
     }
 }
 
+/*
+ * Secondary "Go to cart" action
+ */
+.cartButtonSecondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    min-height: 48px;
+
+    padding: 0 20px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+
+    background: var(--color-surface);
+
+    color: var(--color-text);
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 0.07em;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+
+    cursor: pointer;
+
+    transition:
+        border-color var(--transition-fast),
+        background-color var(--transition-fast),
+        color var(--transition-fast),
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast);
+
+    &:hover {
+        border-color: var(--color-accent);
+
+        background: var(--color-surface-secondary);
+
+        color: var(--color-accent);
+
+        transform: translateY(-1px);
+
+        box-shadow: var(--shadow-sm);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+
+    &:focus-visible {
+        outline: 3px solid var(--focus-ring);
+        outline-offset: 3px;
+    }
+}
+
 .mobilePurchase {
     display: none;
+}
+
+.mobilePurchaseActions {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 150px;
+
+    gap: 6px;
+}
+
+.mobilePurchaseActions .cartButton,
+.mobilePurchaseActions .cartButtonSecondary {
+    width: 100%;
 }
 
 .mobileCartButtonSuccess {
@@ -601,7 +693,7 @@
         backdrop-filter: blur(14px);
     }
 
-    .mobilePurchase > div {
+    .mobilePurchase > div:first-child {
         display: flex;
         flex-direction: column;
 
@@ -610,7 +702,7 @@
         gap: 3px;
     }
 
-    .mobilePurchase > div > span {
+    .mobilePurchase > div:first-child > span {
         color: var(--color-text-muted);
 
         font-size: 10px;
@@ -620,12 +712,17 @@
         text-transform: uppercase;
     }
 
-    .mobilePurchase > div > strong {
+    .mobilePurchase > div:first-child > strong {
         color: var(--color-text);
 
         font-size: 20px;
         font-weight: 700;
         line-height: 1;
+    }
+
+    .mobilePurchaseActions {
+        min-width: 150px;
+        max-width: 190px;
     }
 
     .mobilePurchase button {
@@ -645,6 +742,7 @@
         font-weight: 700;
 
         letter-spacing: 0.06em;
+        line-height: 1.2;
         text-transform: uppercase;
 
         cursor: pointer;
@@ -668,6 +766,22 @@
 
             opacity: 0.55;
         }
+    }
+
+    .mobilePurchase .cartButtonSecondary {
+        min-width: 150px;
+        min-height: 40px;
+
+        padding: 0 14px;
+
+        border: 1px solid var(--color-border);
+        border-radius: 10px;
+
+        background: var(--color-surface);
+
+        color: var(--color-text);
+
+        font-size: 10px;
     }
 }
 
@@ -748,6 +862,11 @@
         padding: 8px 12px;
     }
 
+    .mobilePurchaseActions {
+        min-width: 132px;
+        max-width: 160px;
+    }
+
     .mobilePurchase button {
         min-width: 132px;
         min-height: 44px;
@@ -755,7 +874,12 @@
         padding: 0 12px;
     }
 
-    .mobilePurchase > div > strong {
+    .mobilePurchase .cartButtonSecondary {
+        min-width: 132px;
+        min-height: 38px;
+    }
+
+    .mobilePurchase > div:first-child > strong {
         font-size: 18px;
     }
 }
@@ -765,12 +889,14 @@
     .variantButton,
     .quantityControl button,
     .cartButton,
+    .cartButtonSecondary,
     .mobilePurchase button {
         transition: none;
     }
 
     .variantButton:hover:not(:disabled),
     .cartButton:hover:not(:disabled),
+    .cartButtonSecondary:hover,
     .mobilePurchase button:hover:not(:disabled) {
         transform: none;
     }

@@ -1,7 +1,146 @@
 import Stripe from 'stripe';
 
-import { prisma } from '../../../lib/prisma';
 import { AppError } from '../../../errors/app-error';
+import { prisma } from '../../../lib/prisma';
+
+const releaseOrderStock = async (orderId: string): Promise<void> => {
+    await prisma.$transaction(async (tx) => {
+        const order = await tx.order.findUnique({
+            where: {
+                id: orderId,
+            },
+
+            include: {
+                items: {
+                    select: {
+                        variantId: true,
+                        quantity: true,
+                    },
+                },
+            },
+        });
+
+        if (!order) {
+            return;
+        }
+
+        /*
+         * Stock was reserved when the order was created.
+         *
+         * Never release stock from a paid order.
+         * Never release it twice from an already cancelled order.
+         */
+        if (order.paymentStatus === 'PAID' || order.status === 'CANCELLED') {
+            return;
+        }
+
+        for (const item of order.items) {
+            await tx.productVariant.update({
+                where: {
+                    id: item.variantId,
+                },
+
+                data: {
+                    stock: {
+                        increment: item.quantity,
+                    },
+                },
+            });
+        }
+
+        await tx.order.update({
+            where: {
+                id: order.id,
+            },
+
+            data: {
+                status: 'CANCELLED',
+            },
+        });
+    });
+};
+
+const removePurchasedItemsFromCart = async (
+    userId: string,
+    orderId: string,
+): Promise<void> => {
+    await prisma.$transaction(async (tx) => {
+        const order = await tx.order.findUnique({
+            where: {
+                id: orderId,
+            },
+
+            select: {
+                items: {
+                    select: {
+                        variantId: true,
+                        quantity: true,
+                    },
+                },
+            },
+        });
+
+        if (!order) {
+            return;
+        }
+
+        const cart = await tx.cart.findUnique({
+            where: {
+                userId,
+            },
+
+            select: {
+                id: true,
+            },
+        });
+
+        if (!cart) {
+            return;
+        }
+
+        for (const orderItem of order.items) {
+            const cartItem = await tx.cartItem.findUnique({
+                where: {
+                    cartId_variantId: {
+                        cartId: cart.id,
+                        variantId: orderItem.variantId,
+                    },
+                },
+
+                select: {
+                    id: true,
+                    quantity: true,
+                },
+            });
+
+            if (!cartItem) {
+                continue;
+            }
+
+            if (cartItem.quantity <= orderItem.quantity) {
+                await tx.cartItem.delete({
+                    where: {
+                        id: cartItem.id,
+                    },
+                });
+
+                continue;
+            }
+
+            await tx.cartItem.update({
+                where: {
+                    id: cartItem.id,
+                },
+
+                data: {
+                    quantity: {
+                        decrement: orderItem.quantity,
+                    },
+                },
+            });
+        }
+    });
+};
 
 export const handleStripeWebhook = async (
     event: Stripe.Event,
@@ -47,15 +186,6 @@ const handleCheckoutSessionCompleted = async (
         return;
     }
 
-    /*
-     * Stripe normally returns the PaymentIntent ID as a string.
-     *
-     * It can also be null, for example if the Checkout Session
-     * was created without a PaymentIntent.
-     *
-     * Our Checkout flow uses mode: "payment", so a PaymentIntent
-     * should normally exist.
-     */
     const paymentIntentId =
         typeof session.payment_intent === 'string'
             ? session.payment_intent
@@ -69,19 +199,21 @@ const handleCheckoutSessionCompleted = async (
         );
     }
 
+    let userId: string | null = null;
+
     await prisma.$transaction(async (tx) => {
         const order = await tx.order.findUnique({
             where: {
                 id: orderId,
             },
-            include: {
-                items: {
-                    select: {
-                        productId: true,
-                        variantId: true,
-                        quantity: true,
-                    },
-                },
+
+            select: {
+                id: true,
+                userId: true,
+                paymentSessionId: true,
+                paymentIntentId: true,
+                paymentStatus: true,
+                status: true,
             },
         });
 
@@ -89,10 +221,6 @@ const handleCheckoutSessionCompleted = async (
             throw new AppError(404, 'ORDER_NOT_FOUND', 'Order not found');
         }
 
-        /*
-         * The webhook must belong to the Checkout Session
-         * that was created for this order.
-         */
         if (order.paymentSessionId && order.paymentSessionId !== session.id) {
             throw new AppError(
                 409,
@@ -101,22 +229,15 @@ const handleCheckoutSessionCompleted = async (
             );
         }
 
-        /*
-         * If the order is already paid, Stripe may simply be
-         * retrying the same webhook.
-         *
-         * We must NOT decrease stock twice.
-         */
         if (order.paymentStatus === 'PAID') {
-            /*
-             * Make sure paymentIntentId is stored even if the
-             * order was marked as paid by an earlier implementation.
-             */
+            userId = order.userId;
+
             if (!order.paymentIntentId) {
                 await tx.order.update({
                     where: {
                         id: order.id,
                     },
+
                     data: {
                         paymentIntentId,
                     },
@@ -126,10 +247,6 @@ const handleCheckoutSessionCompleted = async (
             return;
         }
 
-        /*
-         * Make sure the PaymentIntent isn't already associated
-         * with another order.
-         */
         const existingOrder = await tx.order.findFirst({
             where: {
                 paymentIntentId,
@@ -137,6 +254,7 @@ const handleCheckoutSessionCompleted = async (
                     id: order.id,
                 },
             },
+
             select: {
                 id: true,
             },
@@ -151,41 +269,15 @@ const handleCheckoutSessionCompleted = async (
         }
 
         /*
-         * Decrease stock for the exact ProductVariant that
-         * was purchased.
-         */
-        for (const item of order.items) {
-            const updated = await tx.productVariant.updateMany({
-                where: {
-                    id: item.variantId,
-                    stock: {
-                        gte: item.quantity,
-                    },
-                },
-                data: {
-                    stock: {
-                        decrement: item.quantity,
-                    },
-                },
-            });
-
-            if (updated.count !== 1) {
-                throw new AppError(
-                    409,
-                    'INSUFFICIENT_STOCK',
-                    'Product stock is no longer available',
-                );
-            }
-        }
-
-        /*
-         * Mark the order as successfully paid and save
-         * the Stripe PaymentIntent ID.
+         * Stock was already reserved when the order was created.
+         *
+         * Therefore the successful webhook must NOT decrement stock.
          */
         await tx.order.update({
             where: {
                 id: order.id,
             },
+
             data: {
                 paymentStatus: 'PAID',
                 status: 'CONFIRMED',
@@ -193,17 +285,12 @@ const handleCheckoutSessionCompleted = async (
             },
         });
 
-        /*
-         * Payment succeeded, so the user's cart can be cleared.
-         */
-        await tx.cartItem.deleteMany({
-            where: {
-                cart: {
-                    userId: order.userId,
-                },
-            },
-        });
+        userId = order.userId;
     });
+
+    if (userId) {
+        await removePurchasedItemsFromCart(userId, orderId);
+    }
 };
 
 const handleCheckoutSessionExpired = async (
@@ -215,28 +302,36 @@ const handleCheckoutSessionExpired = async (
         return;
     }
 
-    await prisma.order.updateMany({
+    const order = await prisma.order.findUnique({
         where: {
             id: orderId,
-            paymentStatus: 'PENDING',
-            status: 'PENDING',
         },
-        data: {
-            status: 'CANCELLED',
+
+        select: {
+            paymentStatus: true,
+            status: true,
+            paymentSessionId: true,
         },
     });
+
+    if (!order) {
+        return;
+    }
+
+    if (order.paymentSessionId && order.paymentSessionId !== session.id) {
+        return;
+    }
+
+    if (order.paymentStatus === 'PAID' || order.status === 'CANCELLED') {
+        return;
+    }
+
+    await releaseOrderStock(orderId);
 };
 
 const handlePaymentIntentFailed = async (
     paymentIntent: Stripe.PaymentIntent,
 ): Promise<void> => {
-    /*
-     * The PaymentIntent metadata contains the internal Order ID.
-     *
-     * This is more reliable than searching by paymentIntentId,
-     * especially because paymentIntentId may not yet have been
-     * persisted if the payment fails very early.
-     */
     const orderId = paymentIntent.metadata?.orderId;
 
     let order = null;
@@ -246,6 +341,7 @@ const handlePaymentIntentFailed = async (
             where: {
                 id: orderId,
             },
+
             select: {
                 id: true,
                 paymentStatus: true,
@@ -254,15 +350,12 @@ const handlePaymentIntentFailed = async (
         });
     }
 
-    /*
-     * Fallback: if metadata is missing, try to find the order
-     * by the PaymentIntent ID.
-     */
     if (!order) {
         order = await prisma.order.findUnique({
             where: {
                 paymentIntentId: paymentIntent.id,
             },
+
             select: {
                 id: true,
                 paymentStatus: true,
@@ -275,17 +368,22 @@ const handlePaymentIntentFailed = async (
         return;
     }
 
-    /*
-     * A paid order must never be changed back to FAILED.
-     */
     if (order.paymentStatus === 'PAID') {
         return;
     }
 
+    /*
+     * Do not release stock here.
+     *
+     * Stripe Checkout may allow another payment attempt.
+     * The stock reservation will be released by
+     * checkout.session.expired if the session is never paid.
+     */
     await prisma.order.update({
         where: {
             id: order.id,
         },
+
         data: {
             paymentStatus: 'FAILED',
             paymentIntentId: paymentIntent.id,

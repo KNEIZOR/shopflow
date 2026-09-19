@@ -1,0 +1,32 @@
+.page {
+    min-height: calc(100vh - 160px);
+    padding: 80px 0 120px;
+
+    color: var(--color-text);
+
+    transition:
+        background-color var(--transition-base),
+        color var(--transition-base);
+}
+
+.content {
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .page {
+        padding: 56px 0 96px;
+    }
+}
+
+@media (max-width: 520px) {
+    .page {
+        padding: 40px 0 80px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .page {
+        transition: none;
+    }
+}

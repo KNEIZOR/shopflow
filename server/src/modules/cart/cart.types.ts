@@ -1,7 +1,9 @@
 import type { Prisma } from '@prisma/client';
 
 export type CartWithItems = Prisma.CartGetPayload<{
-    include: {
+    select: {
+        id: true;
+
         items: {
             include: {
                 product: {
@@ -10,6 +12,7 @@ export type CartWithItems = Prisma.CartGetPayload<{
                         name: true;
                         slug: true;
                         status: true;
+                        price: true;
                         images: {
                             select: {
                                 id: true;
@@ -24,6 +27,7 @@ export type CartWithItems = Prisma.CartGetPayload<{
                         };
                     };
                 };
+
                 variant: {
                     select: {
                         id: true;
@@ -31,9 +35,19 @@ export type CartWithItems = Prisma.CartGetPayload<{
                         sku: true;
                         price: true;
                         stock: true;
+                        prices: {
+                            select: {
+                                currency: true;
+                                amount: true;
+                            };
+                            orderBy: {
+                                currency: 'asc';
+                            };
+                        };
                     };
                 };
             };
+
             orderBy: {
                 createdAt: 'asc';
             };

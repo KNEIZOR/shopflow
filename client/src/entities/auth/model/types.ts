@@ -15,7 +15,19 @@ export type LoginInput = {
     password: string;
 };
 
+export type RegisterInput = {
+    email: string;
+    password: string;
+    firstName?: string;
+    lastName?: string;
+};
+
 export type LoginResponse = {
+    success: boolean;
+    user: AuthUser;
+};
+
+export type RegisterResponse = {
     success: boolean;
     user: AuthUser;
 };

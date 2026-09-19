@@ -59,6 +59,7 @@ const orderInclude = {
 const mapOrder = (order: {
     id: string;
     total: unknown;
+    currency: string;
     status: string;
     paymentStatus: string;
     paymentProvider: string | null;
@@ -98,6 +99,7 @@ const mapOrder = (order: {
     return {
         id: order.id,
         total: Number(order.total).toFixed(2),
+        currency: order.currency,
         status: order.status,
         paymentStatus: order.paymentStatus,
         paymentProvider: order.paymentProvider,

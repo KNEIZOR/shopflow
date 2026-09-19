@@ -1,3 +1,4 @@
+import type { CurrencyCode } from '@/shared/config/currencies';
 import { apiRequest } from '@/shared/api';
 
 import type {
@@ -9,8 +10,12 @@ import type {
     UpdateCartItemInput,
 } from '../model/types';
 
-export const getCart = async (): Promise<Cart> => {
-    const response = await apiRequest<GetCartResponse>('/cart');
+export const getCart = async (
+    currency: CurrencyCode = 'RUB',
+): Promise<Cart> => {
+    const response = await apiRequest<GetCartResponse>(
+        `/cart?currency=${currency}`,
+    );
 
     return response.data;
 };

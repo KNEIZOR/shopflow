@@ -1,0 +1,72 @@
+{
+    "eyebrow": "Оформление заказа",
+    "title": "Оформление заказа",
+    "description": "Проверьте адрес доставки и перейдите к безопасной оплате.",
+
+    "loading": "Загрузка оформления заказа",
+    "loadingDescription": "Подготавливаем данные вашего заказа...",
+
+    "deliveryLabel": "Доставка",
+    "deliveryAddress": "Адрес доставки",
+    "addressCount": "{{count}} адресов",
+    "noAddresses": "У вас пока нет сохранённых адресов.",
+    "addAddress": "Добавить адрес",
+
+    "newAddressLabel": "Новый адрес",
+    "addDeliveryAddress": "Добавить адрес доставки",
+
+    "firstName": "Имя",
+    "lastName": "Фамилия",
+    "phone": "Телефон",
+    "country": "Страна",
+    "city": "Город",
+    "postalCode": "Почтовый индекс",
+    "street": "Улица и дом",
+    "apartment": "Квартира / офис",
+
+    "addressCreateError": "Не удалось сохранить адрес.",
+    "savingAddress": "Сохранение...",
+    "saveAddress": "Сохранить адрес",
+    "cancel": "Отмена",
+
+    "orderLabel": "Ваш заказ",
+    "yourOrder": "Товары",
+    "quantity": "Количество",
+
+    "summaryLabel": "Заказ",
+    "orderSummary": "Итоги заказа",
+    "items": "Товары",
+    "total": "Итого",
+
+    "redirectingToPayment": "Переходим к оплате...",
+    "payNow": "Перейти к оплате",
+    "paymentNote": "После подтверждения вы будете перенаправлены на защищённую страницу оплаты Stripe.",
+
+    "cartErrorTitle": "Не удалось загрузить корзину",
+    "cartErrorDescription": "Попробуйте вернуться в корзину и повторить попытку.",
+    "backToCart": "Вернуться в корзину",
+
+    "emptyTitle": "Корзина пуста",
+    "emptyDescription": "Добавьте товары в корзину, чтобы оформить заказ.",
+    "backToCatalog": "Перейти в каталог",
+
+    "addressErrorTitle": "Не удалось загрузить адреса",
+    "addressErrorDescription": "Не удалось получить сохранённые адреса. Попробуйте ещё раз.",
+    "retry": "Повторить",
+
+    "paymentErrorTitle": "Не удалось создать оплату",
+    "paymentErrorDescription": "Попробуйте ещё раз. Если проблема повторяется, проверьте данные заказа.",
+
+    "selectAddressHint": "Выберите адрес доставки, чтобы продолжить.",
+
+    "successLabel": "Оплата",
+    "successTitle": "Заказ успешно оформлен",
+    "successDescription": "Оплата прошла успешно. Информация о заказе доступна в вашем аккаунте.",
+    "goToAccount": "Перейти в аккаунт",
+    "continueShopping": "Продолжить покупки",
+
+    "cancelLabel": "Оплата отменена",
+    "cancelTitle": "Оплата не завершена",
+    "cancelDescription": "Заказ не был оплачен. Вы можете вернуться к оформлению и повторить попытку.",
+    "returnToCheckout": "Вернуться к оформлению"
+}

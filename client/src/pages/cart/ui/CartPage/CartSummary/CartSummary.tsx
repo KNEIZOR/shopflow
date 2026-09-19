@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 import type { CartSummary as CartSummaryType } from '@/entities/cart';
 import { useClearCart } from '@/features/cart-item-actions';
@@ -27,6 +28,8 @@ export const CartSummary = ({
         clearMutation.mutate();
     };
 
+    const isCheckoutDisabled = disabled || summary.itemsCount === 0;
+
     return (
         <aside className={styles.summary}>
             <div className={styles.header}>
@@ -45,18 +48,25 @@ export const CartSummary = ({
                 <div className={`${styles.row} ${styles.total}`}>
                     <span>{t('cart.total')}</span>
 
-                    <strong>{formatCurrency(summary.subtotal, 'RUB')}</strong>
+                    <strong>
+                        {formatCurrency(summary.subtotal, summary.currency)}
+                    </strong>
                 </div>
             </div>
 
-            <button
-                type="button"
-                className={styles.checkout}
-                disabled
-                title={t('cart.checkoutComingSoon')}
-            >
-                {t('cart.checkout')}
-            </button>
+            {isCheckoutDisabled ? (
+                <button
+                    type="button"
+                    className={`${styles.checkout} ${styles.checkoutDisabled}`}
+                    disabled
+                >
+                    {t('cart.checkout')}
+                </button>
+            ) : (
+                <Link to="/checkout" className={styles.checkout}>
+                    {t('cart.checkout')}
+                </Link>
+            )}
 
             <button
                 type="button"

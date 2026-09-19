@@ -1,7 +1,16 @@
+import type { CurrencyCode } from '@/shared/config/currencies';
+
+export type CartProductImage = {
+    id: string;
+    url: string;
+    alt: string | null;
+};
+
 export type CartProduct = {
     id: string;
     name: string;
     slug: string;
+    image: CartProductImage | null;
 };
 
 export type CartVariant = {
@@ -23,6 +32,7 @@ export type CartItem = {
 export type CartSummary = {
     itemsCount: number;
     subtotal: string;
+    currency: CurrencyCode;
 };
 
 export type Cart = {

@@ -6,11 +6,12 @@ import {
     getCurrentUser,
     login as loginRequest,
     logout as logoutRequest,
+    register as registerRequest,
 } from '../api/auth-api';
 
 import { AuthContext } from './AuthContext';
 
-import type { AuthUser, LoginInput } from './types';
+import type { AuthUser, LoginInput, RegisterInput } from './types';
 
 const AUTH_QUERY_KEY = ['auth', 'me'] as const;
 
@@ -38,6 +39,14 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         },
     });
 
+    const registerMutation = useMutation({
+        mutationFn: registerRequest,
+
+        onSuccess: (registeredUser) => {
+            queryClient.setQueryData(AUTH_QUERY_KEY, registeredUser);
+        },
+    });
+
     const logoutMutation = useMutation({
         mutationFn: logoutRequest,
 
@@ -51,6 +60,13 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
             return loginMutation.mutateAsync(input);
         },
         [loginMutation],
+    );
+
+    const register = useCallback(
+        async (input: RegisterInput): Promise<AuthUser> => {
+            return registerMutation.mutateAsync(input);
+        },
+        [registerMutation],
     );
 
     const logout = useCallback(async (): Promise<void> => {
@@ -68,9 +84,10 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
             isAuthenticated,
             isAdmin,
             login,
+            register,
             logout,
         }),
-        [user, isLoading, isAuthenticated, isAdmin, login, logout],
+        [user, isLoading, isAuthenticated, isAdmin, login, register, logout],
     );
 
     return (

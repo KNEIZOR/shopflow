@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-import type { AuthUser, LoginInput } from './types';
+import type { AuthUser, LoginInput, RegisterInput } from './types';
 
 export type AuthContextValue = {
     user: AuthUser | null;
@@ -8,6 +8,7 @@ export type AuthContextValue = {
     isAuthenticated: boolean;
     isAdmin: boolean;
     login: (input: LoginInput) => Promise<AuthUser>;
+    register: (input: RegisterInput) => Promise<AuthUser>;
     logout: () => Promise<void>;
 };
 

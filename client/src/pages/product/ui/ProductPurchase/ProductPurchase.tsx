@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
+import { useAuth } from '@/entities/auth';
 import { useAddToCart } from '@/features/add-to-cart';
 import type { Product, ProductVariant } from '@/entities/product';
 import { formatCurrency } from '@/shared/lib/formatCurrency';
@@ -33,6 +34,10 @@ export const ProductPurchase = ({
     onQuantityChange,
 }: ProductPurchaseProps) => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
     const addToCartMutation = useAddToCart();
 
     const hasVariants = product.variants.length > 0;
@@ -45,7 +50,8 @@ export const ProductPurchase = ({
         Boolean(selectedVariant) &&
         hasStock &&
         quantity >= 1 &&
-        !isAddingToCart;
+        !isAddingToCart &&
+        !isAuthLoading;
 
     const handleDecrease = () => {
         onQuantityChange(quantity - 1);
@@ -57,6 +63,16 @@ export const ProductPurchase = ({
 
     const handleAddToCart = () => {
         if (!selectedVariant || !canAddToCart) {
+            return;
+        }
+
+        if (!isAuthenticated) {
+            void navigate('/account/login', {
+                state: {
+                    from: location.pathname + location.search,
+                },
+            });
+
             return;
         }
 
@@ -157,7 +173,6 @@ export const ProductPurchase = ({
                     <div className={styles.variantGrid}>
                         {product.variants.map((variant) => {
                             const isSelected = variant.id === selectedVariantId;
-
                             const isAvailable = variant.stock > 0;
 
                             return (
@@ -267,6 +282,12 @@ export const ProductPurchase = ({
                 >
                     {addToCartLabel}
                 </button>
+
+                {isAddedToCart && (
+                    <Link to="/cart" className={styles.cartButtonSecondary}>
+                        {t('product.goToCart')}
+                    </Link>
+                )}
             </div>
 
             <div className={styles.mobilePurchase}>
@@ -276,16 +297,24 @@ export const ProductPurchase = ({
                     <strong>{formatCurrency(price, currency)}</strong>
                 </div>
 
-                <button
-                    type="button"
-                    className={
-                        isAddedToCart ? styles.mobileCartButtonSuccess : ''
-                    }
-                    disabled={!canAddToCart}
-                    onClick={handleAddToCart}
-                >
-                    {addToCartLabel}
-                </button>
+                <div className={styles.mobilePurchaseActions}>
+                    <button
+                        type="button"
+                        className={
+                            isAddedToCart ? styles.mobileCartButtonSuccess : ''
+                        }
+                        disabled={!canAddToCart}
+                        onClick={handleAddToCart}
+                    >
+                        {addToCartLabel}
+                    </button>
+
+                    {isAddedToCart && (
+                        <Link to="/cart" className={styles.cartButtonSecondary}>
+                            {t('product.goToCart')}
+                        </Link>
+                    )}
+                </div>
             </div>
         </aside>
     );

@@ -1,5 +1,5 @@
-import { prisma } from '../../../lib/prisma';
 import { AppError } from '../../../errors/app-error';
+import { prisma } from '../../../lib/prisma';
 
 import { CART_LIMITS } from '../cart.constants';
 import type { AddCartItemInput, UpdateCartItemInput } from '../cart.types';
@@ -12,6 +12,21 @@ const cartItemInclude = {
             id: true,
             name: true,
             slug: true,
+
+            images: {
+                select: {
+                    id: true,
+                    url: true,
+                    alt: true,
+                    position: true,
+                },
+
+                orderBy: {
+                    position: 'asc' as const,
+                },
+
+                take: 1,
+            },
         },
     },
 
