@@ -1,0 +1,150 @@
+{
+  "title": "Products",
+  "basicInfo": "Basic information",
+  "basicInfoDescription": "Basic information about the product.",
+  "name": "Name",
+  "slug": "Slug",
+  "category": "Category",
+  "images": "Images",
+  "status": {
+    "label": "Status",
+    "active": "Active",
+    "draft": "Draft",
+    "archived": "Archived"
+  },
+  "description": "Description",
+  "currentPrice": "Current price",
+  "productUpdated": "Product updated successfully",
+  "translations": "Translations",
+  "translationsDescription": "Manage product name and description translations.",
+  "defaultLanguage": "Default language",
+  "namePlaceholder": "Enter product name",
+  "descriptionPlaceholder": "Enter product description",
+  "prices": "Prices",
+  "pricesDescription": "Product prices in different currencies.",
+  "defaultCurrency": "Default currency",
+  "variants": "Variants",
+  "variantsDescription": "Manage product variants and stock.",
+  "addVariant": "Add variant",
+  "noVariants": "This product has no variants yet.",
+  "unnamedVariant": "Unnamed",
+  "stock": "Stock",
+  "variantName": "Variant name",
+  "variantPrice": "Variant price",
+  "sku": "SKU",
+  "variantPrices": "Variant prices",
+  "variantPricesDescription": "Variant prices in different currencies.",
+  "variantAttributes": "Variant attributes",
+  "variantAttributesDescription": "Manage attributes specific to this variant.",
+  "variantAttributesUpdated": "Variant attributes updated successfully.",
+  "variantAttributeRequired": "The attribute “{{name}}” is required.",
+  "variantAttributeNumberInvalid": "Enter a valid number for “{{name}}”.",
+  "attributes": {
+    "title": "Product attributes",
+    "description": "Manage attributes specific to this product.",
+    "empty": "This product type has no product attributes.",
+    "selectProductType": "Select a product type to manage attributes.",
+    "required": "Required",
+    "invalidNumber": "Enter a valid number.",
+    "saved": "Product attributes saved successfully.",
+    "selectPlaceholder": "Select a value",
+    "types": {
+      "text": "Text",
+      "number": "Number",
+      "boolean": "Yes / No",
+      "select": "Select"
+    }
+  },
+  "imageUrl": "Image URL",
+  "imageAlt": "Image description",
+  "imageAltPlaceholder": "Enter image description",
+  "imagePosition": "Position",
+  "imagesDescription": "Manage product images.",
+  "addImage": "Add image",
+  "imageLimit": "The image limit has been reached.",
+  "noImages": "This product has no images yet.",
+  "list": {
+    "eyebrow": "Catalog",
+    "description": "Manage products, prices, categories and statuses.",
+    "create": "Add product",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleting": "Deleting...",
+    "deleteConfirm": "Delete product “{{name}}”?",
+    "deleteSuccess": "Product deleted successfully.",
+    "emptyTitle": "No products yet",
+    "emptyDescription": "Create your first product or change the filters.",
+    "filters": {
+      "search": "Search",
+      "searchPlaceholder": "Name or description...",
+      "category": "Category",
+      "allCategories": "All categories",
+      "status": "Status",
+      "allStatuses": "All statuses",
+      "sort": "Sort"
+    },
+    "sort": {
+      "newest": "Newest first",
+      "oldest": "Oldest first",
+      "priceAsc": "Price: low to high",
+      "priceDesc": "Price: high to low",
+      "nameAsc": "Name: A–Z",
+      "nameDesc": "Name: Z–A"
+    },
+    "table": {
+      "product": "Product",
+      "category": "Category",
+      "price": "Price",
+      "status": "Status",
+      "variants": "Variants",
+      "actions": "Actions"
+    },
+    "pagination": {
+      "info": "Page {{page}} of {{totalPages}} · {{total}} total",
+      "previous": "Previous",
+      "next": "Next"
+    }
+  },
+  "create": {
+    "eyebrow": "New product",
+    "title": "Create product",
+    "description": "Create the basic product information. After saving, you can add images, variants, translations and prices.",
+    "back": "Back to products",
+    "basic": {
+      "eyebrow": "Basic information",
+      "title": "Product details"
+    },
+    "catalog": {
+      "eyebrow": "Catalog",
+      "title": "Category and price"
+    },
+    "fields": {
+      "name": "Name",
+      "namePlaceholder": "For example, iPhone 17 Pro",
+      "slug": "Slug",
+      "slugPlaceholder": "iphone-17-pro",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe the product...",
+      "category": "Category",
+      "categoryPlaceholder": "Select a category",
+      "status": "Status",
+      "price": "Base price",
+      "priceHelper": "The base price is stored in RUB. Additional currencies can be added after creating the product.",
+      "productType": "Product type",
+      "productTypePlaceholder": "Select product type",
+      "productTypeLoadError": "Failed to load product types."
+    },
+    "validation": {
+      "nameRequired": "Enter the product name.",
+      "nameMin": "The name must contain at least 2 characters.",
+      "slugRequired": "Enter the product slug.",
+      "slugFormat": "The slug can contain only Latin letters, numbers and hyphens.",
+      "priceRequired": "Enter a valid price.",
+      "categoryRequired": "Select a category."
+    },
+    "cancel": "Cancel",
+    "submit": "Create product",
+    "creating": "Creating...",
+    "success": "Product created successfully."
+  }
+}

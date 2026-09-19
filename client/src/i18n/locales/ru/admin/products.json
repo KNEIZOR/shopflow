@@ -1,0 +1,150 @@
+{
+  "title": "Товары",
+  "basicInfo": "Основная информация",
+  "basicInfoDescription": "Основная информация о товаре.",
+  "name": "Название",
+  "slug": "Slug",
+  "category": "Категория",
+  "images": "Изображения",
+  "status": {
+    "label": "Статус",
+    "active": "Активен",
+    "draft": "Черновик",
+    "archived": "Архивирован"
+  },
+  "description": "Описание",
+  "currentPrice": "Текущая цена",
+  "productUpdated": "Товар успешно обновлён",
+  "translations": "Переводы",
+  "translationsDescription": "Управление переводами названия и описания товара.",
+  "defaultLanguage": "Язык по умолчанию",
+  "namePlaceholder": "Введите название товара",
+  "descriptionPlaceholder": "Введите описание товара",
+  "prices": "Цены",
+  "pricesDescription": "Цены товара в разных валютах.",
+  "defaultCurrency": "Валюта по умолчанию",
+  "variants": "Варианты",
+  "variantsDescription": "Управление вариантами и остатками товара.",
+  "addVariant": "Добавить вариант",
+  "noVariants": "У товара пока нет вариантов.",
+  "unnamedVariant": "Без названия",
+  "stock": "Остаток",
+  "variantName": "Название варианта",
+  "variantPrice": "Цена варианта",
+  "sku": "SKU",
+  "variantPrices": "Цены варианта",
+  "variantPricesDescription": "Цены варианта в разных валютах.",
+  "variantAttributes": "Атрибуты варианта",
+  "variantAttributesDescription": "Управление атрибутами, относящимися к этому варианту.",
+  "variantAttributesUpdated": "Атрибуты варианта успешно сохранены.",
+  "variantAttributeRequired": "Атрибут «{{name}}» обязателен.",
+  "variantAttributeNumberInvalid": "Введите корректное число для атрибута «{{name}}».",
+  "attributes": {
+    "title": "Атрибуты товара",
+    "description": "Управление атрибутами, относящимися к этому товару.",
+    "empty": "У этого типа товара нет атрибутов товара.",
+    "selectProductType": "Выберите тип товара, чтобы управлять атрибутами.",
+    "required": "Обязательное поле",
+    "invalidNumber": "Введите корректное число.",
+    "saved": "Атрибуты товара успешно сохранены.",
+    "selectPlaceholder": "Выберите значение",
+    "types": {
+      "text": "Текст",
+      "number": "Число",
+      "boolean": "Да / Нет",
+      "select": "Выбор"
+    }
+  },
+  "imageUrl": "URL изображения",
+  "imageAlt": "Описание изображения",
+  "imageAltPlaceholder": "Введите описание изображения",
+  "imagePosition": "Позиция",
+  "imagesDescription": "Управление изображениями товара.",
+  "addImage": "Добавить изображение",
+  "imageLimit": "Достигнут лимит изображений.",
+  "noImages": "У товара пока нет изображений.",
+  "list": {
+    "eyebrow": "Каталог",
+    "description": "Управляйте товарами, ценами, категориями и статусами.",
+    "create": "Добавить товар",
+    "edit": "Изменить",
+    "delete": "Удалить",
+    "deleting": "Удаление...",
+    "deleteConfirm": "Удалить товар «{{name}}»?",
+    "deleteSuccess": "Товар успешно удалён.",
+    "emptyTitle": "Товаров пока нет",
+    "emptyDescription": "Создайте первый товар или измените параметры фильтрации.",
+    "filters": {
+      "search": "Поиск",
+      "searchPlaceholder": "Название или описание...",
+      "category": "Категория",
+      "allCategories": "Все категории",
+      "status": "Статус",
+      "allStatuses": "Все статусы",
+      "sort": "Сортировка"
+    },
+    "sort": {
+      "newest": "Сначала новые",
+      "oldest": "Сначала старые",
+      "priceAsc": "Цена: по возрастанию",
+      "priceDesc": "Цена: по убыванию",
+      "nameAsc": "Название: А–Я",
+      "nameDesc": "Название: Я–А"
+    },
+    "table": {
+      "product": "Товар",
+      "category": "Категория",
+      "price": "Цена",
+      "status": "Статус",
+      "variants": "Варианты",
+      "actions": "Действия"
+    },
+    "pagination": {
+      "info": "Страница {{page}} из {{totalPages}} · Всего {{total}}",
+      "previous": "Назад",
+      "next": "Далее"
+    }
+  },
+  "create": {
+    "eyebrow": "Новый товар",
+    "title": "Добавление товара",
+    "description": "Создайте базовую информацию о товаре. После сохранения можно будет добавить изображения, варианты, переводы и цены.",
+    "back": "К товарам",
+    "basic": {
+      "eyebrow": "Основная информация",
+      "title": "Данные товара"
+    },
+    "catalog": {
+      "eyebrow": "Каталог",
+      "title": "Категория и цена"
+    },
+    "fields": {
+      "name": "Название",
+      "namePlaceholder": "Например, iPhone 17 Pro",
+      "slug": "Slug",
+      "slugPlaceholder": "iphone-17-pro",
+      "description": "Описание",
+      "descriptionPlaceholder": "Кратко опишите товар...",
+      "category": "Категория",
+      "categoryPlaceholder": "Выберите категорию",
+      "status": "Статус",
+      "price": "Базовая цена",
+      "priceHelper": "Базовая цена сохраняется в RUB. Дополнительные валюты можно добавить после создания товара.",
+      "productType": "Тип товара",
+      "productTypePlaceholder": "Выберите тип товара",
+      "productTypeLoadError": "Не удалось загрузить типы товаров."
+    },
+    "validation": {
+      "nameRequired": "Введите название товара.",
+      "nameMin": "Название должно содержать минимум 2 символа.",
+      "slugRequired": "Введите slug товара.",
+      "slugFormat": "Slug может содержать только латинские буквы, цифры и дефисы.",
+      "priceRequired": "Введите корректную цену.",
+      "categoryRequired": "Выберите категорию."
+    },
+    "cancel": "Отмена",
+    "submit": "Создать товар",
+    "creating": "Создание...",
+    "success": "Товар успешно создан."
+  }
+}

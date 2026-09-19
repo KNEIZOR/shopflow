@@ -11,26 +11,26 @@ const DEFAULT_FILTERS: CatalogFilters = {
     sort: 'newest',
 };
 
+const VALID_SORTS: CatalogFilters['sort'][] = [
+    'newest',
+    'oldest',
+    'price_asc',
+    'price_desc',
+    'name_asc',
+    'name_desc',
+];
+
 const getFiltersFromSearchParams = (
     searchParams: URLSearchParams,
 ): CatalogFilters => {
     const sort = searchParams.get('sort');
-
-    const validSorts: CatalogFilters['sort'][] = [
-        'newest',
-        'oldest',
-        'price_asc',
-        'price_desc',
-        'name_asc',
-        'name_desc',
-    ];
 
     return {
         search: searchParams.get('search') ?? '',
         category: searchParams.get('category') ?? '',
         minPrice: searchParams.get('minPrice') ?? '',
         maxPrice: searchParams.get('maxPrice') ?? '',
-        sort: validSorts.includes(sort as CatalogFilters['sort'])
+        sort: VALID_SORTS.includes(sort as CatalogFilters['sort'])
             ? (sort as CatalogFilters['sort'])
             : DEFAULT_FILTERS.sort,
     };
@@ -75,7 +75,7 @@ export const useCatalogFilters = () => {
     const updateFilters = useCallback(
         (nextFilters: Partial<CatalogFilters>) => {
             setFilters((currentFilters) => {
-                const next = {
+                const next: CatalogFilters = {
                     ...currentFilters,
                     ...nextFilters,
                 };

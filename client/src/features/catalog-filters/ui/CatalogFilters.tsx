@@ -1,5 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { useCategories } from '@/entities/category';
+import { useLocale } from '@/entities/locale';
 
 import type { CatalogFilters as CatalogFiltersState } from '../model/types';
 
@@ -25,26 +28,21 @@ export const CatalogFilters = ({
     onReset,
 }: CatalogFiltersProps) => {
     const { t } = useTranslation();
+    const { language } = useLocale();
+
+    const {
+        data: categories = [],
+        isLoading: isCategoriesLoading,
+        isError: isCategoriesError,
+    } = useCategories(language);
+
+    const [searchInput, setSearchInput] = useState(filters.search);
+    const [minPriceInput, setMinPriceInput] = useState(filters.minPrice);
+    const [maxPriceInput, setMaxPriceInput] = useState(filters.maxPrice);
 
     const searchTimeoutRef = useRef<number | null>(null);
     const minPriceTimeoutRef = useRef<number | null>(null);
     const maxPriceTimeoutRef = useRef<number | null>(null);
-
-    const searchValueRef = useRef(filters.search);
-    const minPriceValueRef = useRef(filters.minPrice);
-    const maxPriceValueRef = useRef(filters.maxPrice);
-
-    useEffect(() => {
-        searchValueRef.current = filters.search;
-    }, [filters.search]);
-
-    useEffect(() => {
-        minPriceValueRef.current = filters.minPrice;
-    }, [filters.minPrice]);
-
-    useEffect(() => {
-        maxPriceValueRef.current = filters.maxPrice;
-    }, [filters.maxPrice]);
 
     useEffect(() => {
         return () => {
@@ -63,7 +61,7 @@ export const CatalogFilters = ({
     }, []);
 
     const handleSearchChange = (value: string) => {
-        searchValueRef.current = value;
+        setSearchInput(value);
 
         if (searchTimeoutRef.current !== null) {
             window.clearTimeout(searchTimeoutRef.current);
@@ -71,9 +69,9 @@ export const CatalogFilters = ({
 
         searchTimeoutRef.current = window.setTimeout(() => {
             onChange({
-                search: searchValueRef.current,
+                search: value,
             });
-        }, 300);
+        }, 400);
     };
 
     const handleMinPriceChange = (value: string) => {
@@ -83,7 +81,7 @@ export const CatalogFilters = ({
             return;
         }
 
-        minPriceValueRef.current = normalizedValue;
+        setMinPriceInput(normalizedValue);
 
         if (minPriceTimeoutRef.current !== null) {
             window.clearTimeout(minPriceTimeoutRef.current);
@@ -91,7 +89,7 @@ export const CatalogFilters = ({
 
         minPriceTimeoutRef.current = window.setTimeout(() => {
             onChange({
-                minPrice: minPriceValueRef.current,
+                minPrice: normalizedValue,
             });
         }, 500);
     };
@@ -103,7 +101,7 @@ export const CatalogFilters = ({
             return;
         }
 
-        maxPriceValueRef.current = normalizedValue;
+        setMaxPriceInput(normalizedValue);
 
         if (maxPriceTimeoutRef.current !== null) {
             window.clearTimeout(maxPriceTimeoutRef.current);
@@ -111,7 +109,7 @@ export const CatalogFilters = ({
 
         maxPriceTimeoutRef.current = window.setTimeout(() => {
             onChange({
-                maxPrice: maxPriceValueRef.current,
+                maxPrice: normalizedValue,
             });
         }, 500);
     };
@@ -141,9 +139,9 @@ export const CatalogFilters = ({
             window.clearTimeout(maxPriceTimeoutRef.current);
         }
 
-        searchValueRef.current = '';
-        minPriceValueRef.current = '';
-        maxPriceValueRef.current = '';
+        setSearchInput('');
+        setMinPriceInput('');
+        setMaxPriceInput('');
 
         onReset();
     };
@@ -158,7 +156,7 @@ export const CatalogFilters = ({
                 <input
                     id="catalog-search"
                     type="search"
-                    value={filters.search}
+                    value={searchInput}
                     placeholder={t('catalog.filters.searchPlaceholder')}
                     onChange={(event) => {
                         handleSearchChange(event.target.value);
@@ -174,13 +172,24 @@ export const CatalogFilters = ({
                 <select
                     id="catalog-category"
                     value={filters.category}
+                    disabled={isCategoriesLoading || isCategoriesError}
                     onChange={(event) => {
                         handleCategoryChange(event.target.value);
                     }}
                 >
                     <option value="">
-                        {t('catalog.filters.allCategories')}
+                        {isCategoriesLoading
+                            ? t('catalog.filters.loadingCategories')
+                            : isCategoriesError
+                              ? t('catalog.filters.categoriesError')
+                              : t('catalog.filters.allCategories')}
                     </option>
+
+                    {categories.map((category) => (
+                        <option key={category.id} value={category.slug}>
+                            {category.name}
+                        </option>
+                    ))}
                 </select>
             </div>
 
@@ -194,7 +203,7 @@ export const CatalogFilters = ({
                         id="catalog-min-price"
                         type="text"
                         inputMode="decimal"
-                        value={filters.minPrice}
+                        value={minPriceInput}
                         placeholder="0.00"
                         onChange={(event) => {
                             handleMinPriceChange(event.target.value);
@@ -211,7 +220,7 @@ export const CatalogFilters = ({
                         id="catalog-max-price"
                         type="text"
                         inputMode="decimal"
-                        value={filters.maxPrice}
+                        value={maxPriceInput}
                         placeholder="0.00"
                         onChange={(event) => {
                             handleMaxPriceChange(event.target.value);

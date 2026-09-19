@@ -1,8 +1,15 @@
 import { useTranslation } from 'react-i18next';
 
+import { changeLanguage } from '@/i18n';
+
+import type { LanguageCode } from '@/shared/config/languages';
+
 import styles from './LanguageSwitcher.module.scss';
 
-const LANGUAGES = [
+const LANGUAGES: ReadonlyArray<{
+    code: LanguageCode;
+    label: string;
+}> = [
     {
         code: 'ru',
         label: 'RU',
@@ -11,13 +18,23 @@ const LANGUAGES = [
         code: 'en',
         label: 'EN',
     },
-] as const;
+];
 
 export const LanguageSwitcher = () => {
     const { i18n, t } = useTranslation();
 
-    const changeLanguage = (language: string) => {
-        void i18n.changeLanguage(language);
+    const handleLanguageChange = async (
+        language: LanguageCode,
+    ): Promise<void> => {
+        if (language === i18n.resolvedLanguage) {
+            return;
+        }
+
+        try {
+            await changeLanguage(language);
+        } catch (error) {
+            console.error('Failed to change language:', error);
+        }
     };
 
     return (
@@ -36,7 +53,9 @@ export const LanguageSwitcher = () => {
                         className={`${styles.button} ${
                             isActive ? styles.active : ''
                         }`}
-                        onClick={() => changeLanguage(language.code)}
+                        onClick={() => {
+                            void handleLanguageChange(language.code);
+                        }}
                         aria-pressed={isActive}
                     >
                         {language.label}

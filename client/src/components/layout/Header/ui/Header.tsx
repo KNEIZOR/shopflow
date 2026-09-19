@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 
+import { useAuth } from '@/entities/auth';
+import { useCart } from '@/entities/cart';
 import { useLocale } from '@/entities/locale';
 import {
     CURRENCIES,
@@ -20,7 +22,12 @@ export const Header = () => {
 
     const { language, currency, setLanguage, setCurrency } = useLocale();
 
+    const { isAuthenticated } = useAuth();
+
+    const { data: cart } = useCart();
+
     const [isLanguageOpen, setIsLanguageOpen] = useState(false);
+
     const [isCurrencyOpen, setIsCurrencyOpen] = useState(false);
 
     const currentLanguage =
@@ -29,13 +36,19 @@ export const Header = () => {
     const currentCurrency =
         CURRENCIES.find((item) => item.code === currency) ?? CURRENCIES[0];
 
+    const cartItemsCount = isAuthenticated
+        ? (cart?.summary.itemsCount ?? 0)
+        : 0;
+
     const handleLanguageToggle = () => {
         setIsLanguageOpen((isOpen) => !isOpen);
+
         setIsCurrencyOpen(false);
     };
 
     const handleCurrencyToggle = () => {
         setIsCurrencyOpen((isOpen) => !isOpen);
+
         setIsLanguageOpen(false);
     };
 
@@ -266,18 +279,18 @@ export const Header = () => {
                                 isActive ? styles.header__iconLinkActive : ''
                             }`
                         }
-                        aria-label={t('header.cart')}
+                        aria-label={t('header.cartItems', {
+                            count: cartItemsCount,
+                        })}
                         title={t('header.cart')}
                     >
                         <ShoppingCart size={20} strokeWidth={1.8} />
 
                         <span
                             className={styles.header__cartCount}
-                            aria-label={t('header.cartItems', {
-                                count: 0,
-                            })}
+                            aria-hidden="true"
                         >
-                            0
+                            {cartItemsCount}
                         </span>
                     </NavLink>
                 </div>

@@ -1,0 +1,18 @@
+{
+  "eyebrow": "Overview",
+  "title": "Welcome to ShopFlow",
+  "description": "Manage your store, products, orders and users from one place.",
+  "stats": {
+    "products": "Products",
+    "orders": "Orders",
+    "users": "Users",
+    "revenue": "Revenue"
+  },
+  "recentOrders": "Recent orders",
+  "noRecentOrders": "There are no recent orders yet.",
+  "quickActions": "Quick actions",
+  "actions": {
+    "products": "Manage products",
+    "categories": "Manage categories"
+  }
+}

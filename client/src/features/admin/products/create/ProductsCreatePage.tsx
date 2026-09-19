@@ -3,7 +3,10 @@ import { type ChangeEvent, type FormEvent, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { useCreateProduct } from '@/features/admin/product/model';
+import {
+    useCreateProduct,
+    useProductTypes,
+} from '@/features/admin/product/model';
 
 import { useCategories } from '@/entities/category';
 import { useLocale } from '@/entities/locale';
@@ -21,6 +24,7 @@ type FormState = {
     description: string;
     price: string;
     categoryId: string;
+    productTypeId: string;
     status: ProductStatus;
 };
 
@@ -32,6 +36,7 @@ const INITIAL_FORM: FormState = {
     description: '',
     price: '2599',
     categoryId: '',
+    productTypeId: '',
     status: 'DRAFT',
 };
 
@@ -122,6 +127,14 @@ export const ProductsCreatePage = () => {
         isError: isCategoriesError,
     } = useCategories(language);
 
+    const {
+        data: productTypesResponse,
+        isLoading: isProductTypesLoading,
+        isError: isProductTypesError,
+    } = useProductTypes();
+
+    const productTypes = productTypesResponse?.items ?? [];
+
     const { mutateAsync: createProduct, isPending } = useCreateProduct();
 
     const { showToast } = useToast();
@@ -133,6 +146,14 @@ export const ProductsCreatePage = () => {
     const selectedCategory = useMemo(
         () => categories.find((category) => category.id === form.categoryId),
         [categories, form.categoryId],
+    );
+
+    const selectedProductType = useMemo(
+        () =>
+            productTypes.find(
+                (productType) => productType.id === form.productTypeId,
+            ),
+        [productTypes, form.productTypeId],
     );
 
     const updateField = <K extends keyof FormState>(
@@ -255,6 +276,7 @@ export const ProductsCreatePage = () => {
             description: form.description.trim() || undefined,
             price,
             categoryId: form.categoryId,
+            productTypeId: form.productTypeId || undefined,
             status: form.status,
         };
 
@@ -490,6 +512,56 @@ export const ProductsCreatePage = () => {
                             {selectedCategory && (
                                 <span className={styles.helper}>
                                     /{selectedCategory.slug}
+                                </span>
+                            )}
+                        </label>
+
+                        <label className={styles.field}>
+                            <span className={styles.label}>
+                                {t('admin.products.create.fields.productType')}
+                            </span>
+
+                            <select
+                                value={form.productTypeId}
+                                onChange={(event) =>
+                                    updateField(
+                                        'productTypeId',
+                                        event.target.value,
+                                    )
+                                }
+                                disabled={isPending}
+                            >
+                                <option value="">
+                                    {isProductTypesLoading
+                                        ? t('common.loading')
+                                        : t(
+                                              'admin.products.create.fields.productTypePlaceholder',
+                                          )}
+                                </option>
+
+                                {!isProductTypesLoading &&
+                                    !isProductTypesError &&
+                                    productTypes.map((productType) => (
+                                        <option
+                                            key={productType.id}
+                                            value={productType.id}
+                                        >
+                                            {productType.name}
+                                        </option>
+                                    ))}
+                            </select>
+
+                            {isProductTypesError && (
+                                <span className={styles.error}>
+                                    {t(
+                                        'admin.products.create.fields.productTypeLoadError',
+                                    )}
+                                </span>
+                            )}
+
+                            {selectedProductType && (
+                                <span className={styles.helper}>
+                                    /{selectedProductType.slug}
                                 </span>
                             )}
                         </label>

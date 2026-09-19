@@ -1,0 +1,21 @@
+{
+    "navigation": "Навигация",
+    "home": "Главная",
+    "catalog": "Каталог",
+    "cart": "Корзина",
+    "cartItems_one": "Корзина, {{count}} товар",
+    "cartItems_few": "Корзина, {{count}} товара",
+    "cartItems_many": "Корзина, {{count}} товаров",
+    "cartItems_other": "Корзина, {{count}} товаров",
+    "account": "Аккаунт",
+    "language": "Язык",
+    "currency": "Валюта",
+    "switchToRussian": "Переключить на русский",
+    "switchToEnglish": "Переключить на английский",
+    "russian": "Русский",
+    "english": "Английский",
+    "theme": {
+        "light": "Включить светлую тему",
+        "dark": "Включить тёмную тему"
+    }
+}

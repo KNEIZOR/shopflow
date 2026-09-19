@@ -1,0 +1,61 @@
+{
+  "eyebrow": "Welcome to ShopFlow",
+  "title": "Everything you need in one place",
+  "description": "Discover our products and enjoy a fast and secure shopping experience.",
+  "catalogButton": "Browse catalog",
+  "stats": {
+    "products": "products",
+    "support": "support",
+    "secure": "secure shopping"
+  },
+  "categories": {
+    "eyebrow": "Categories",
+    "title": "Shop by category",
+    "description": "From flagship devices to everyday accessories — everything in one place.",
+    "viewAll": "View all",
+    "explore": "Explore",
+    "empty": "No categories available yet"
+  },
+  "newProducts": {
+    "eyebrow": "New arrivals",
+    "title": "New products",
+    "description": "Discover the latest products added to our catalog.",
+    "viewAll": "View all products",
+    "loading": "Loading products...",
+    "error": "Failed to load products.",
+    "empty": "No new products yet."
+  },
+  "benefits": {
+    "eyebrow": "Why ShopFlow",
+    "title": "Shopping should be simple",
+    "description": "We create a convenient shopping experience — from choosing a product to receiving your order.",
+    "items": {
+      "delivery": {
+        "title": "Fast delivery",
+        "description": "Get your orders quickly and conveniently."
+      },
+      "secure": {
+        "title": "Secure payment",
+        "description": "Protected payments powered by Stripe."
+      },
+      "returns": {
+        "title": "Easy returns",
+        "description": "A simple and convenient return process."
+      },
+      "support": {
+        "title": "Support",
+        "description": "We are here to help with any questions."
+      }
+    }
+  },
+  "cta": {
+    "eyebrow": "Start shopping",
+    "title": "Find what you really need",
+    "description": "Explore the ShopFlow catalog and find products that are right for you.",
+    "button": "Browse catalog"
+  },
+  "cards": {
+    "featured": "Featured",
+    "popular": "Popular"
+  }
+}

@@ -1,0 +1,19 @@
+{
+    "navigation": "Navigation",
+    "home": "Home",
+    "catalog": "Catalog",
+    "cart": "Cart",
+    "cartItems_one": "Cart, {{count}} item",
+    "cartItems_other": "Cart, {{count}} items",
+    "account": "Account",
+    "language": "Language",
+    "currency": "Currency",
+    "switchToRussian": "Switch to Russian",
+    "switchToEnglish": "Switch to English",
+    "russian": "Russian",
+    "english": "English",
+    "theme": {
+        "light": "Switch to light theme",
+        "dark": "Switch to dark theme"
+    }
+}

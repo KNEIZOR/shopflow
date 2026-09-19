@@ -3,35 +3,43 @@
 
     color: var(--color-text);
 
-    transition: color var(--transition-base);
+    transition:
+        color var(--transition-base),
+        transform var(--transition-fast);
 }
 
 .imageLink {
+    position: relative;
+
     display: block;
 
-    border-radius: 12px;
+    border-radius: 18px;
 
     &:focus-visible {
         outline: 3px solid var(--focus-ring);
-        outline-offset: 3px;
+        outline-offset: 4px;
     }
 }
 
 .imageWrapper {
     position: relative;
 
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 0.92 / 1;
 
     overflow: hidden;
 
     border: 1px solid var(--color-border);
-    border-radius: 12px;
+    border-radius: 18px;
 
     background: var(--color-surface-secondary);
 
+    box-shadow: var(--shadow-sm);
+
     transition:
         background-color var(--transition-base),
-        border-color var(--transition-base);
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast),
+        transform var(--transition-fast);
 }
 
 .image {
@@ -41,17 +49,62 @@
     object-fit: cover;
 
     transition:
-        transform 0.3s ease,
-        filter 0.3s ease;
+        transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 0.4s ease;
+}
+
+.imageLink::after {
+    content: '↗';
+
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 38px;
+    height: 38px;
+
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 50%;
+
+    background: rgba(0, 0, 0, 0.58);
+    color: #fff;
+
+    font-size: 18px;
+    line-height: 1;
+
+    opacity: 0;
+
+    transform: translateY(8px) scale(0.92);
+
+    backdrop-filter: blur(8px);
+
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s ease;
 }
 
 .imageLink:hover .image {
-    transform: scale(1.03);
-    filter: saturate(1.03);
+    transform: scale(1.055);
+
+    filter: saturate(1.05);
 }
 
 .imageLink:hover .imageWrapper {
     border-color: var(--color-border-strong);
+
+    box-shadow: var(--shadow-md);
+
+    transform: translateY(-3px);
+}
+
+.imageLink:hover::after {
+    opacity: 1;
+
+    transform: translateY(0) scale(1);
 }
 
 .placeholder {
@@ -62,13 +115,13 @@
     align-items: center;
     justify-content: center;
 
-    padding: 16px;
+    padding: 20px;
 
     background: var(--color-surface-secondary);
 
     color: var(--color-text-muted);
 
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.5;
 
     text-align: center;
@@ -85,20 +138,24 @@
 
     min-width: 0;
 
-    padding-top: 16px;
+    padding: 16px 2px 0;
 }
 
 .category {
     max-width: 100%;
 
-    margin-bottom: 6px;
+    margin-bottom: 7px;
 
     overflow: hidden;
 
     color: var(--color-text-muted);
 
-    font-size: 13px;
+    font-size: 11px;
+    font-weight: 700;
     line-height: 1.3;
+
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
 
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -116,47 +173,82 @@
     font-size: 17px;
     font-weight: 500;
     line-height: 1.3;
+    letter-spacing: -0.015em;
 
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
 
-    transition: color var(--transition-base);
+    transition:
+        color var(--transition-fast),
+        transform var(--transition-fast);
 }
 
 .price {
-    margin-top: 10px;
+    margin-top: 11px;
 
     color: var(--color-text);
 
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 17px;
+    font-weight: 700;
     line-height: 1.3;
+    letter-spacing: -0.02em;
 
     transition: color var(--transition-base);
+}
+
+.card:hover .category {
+    color: var(--color-accent);
 }
 
 .card:hover .name {
     color: var(--color-accent);
 }
 
-@media (max-width: 480px) {
-    .content {
-        padding-top: 12px;
+@media (max-width: 768px) {
+    .imageWrapper {
+        border-radius: 15px;
     }
 
-    .category {
-        margin-bottom: 4px;
+    .imageLink::after {
+        display: none;
+    }
 
-        font-size: 12px;
+    .content {
+        padding-top: 13px;
     }
 
     .name {
-        font-size: 15px;
+        font-size: 16px;
     }
 
     .price {
-        margin-top: 8px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .imageWrapper {
+        border-radius: 13px;
+    }
+
+    .content {
+        padding-top: 11px;
+    }
+
+    .category {
+        margin-bottom: 5px;
+
+        font-size: 10px;
+    }
+
+    .name {
+        font-size: 14px;
+        line-height: 1.35;
+    }
+
+    .price {
+        margin-top: 7px;
 
         font-size: 15px;
     }
@@ -176,6 +268,15 @@
 
     .imageLink:hover .image {
         transform: none;
+
         filter: none;
+    }
+
+    .imageLink:hover .imageWrapper {
+        transform: none;
+    }
+
+    .imageLink::after {
+        display: none;
     }
 }

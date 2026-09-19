@@ -1,6 +1,12 @@
-import { Prisma, type CurrencyCode } from '@prisma/client';
+import {
+    Prisma,
+    type CurrencyCode,
+    type ProductAttributeScope,
+} from '@prisma/client';
 
 const DEFAULT_CURRENCY: CurrencyCode = 'RUB';
+
+const PRODUCT_ATTRIBUTE_SCOPES: ProductAttributeScope[] = ['PRODUCT', 'BOTH'];
 
 export const createProductInclude = (
     language: string,
@@ -32,6 +38,79 @@ export const createProductInclude = (
             id: true,
             name: true,
             slug: true,
+
+            attributes: {
+                where: {
+                    attribute: {
+                        scope: {
+                            in: PRODUCT_ATTRIBUTE_SCOPES,
+                        },
+                    },
+                },
+
+                select: {
+                    id: true,
+                    attributeId: true,
+                    isRequired: true,
+                    position: true,
+
+                    attribute: {
+                        select: {
+                            id: true,
+                            name: true,
+                            slug: true,
+                            description: true,
+                            type: true,
+                            scope: true,
+                        },
+                    },
+
+                    options: {
+                        select: {
+                            id: true,
+                            value: true,
+                            label: true,
+                            position: true,
+                        },
+
+                        orderBy: {
+                            position: 'asc' as const,
+                        },
+                    },
+                },
+
+                orderBy: {
+                    position: 'asc' as const,
+                },
+            },
+        },
+    },
+
+    attributeValues: {
+        select: {
+            id: true,
+            value: true,
+            attributeId: true,
+
+            attribute: {
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    description: true,
+                    type: true,
+                    scope: true,
+                },
+            },
+
+            createdAt: true,
+            updatedAt: true,
+        },
+
+        orderBy: {
+            attribute: {
+                name: 'asc' as const,
+            },
         },
     },
 
@@ -98,6 +177,31 @@ export const createProductInclude = (
                 select: {
                     currency: true,
                     amount: true,
+                },
+            },
+
+            attributeValues: {
+                select: {
+                    id: true,
+                    value: true,
+                    attributeId: true,
+
+                    attribute: {
+                        select: {
+                            id: true,
+                            name: true,
+                            slug: true,
+                            description: true,
+                            type: true,
+                            scope: true,
+                        },
+                    },
+                },
+
+                orderBy: {
+                    attribute: {
+                        name: 'asc' as const,
+                    },
                 },
             },
         },

@@ -1,0 +1,24 @@
+{
+  "eyebrow": "Catalog",
+  "title": "All products",
+  "description": "Choose the right products from our catalog.",
+  "loading": "Loading products...",
+  "error": "Failed to load products.",
+  "empty": "No products yet.",
+  "filters": {
+    "search": "Search",
+    "searchPlaceholder": "Search products...",
+    "category": "Category",
+    "allCategories": "All categories",
+    "minPrice": "From",
+    "maxPrice": "To",
+    "sort": "Sort",
+    "newest": "Newest",
+    "oldest": "Oldest",
+    "priceAsc": "Price: low to high",
+    "priceDesc": "Price: high to low",
+    "nameAsc": "Name: A–Z",
+    "nameDesc": "Name: Z–A",
+    "reset": "Reset"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "eyebrow": "Catalog configuration",
+  "title": "Categories",
+  "description": "Create and manage product categories used throughout the catalog.",
+  "form": {
+    "createEyebrow": "New category",
+    "createTitle": "Create category",
+    "editEyebrow": "Category settings",
+    "editTitle": "Edit category"
+  },
+  "fields": {
+    "name": "Name",
+    "namePlaceholder": "e.g. Smartphones",
+    "slug": "Slug",
+    "slugPlaceholder": "e.g. smartphones",
+    "description": "Description",
+    "descriptionPlaceholder": "Describe this category...",
+    "imageUrl": "Image URL",
+    "imageUrlPlaceholder": "https://example.com/category.jpg"
+  },
+  "actions": {
+    "create": "Add category",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleting": "Deleting...",
+    "cancel": "Cancel",
+    "save": "Save changes",
+    "saving": "Saving...",
+    "retry": "Retry"
+  },
+  "states": {
+    "loading": "Loading categories...",
+    "error": "Failed to load categories.",
+    "emptyTitle": "No categories yet",
+    "emptyDescription": "Create your first category to start organizing products."
+  },
+  "messages": {
+    "created": "Category created successfully.",
+    "updated": "Category updated successfully.",
+    "deleted": "Category deleted successfully."
+  },
+  "errors": {
+    "create": "Failed to create category.",
+    "update": "Failed to update category.",
+    "delete": "Failed to delete category."
+  },
+  "deleteConfirm": "Are you sure you want to delete the category \"{{name}}\"?",
+  "validation": {
+    "name": "Name must contain at least 2 characters.",
+    "slug": "Slug must contain at least 2 characters.",
+    "slugFormat": "Slug may contain only lowercase letters, numbers and hyphens.",
+    "imageUrl": "Please enter a valid image URL."
+  }
+}

@@ -1,18 +1,12 @@
 import { apiRequest } from '@/shared/api';
-import type { CurrencyCode } from '@/shared/config/currencies';
+
+import type { ProductVariant } from '../model/types';
 
 export type ProductVariantsResponse = {
     items: ProductVariantResponse[];
 };
 
-export type ProductVariantResponse = {
-    id: string;
-    name: string;
-    sku: string;
-    price: string | null;
-    currency: CurrencyCode;
-    stock: number;
-};
+export type ProductVariantResponse = ProductVariant;
 
 export type CreateProductVariantInput = {
     name: string;
