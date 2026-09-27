@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import type { CatalogFilters } from './types';
@@ -39,20 +39,25 @@ const getFiltersFromSearchParams = (
 const buildSearchParams = (filters: CatalogFilters) => {
     const params = new URLSearchParams();
 
-    if (filters.search) {
-        params.set('search', filters.search);
+    const search = filters.search.trim();
+    const category = filters.category.trim();
+    const minPrice = filters.minPrice.trim();
+    const maxPrice = filters.maxPrice.trim();
+
+    if (search) {
+        params.set('search', search);
     }
 
-    if (filters.category) {
-        params.set('category', filters.category);
+    if (category) {
+        params.set('category', category);
     }
 
-    if (filters.minPrice) {
-        params.set('minPrice', filters.minPrice);
+    if (minPrice) {
+        params.set('minPrice', minPrice);
     }
 
-    if (filters.maxPrice) {
-        params.set('maxPrice', filters.maxPrice);
+    if (maxPrice) {
+        params.set('maxPrice', maxPrice);
     }
 
     if (filters.sort !== DEFAULT_FILTERS.sort) {
@@ -65,32 +70,32 @@ const buildSearchParams = (filters: CatalogFilters) => {
 export const useCatalogFilters = () => {
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const initialFilters = useMemo(
+    const filters = useMemo(
         () => getFiltersFromSearchParams(searchParams),
         [searchParams],
     );
 
-    const [filters, setFilters] = useState<CatalogFilters>(initialFilters);
-
     const updateFilters = useCallback(
         (nextFilters: Partial<CatalogFilters>) => {
-            setFilters((currentFilters) => {
-                const next: CatalogFilters = {
-                    ...currentFilters,
-                    ...nextFilters,
-                };
+            const nextFiltersState: CatalogFilters = {
+                ...filters,
+                ...nextFilters,
+            };
 
-                setSearchParams(buildSearchParams(next));
-
-                return next;
+            setSearchParams(buildSearchParams(nextFiltersState), {
+                replace: true,
             });
         },
-        [setSearchParams],
+        [filters, setSearchParams],
     );
 
     const resetFilters = useCallback(() => {
-        setFilters(DEFAULT_FILTERS);
-        setSearchParams({});
+        setSearchParams(
+            {},
+            {
+                replace: true,
+            },
+        );
     }, [setSearchParams]);
 
     return {
