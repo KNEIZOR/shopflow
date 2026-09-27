@@ -1,7 +1,7 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query';
 
-import { getProducts, type GetProductsParams } from '@/entities/product';
 import { useLocale } from '@/entities/locale';
+import { getProducts, type GetProductsParams } from '@/entities/product';
 
 export const catalogQueryKeys = {
     all: ['products'] as const,
@@ -48,6 +48,15 @@ export const useCatalog = (params: UseCatalogParams = {}) => {
         queryKey: catalogQueryKeys.list(queryParams),
 
         initialPageParam,
+
+        /*
+         * Keep the currently displayed products while React Query
+         * fetches products for the new filter/search parameters.
+         *
+         * This prevents the entire catalog page from switching
+         * to the skeleton every time the user changes a filter.
+         */
+        placeholderData: keepPreviousData,
 
         queryFn: ({ pageParam }) => {
             return getProducts({
