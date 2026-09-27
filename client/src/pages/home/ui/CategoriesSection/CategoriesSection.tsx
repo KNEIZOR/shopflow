@@ -3,12 +3,16 @@ import { Link } from 'react-router-dom';
 
 import { useCategories } from '@/entities/category';
 import { useLocale } from '@/entities/locale';
+import { optimizeImageUrl } from '@/shared/lib/optimizeImageUrl';
 import { ScrollReveal } from '@/shared/ui/ScrollReveal';
 
 import styles from './CategoriesSection.module.scss';
 
 const MAX_FEATURED_CATEGORIES = 6;
 const CARD_REVEAL_DELAY = 80;
+
+const CATEGORY_IMAGE_WIDTH = 640;
+const CATEGORY_IMAGE_QUALITY = 70;
 
 const getCategoryInitial = (name: string): string => {
     return name.trim().charAt(0).toUpperCase();
@@ -125,81 +129,96 @@ export const CategoriesSection = () => {
                     </ScrollReveal>
                 ) : (
                     <div className={styles.grid}>
-                        {visibleCategories.map((category, index) => (
-                            <ScrollReveal
-                                key={category.id}
-                                animation="fade-up"
-                                delay={index * CARD_REVEAL_DELAY}
-                                duration={800}
-                            >
-                                <Link
-                                    to={`/catalog?category=${encodeURIComponent(
-                                        category.slug,
-                                    )}`}
-                                    className={styles.card}
+                        {visibleCategories.map((category, index) => {
+                            const imageUrl = category.imageUrl
+                                ? optimizeImageUrl(category.imageUrl, {
+                                      width: CATEGORY_IMAGE_WIDTH,
+                                      quality: CATEGORY_IMAGE_QUALITY,
+                                  })
+                                : null;
+
+                            return (
+                                <ScrollReveal
+                                    key={category.id}
+                                    animation="fade-up"
+                                    delay={index * CARD_REVEAL_DELAY}
+                                    duration={800}
                                 >
-                                    <div className={styles.imageWrapper}>
-                                        {category.imageUrl ? (
-                                            <img
-                                                src={category.imageUrl}
-                                                alt={category.name}
-                                                className={styles.image}
-                                                loading="lazy"
-                                            />
-                                        ) : (
+                                    <Link
+                                        to={`/catalog?category=${encodeURIComponent(
+                                            category.slug,
+                                        )}`}
+                                        className={styles.card}
+                                    >
+                                        <div className={styles.imageWrapper}>
+                                            {imageUrl ? (
+                                                <img
+                                                    src={imageUrl}
+                                                    alt={category.name}
+                                                    className={styles.image}
+                                                    loading="lazy"
+                                                    decoding="async"
+                                                />
+                                            ) : (
+                                                <div
+                                                    className={styles.fallback}
+                                                    aria-hidden="true"
+                                                >
+                                                    <span>
+                                                        {getCategoryInitial(
+                                                            category.name,
+                                                        )}
+                                                    </span>
+                                                </div>
+                                            )}
+
                                             <div
-                                                className={styles.fallback}
+                                                className={styles.imageOverlay}
+                                                aria-hidden="true"
+                                            />
+
+                                            <span className={styles.number}>
+                                                {String(index + 1).padStart(
+                                                    2,
+                                                    '0',
+                                                )}
+                                            </span>
+
+                                            <span
+                                                className={styles.cardArrow}
                                                 aria-hidden="true"
                                             >
-                                                <span>
-                                                    {getCategoryInitial(
-                                                        category.name,
-                                                    )}
-                                                </span>
-                                            </div>
-                                        )}
-
-                                        <div
-                                            className={styles.imageOverlay}
-                                            aria-hidden="true"
-                                        />
-
-                                        <span className={styles.number}>
-                                            {String(index + 1).padStart(2, '0')}
-                                        </span>
-
-                                        <span
-                                            className={styles.cardArrow}
-                                            aria-hidden="true"
-                                        >
-                                            →
-                                        </span>
-                                    </div>
-
-                                    <div className={styles.cardContent}>
-                                        <div>
-                                            <h3 className={styles.cardTitle}>
-                                                {category.name}
-                                            </h3>
-
-                                            {category.description && (
-                                                <p
-                                                    className={
-                                                        styles.cardDescription
-                                                    }
-                                                >
-                                                    {category.description}
-                                                </p>
-                                            )}
+                                                →
+                                            </span>
                                         </div>
 
-                                        <span className={styles.explore}>
-                                            {t('home.categories.explore')}
-                                        </span>
-                                    </div>
-                                </Link>
-                            </ScrollReveal>
-                        ))}
+                                        <div className={styles.cardContent}>
+                                            <div>
+                                                <h3
+                                                    className={styles.cardTitle}
+                                                >
+                                                    {category.name}
+                                                </h3>
+
+                                                {category.description && (
+                                                    <p
+                                                        className={
+                                                            styles.cardDescription
+                                                        }
+                                                    >
+                                                        {category.description}
+                                                    </p>
+                                                )}
+                                            </div>
+
+                                            <span className={styles.explore}>
+                                                {t('home.categories.explore')}
+                                            </span>
+                                        </div>
+                                    </Link>
+                                </ScrollReveal>
+                            );
+                        })}
                     </div>
                 )}
             </div>

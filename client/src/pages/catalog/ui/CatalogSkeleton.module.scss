@@ -1,0 +1,350 @@
+.skeleton {
+    width: 100%;
+}
+
+.header {
+    max-width: 900px;
+    margin-bottom: 48px;
+}
+
+.eyebrow {
+    width: 120px;
+    height: 17px;
+    margin-bottom: 18px;
+
+    border-radius: 999px;
+
+    background: var(--color-surface-secondary);
+}
+
+.title {
+    width: min(850px, 82%);
+    height: clamp(44px, 7vw, 82px);
+
+    border-radius: 12px;
+
+    background: var(--color-surface-secondary);
+}
+
+.description {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+
+    max-width: 650px;
+
+    margin-top: 26px;
+}
+
+.description span {
+    display: block;
+
+    width: 100%;
+    height: 17px;
+
+    border-radius: 999px;
+
+    background: var(--color-surface-secondary);
+}
+
+.description span:last-child {
+    width: 72%;
+}
+
+/* =========================================================
+   FILTERS
+   Geometry intentionally mirrors CatalogFilters
+   ========================================================= */
+
+.filters {
+    display: grid;
+
+    grid-template-columns:
+        minmax(260px, 2fr)
+        minmax(200px, 1fr)
+        minmax(190px, 1fr)
+        auto;
+
+    gap: 14px;
+
+    align-items: end;
+
+    margin-bottom: 56px;
+
+    padding: 18px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+
+    background: var(--color-surface-secondary);
+
+    box-shadow: var(--shadow-sm);
+}
+
+.fieldLarge,
+.field,
+.priceField {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+
+    min-width: 0;
+}
+
+.label {
+    display: block;
+
+    width: 80px;
+    height: 14px;
+
+    border-radius: 999px;
+
+    background: var(--color-surface);
+}
+
+.control {
+    display: block;
+
+    width: 100%;
+    height: 48px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 11px;
+
+    background: var(--color-surface);
+}
+
+.priceFields {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+
+    min-width: 0;
+}
+
+.priceField .label {
+    width: 72px;
+}
+
+.reset {
+    width: 110px;
+    height: 48px;
+
+    border: 1px solid var(--color-text);
+    border-radius: 11px;
+
+    background: var(--color-text);
+}
+
+/* =========================================================
+   PRODUCT GRID
+   ========================================================= */
+
+.grid {
+    display: grid;
+
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    gap: 44px 20px;
+}
+
+.card {
+    min-width: 0;
+}
+
+.image {
+    width: 100%;
+
+    aspect-ratio: 0.92 / 1;
+
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+
+    background: var(--color-surface-secondary);
+
+    box-shadow: var(--shadow-sm);
+}
+
+.category {
+    width: 42%;
+    height: 14px;
+
+    margin-top: 16px;
+    margin-bottom: 7px;
+
+    border-radius: 999px;
+
+    background: var(--color-surface-secondary);
+}
+
+.name {
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+.name span {
+    display: block;
+
+    width: 100%;
+    height: 22px;
+
+    border-radius: 7px;
+
+    background: var(--color-surface-secondary);
+}
+
+.name span:last-child {
+    width: 64%;
+}
+
+.price {
+    width: 32%;
+    height: 22px;
+
+    margin-top: 11px;
+
+    border-radius: 7px;
+
+    background: var(--color-surface-secondary);
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1100px) {
+    .filters {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .fieldLarge {
+        grid-column: 1 / -1;
+    }
+
+    .reset {
+        width: 100%;
+    }
+
+    .grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+
+        gap: 40px 18px;
+    }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+    .header {
+        margin-bottom: 36px;
+    }
+
+    .title {
+        width: 90%;
+        height: clamp(42px, 12vw, 64px);
+    }
+
+    .description {
+        margin-top: 20px;
+    }
+
+    .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+        gap: 34px 14px;
+    }
+
+    .image {
+        border-radius: 15px;
+    }
+}
+
+@media (max-width: 640px) {
+    .filters {
+        grid-template-columns: 1fr;
+
+        gap: 13px;
+
+        margin-bottom: 40px;
+
+        padding: 14px;
+
+        border-radius: 16px;
+    }
+
+    .fieldLarge {
+        grid-column: auto;
+    }
+
+    .priceFields {
+        gap: 9px;
+    }
+
+    .reset {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        margin-bottom: 30px;
+    }
+
+    .eyebrow {
+        margin-bottom: 14px;
+    }
+
+    .title {
+        height: 42px;
+    }
+
+    .description {
+        font-size: 15px;
+    }
+
+    .grid {
+        gap: 28px 10px;
+    }
+
+    .image {
+        border-radius: 13px;
+    }
+
+    .category {
+        margin-top: 11px;
+        height: 12px;
+    }
+
+    .name span {
+        height: 19px;
+    }
+
+    .price {
+        height: 19px;
+        margin-top: 7px;
+    }
+}
+
+@media (max-width: 400px) {
+    .priceFields {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    .skeleton * {
+        animation: none;
+    }
+}

@@ -3,15 +3,23 @@ import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@/entities/auth';
 import { useCart } from '@/entities/cart';
+import { useFavorites } from '@/entities/favorite';
 
 import styles from './AccountPage.module.scss';
 
 export const AccountPage = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const navigate = useNavigate();
 
     const { user, logout } = useAuth();
     const { data: cart } = useCart();
+
+    const language = i18n.language === 'ru' ? 'ru' : 'en';
+
+    const { data: favorites = [] } = useFavorites({
+        language,
+        currency: 'RUB',
+    });
 
     if (!user) {
         return null;
@@ -26,8 +34,7 @@ export const AccountPage = () => {
             await logout();
             await navigate('/account/login', { replace: true });
         } catch {
-            // The auth state is managed by AuthProvider.
-            // Keep the page stable if the logout request fails.
+            // AuthProvider manages the auth state.
         }
     };
 
@@ -162,6 +169,36 @@ export const AccountPage = () => {
                             onClick={() => void navigate('/account/orders')}
                         >
                             {t('auth.account.orders.open')}
+                        </button>
+                    </section>
+
+                    <section className={styles.card}>
+                        <div className={styles.cardHeader}>
+                            <div>
+                                <p className={styles.cardEyebrow}>
+                                    {t('favorites.account.eyebrow')}
+                                </p>
+
+                                <h2 className={styles.cardTitle}>
+                                    {t('favorites.account.title')}
+                                </h2>
+                            </div>
+
+                            <span className={styles.cartCount}>
+                                {favorites.length}
+                            </span>
+                        </div>
+
+                        <p className={styles.cardDescription}>
+                            {t('favorites.account.description')}
+                        </p>
+
+                        <button
+                            type="button"
+                            className={styles.primaryButton}
+                            onClick={() => void navigate('/account/favorites')}
+                        >
+                            {t('favorites.account.open')}
                         </button>
                     </section>
                 </div>

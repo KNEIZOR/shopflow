@@ -7,6 +7,10 @@ import type {
     MeResponse,
     RegisterInput,
     RegisterResponse,
+    UpdatePasswordInput,
+    UpdatePasswordResponse,
+    UpdateProfileInput,
+    UpdateProfileResponse,
 } from '../model/types';
 
 export const login = async (
@@ -41,4 +45,27 @@ export const getCurrentUser = async (): Promise<MeResponse['user']> => {
     const response = await apiRequest<MeResponse>('/auth/me');
 
     return response.user;
+};
+
+export const updateProfile = async (
+    input: UpdateProfileInput,
+): Promise<UpdateProfileResponse['user']> => {
+    const response = await apiRequest<UpdateProfileResponse>(
+        '/auth/profile',
+        {
+            method: 'PATCH',
+            body: JSON.stringify(input),
+        },
+    );
+
+    return response.user;
+};
+
+export const updatePassword = async (
+    input: UpdatePasswordInput,
+): Promise<UpdatePasswordResponse> => {
+    return apiRequest<UpdatePasswordResponse>('/auth/password', {
+        method: 'PATCH',
+        body: JSON.stringify(input),
+    });
 };

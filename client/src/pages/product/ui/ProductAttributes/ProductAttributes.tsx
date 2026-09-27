@@ -8,9 +8,15 @@ type ProductAttributesProps = {
     product: Product;
 };
 
-const formatAttributeValue = (value: string, type: string) => {
+const formatAttributeValue = (
+    value: string,
+    type: string,
+    translate: (key: string) => string,
+) => {
     if (type === 'BOOLEAN') {
-        return value === 'true' ? 'Yes' : 'No';
+        return value === 'true'
+            ? translate('product.attributeValues.yes')
+            : translate('product.attributeValues.no');
     }
 
     return value;
@@ -42,12 +48,13 @@ export const ProductAttributes = ({ product }: ProductAttributesProps) => {
                             )}
                         </div>
 
-                        <strong>
+                        <div className={styles.value}>
                             {formatAttributeValue(
                                 item.value,
                                 item.attribute.type,
+                                t,
                             )}
-                        </strong>
+                        </div>
                     </div>
                 ))}
             </div>

@@ -5,6 +5,8 @@ import { CatalogFilters, useCatalogFilters } from '@/features/catalog-filters';
 
 import { useCatalog } from '../model/useCatalog';
 
+import { CatalogSkeleton } from './CatalogSkeleton';
+
 import styles from './CatalogPage.module.scss';
 
 export const CatalogPage = () => {
@@ -12,9 +14,14 @@ export const CatalogPage = () => {
 
     const { filters, updateFilters, resetFilters } = useCatalogFilters();
 
-    const { data, isLoading, isError } = useCatalog({
-        page: 1,
-        limit: 20,
+    const {
+        data,
+        isLoading,
+        isError,
+        isFetchingNextPage,
+        hasNextPage,
+        fetchNextPage,
+    } = useCatalog({
         search: filters.search || undefined,
         category: filters.category || undefined,
         minPrice: filters.minPrice ? Number(filters.minPrice) : undefined,
@@ -26,7 +33,7 @@ export const CatalogPage = () => {
         return (
             <main className={styles.page}>
                 <div className="container">
-                    <p>{t('catalog.loading')}</p>
+                    <CatalogSkeleton />
                 </div>
             </main>
         );
@@ -36,13 +43,23 @@ export const CatalogPage = () => {
         return (
             <main className={styles.page}>
                 <div className="container">
-                    <p>{t('catalog.error')}</p>
+                    <div className={styles.error}>
+                        <p>{t('catalog.error')}</p>
+                    </div>
                 </div>
             </main>
         );
     }
 
-    const products = data?.items ?? [];
+    const products = data?.pages.flatMap((page) => page.items) ?? [];
+
+    const handleLoadMore = () => {
+        if (!hasNextPage || isFetchingNextPage) {
+            return;
+        }
+
+        void fetchNextPage();
+    };
 
     return (
         <main className={styles.page}>
@@ -64,7 +81,24 @@ export const CatalogPage = () => {
                 />
 
                 {products.length > 0 ? (
-                    <ProductGrid products={products} />
+                    <>
+                        <ProductGrid products={products} />
+
+                        {hasNextPage && (
+                            <div className={styles.loadMore}>
+                                <button
+                                    type="button"
+                                    className={styles.loadMoreButton}
+                                    onClick={handleLoadMore}
+                                    disabled={isFetchingNextPage}
+                                >
+                                    {isFetchingNextPage
+                                        ? t('catalog.loadingMore')
+                                        : t('catalog.loadMore')}
+                                </button>
+                            </div>
+                        )}
+                    </>
                 ) : (
                     <div className={styles.empty}>
                         <p>{t('catalog.empty')}</p>

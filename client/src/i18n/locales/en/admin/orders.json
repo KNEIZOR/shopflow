@@ -1,0 +1,94 @@
+{
+    "title": "Orders",
+    "subtitle": "Manage customer orders and order statuses.",
+    "search": {
+        "placeholder": "Search by order ID, customer or email..."
+    },
+    "filters": {
+        "title": "Filters",
+        "status": "Order status",
+        "paymentStatus": "Payment status",
+        "sort": "Sort",
+        "allStatuses": "All statuses",
+        "allPaymentStatuses": "All payment statuses",
+        "newest": "Newest first",
+        "oldest": "Oldest first",
+        "totalDesc": "Highest total",
+        "totalAsc": "Lowest total",
+        "clear": "Clear filters"
+    },
+    "table": {
+        "order": "Order",
+        "customer": "Customer",
+        "items": "Items",
+        "total": "Total",
+        "status": "Status",
+        "payment": "Payment",
+        "created": "Created",
+        "actions": "Actions",
+        "view": "View order"
+    },
+    "status": {
+        "PENDING": "Pending",
+        "CONFIRMED": "Confirmed",
+        "PROCESSING": "Processing",
+        "SHIPPED": "Shipped",
+        "DELIVERED": "Delivered",
+        "CANCELLED": "Cancelled"
+    },
+    "paymentStatus": {
+        "PENDING": "Pending",
+        "PAID": "Paid",
+        "FAILED": "Failed",
+        "REFUNDED": "Refunded"
+    },
+    "empty": {
+        "title": "No orders found",
+        "description": "Try changing your search or filters."
+    },
+    "error": {
+        "title": "Unable to load orders",
+        "description": "Something went wrong while loading the orders.",
+        "retry": "Try again"
+    },
+    "pagination": {
+        "previous": "Previous",
+        "next": "Next",
+        "page": "Page {{page}} of {{totalPages}}"
+    },
+    "details": {
+        "title": "Order details",
+        "customer": "Customer",
+        "shippingAddress": "Shipping address",
+        "items": "Order items",
+        "orderInformation": "Order information",
+        "orderId": "Order ID",
+        "created": "Created",
+        "updated": "Updated",
+        "paymentProvider": "Payment provider",
+        "paymentSession": "Payment session",
+        "paymentIntent": "Payment intent",
+        "phone": "Phone",
+        "country": "Country",
+        "city": "City",
+        "postalCode": "Postal code",
+        "street": "Street",
+        "apartment": "Apartment",
+        "sku": "SKU",
+        "quantity": "Quantity",
+        "price": "Price",
+        "subtotal": "Subtotal",
+        "total": "Total",
+        "back": "Back to orders"
+    },
+    "actions": {
+        "changeStatus": "Change status",
+        "save": "Save status",
+        "cancel": "Cancel",
+        "updating": "Updating..."
+    },
+    "messages": {
+        "statusUpdated": "Order status updated successfully.",
+        "statusUpdateError": "Unable to update order status."
+    }
+}

@@ -3,9 +3,14 @@
     --reveal-duration: 700ms;
     --reveal-stagger: 80ms;
 
-    will-change: opacity, transform;
+    opacity: 1;
+    transform: none;
 
-    backface-visibility: hidden;
+    transition:
+        opacity var(--reveal-duration) cubic-bezier(0.22, 1, 0.36, 1)
+            var(--reveal-delay),
+        transform var(--reveal-duration) cubic-bezier(0.22, 1, 0.36, 1)
+            var(--reveal-delay);
 }
 
 /* =========================================================
@@ -18,31 +23,26 @@
 
 .fade-up {
     opacity: 0;
-
-    transform: translateY(40px);
+    transform: translate3d(0, 40px, 0);
 }
 
 .fade-down {
     opacity: 0;
-
-    transform: translateY(-40px);
+    transform: translate3d(0, -40px, 0);
 }
 
 .fade-left {
     opacity: 0;
-
-    transform: translateX(40px);
+    transform: translate3d(40px, 0, 0);
 }
 
 .fade-right {
     opacity: 0;
-
-    transform: translateX(-40px);
+    transform: translate3d(-40px, 0, 0);
 }
 
 .scale {
     opacity: 0;
-
     transform: scale(0.94);
 }
 
@@ -50,34 +50,9 @@
    VISIBLE STATES
    ========================================================= */
 
-.isVisible.fade {
-    animation: fadeIn var(--reveal-duration) cubic-bezier(0.22, 1, 0.36, 1)
-        var(--reveal-delay) both;
-}
-
-.isVisible.fade-up {
-    animation: fadeUp var(--reveal-duration) cubic-bezier(0.22, 1, 0.36, 1)
-        var(--reveal-delay) both;
-}
-
-.isVisible.fade-down {
-    animation: fadeDown var(--reveal-duration) cubic-bezier(0.22, 1, 0.36, 1)
-        var(--reveal-delay) both;
-}
-
-.isVisible.fade-left {
-    animation: fadeLeft var(--reveal-duration) cubic-bezier(0.22, 1, 0.36, 1)
-        var(--reveal-delay) both;
-}
-
-.isVisible.fade-right {
-    animation: fadeRight var(--reveal-duration) cubic-bezier(0.22, 1, 0.36, 1)
-        var(--reveal-delay) both;
-}
-
-.isVisible.scale {
-    animation: scaleIn var(--reveal-duration) cubic-bezier(0.22, 1, 0.36, 1)
-        var(--reveal-delay) both;
+.isVisible {
+    opacity: 1;
+    transform: none;
 }
 
 /* =========================================================
@@ -89,153 +64,74 @@
 }
 
 .isVisible.stagger > * {
-    animation-delay: calc(
+    transition-delay: calc(
         var(--reveal-delay) + var(--stagger-index) * var(--reveal-stagger)
     );
 }
 
-/*
- * Automatically assign an animation delay to direct children.
- *
- * Example:
- *
- * <ScrollReveal stagger>
- *     <Card />
- *     <Card />
- *     <Card />
- * </ScrollReveal>
- */
-
-.isVisible.stagger > :nth-child(1) {
+.stagger > :nth-child(1) {
     --stagger-index: 0;
 }
 
-.isVisible.stagger > :nth-child(2) {
+.stagger > :nth-child(2) {
     --stagger-index: 1;
 }
 
-.isVisible.stagger > :nth-child(3) {
+.stagger > :nth-child(3) {
     --stagger-index: 2;
 }
 
-.isVisible.stagger > :nth-child(4) {
+.stagger > :nth-child(4) {
     --stagger-index: 3;
 }
 
-.isVisible.stagger > :nth-child(5) {
+.stagger > :nth-child(5) {
     --stagger-index: 4;
 }
 
-.isVisible.stagger > :nth-child(6) {
+.stagger > :nth-child(6) {
     --stagger-index: 5;
 }
 
-.isVisible.stagger > :nth-child(7) {
+.stagger > :nth-child(7) {
     --stagger-index: 6;
 }
 
-.isVisible.stagger > :nth-child(8) {
+.stagger > :nth-child(8) {
     --stagger-index: 7;
 }
 
-.isVisible.stagger > :nth-child(9) {
+.stagger > :nth-child(9) {
     --stagger-index: 8;
 }
 
-.isVisible.stagger > :nth-child(10) {
+.stagger > :nth-child(10) {
     --stagger-index: 9;
 }
 
-.isVisible.stagger > :nth-child(11) {
+.stagger > :nth-child(11) {
     --stagger-index: 10;
 }
 
-.isVisible.stagger > :nth-child(12) {
+.stagger > :nth-child(12) {
     --stagger-index: 11;
 }
 
 /* =========================================================
-   KEYFRAMES
+   PERFORMANCE
    ========================================================= */
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+.isVisible {
+    will-change: auto;
 }
 
-@keyframes fadeUp {
-    from {
-        opacity: 0;
-
-        transform: translateY(40px);
-    }
-
-    to {
-        opacity: 1;
-
-        transform: translateY(0);
-    }
-}
-
-@keyframes fadeDown {
-    from {
-        opacity: 0;
-
-        transform: translateY(-40px);
-    }
-
-    to {
-        opacity: 1;
-
-        transform: translateY(0);
-    }
-}
-
-@keyframes fadeLeft {
-    from {
-        opacity: 0;
-
-        transform: translateX(40px);
-    }
-
-    to {
-        opacity: 1;
-
-        transform: translateX(0);
-    }
-}
-
-@keyframes fadeRight {
-    from {
-        opacity: 0;
-
-        transform: translateX(-40px);
-    }
-
-    to {
-        opacity: 1;
-
-        transform: translateX(0);
-    }
-}
-
-@keyframes scaleIn {
-    from {
-        opacity: 0;
-
-        transform: scale(0.94);
-    }
-
-    to {
-        opacity: 1;
-
-        transform: scale(1);
-    }
+.fade,
+.fade-up,
+.fade-down,
+.fade-left,
+.fade-right,
+.scale {
+    backface-visibility: hidden;
 }
 
 /* =========================================================
@@ -249,26 +145,12 @@
     .fade-down,
     .fade-left,
     .fade-right,
-    .scale {
+    .scale,
+    .isVisible {
         opacity: 1;
-
-        animation: none;
-
         transform: none;
-
+        transition: none;
+        animation: none;
         will-change: auto;
-    }
-
-    .isVisible.fade,
-    .isVisible.fade-up,
-    .isVisible.fade-down,
-    .isVisible.fade-left,
-    .isVisible.fade-right,
-    .isVisible.scale {
-        animation: none;
-    }
-
-    .stagger > * {
-        animation: none;
     }
 }

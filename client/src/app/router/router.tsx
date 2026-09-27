@@ -8,6 +8,7 @@ import {
     loadCartTranslations,
     loadCatalogTranslations,
     loadCheckoutTranslations,
+    loadFavoritesTranslations,
     loadHomeTranslations,
     loadNotFoundTranslations,
     loadOrdersTranslations,
@@ -54,6 +55,12 @@ const loadCurrentAuthTranslations = async (): Promise<null> => {
     return null;
 };
 
+const loadCurrentFavoritesTranslations = async (): Promise<null> => {
+    await loadFavoritesTranslations(getCurrentLanguage());
+
+    return null;
+};
+
 const loadCurrentOrdersTranslations = async (): Promise<null> => {
     await loadOrdersTranslations(getCurrentLanguage());
 
@@ -77,7 +84,13 @@ const loadCurrentAdminLayoutTranslations = async (): Promise<void> => {
 };
 
 const loadCurrentAdminTranslations = (
-    feature: 'auth' | 'dashboard' | 'categories' | 'productTypes' | 'products',
+    feature:
+        | 'auth'
+        | 'dashboard'
+        | 'categories'
+        | 'productTypes'
+        | 'products'
+        | 'orders',
 ) => {
     return async (): Promise<null> => {
         await loadAdminFeatureTranslations(getCurrentLanguage(), feature);
@@ -87,7 +100,12 @@ const loadCurrentAdminTranslations = (
 };
 
 const loadCurrentAdminPageTranslations = (
-    feature: 'dashboard' | 'categories' | 'productTypes' | 'products',
+    feature:
+        | 'dashboard'
+        | 'categories'
+        | 'productTypes'
+        | 'products'
+        | 'orders',
 ) => {
     return async (): Promise<null> => {
         const language = getCurrentLanguage();
@@ -245,6 +263,20 @@ const accountRoute: RouteObject = {
         },
 
         {
+            path: '/account/favorites',
+            loader: loadCurrentFavoritesTranslations,
+
+            lazy: async () => {
+                const { FavoritesPage } =
+                    await import('@/pages/account/favorites/FavoritesPage');
+
+                return {
+                    Component: FavoritesPage,
+                };
+            },
+        },
+
+        {
             path: '/account/orders',
             loader: loadCurrentOrdersTranslations,
 
@@ -389,6 +421,34 @@ const adminRoute: RouteObject = {
 
                         return {
                             Component: ProductTypesAdminPage,
+                        };
+                    },
+                },
+
+                {
+                    path: 'orders',
+                    loader: loadCurrentAdminPageTranslations('orders'),
+
+                    lazy: async () => {
+                        const { AdminOrdersPage } =
+                            await import('@/features/admin/orders');
+
+                        return {
+                            Component: AdminOrdersPage,
+                        };
+                    },
+                },
+
+                {
+                    path: 'orders/:orderId',
+                    loader: loadCurrentAdminPageTranslations('orders'),
+
+                    lazy: async () => {
+                        const { AdminOrderPage } =
+                            await import('@/features/admin/orders');
+
+                        return {
+                            Component: AdminOrderPage,
                         };
                     },
                 },

@@ -1,0 +1,94 @@
+{
+    "title": "Заказы",
+    "subtitle": "Управление заказами клиентов и их статусами.",
+    "search": {
+        "placeholder": "Поиск по ID заказа, клиенту или email..."
+    },
+    "filters": {
+        "title": "Фильтры",
+        "status": "Статус заказа",
+        "paymentStatus": "Статус оплаты",
+        "sort": "Сортировка",
+        "allStatuses": "Все статусы",
+        "allPaymentStatuses": "Все статусы оплаты",
+        "newest": "Сначала новые",
+        "oldest": "Сначала старые",
+        "totalDesc": "Сначала дорогие",
+        "totalAsc": "Сначала дешёвые",
+        "clear": "Сбросить фильтры"
+    },
+    "table": {
+        "order": "Заказ",
+        "customer": "Клиент",
+        "items": "Товары",
+        "total": "Сумма",
+        "status": "Статус",
+        "payment": "Оплата",
+        "created": "Создан",
+        "actions": "Действия",
+        "view": "Открыть заказ"
+    },
+    "status": {
+        "PENDING": "Ожидает",
+        "CONFIRMED": "Подтверждён",
+        "PROCESSING": "В обработке",
+        "SHIPPED": "Отправлен",
+        "DELIVERED": "Доставлен",
+        "CANCELLED": "Отменён"
+    },
+    "paymentStatus": {
+        "PENDING": "Ожидает оплаты",
+        "PAID": "Оплачен",
+        "FAILED": "Ошибка оплаты",
+        "REFUNDED": "Возвращён"
+    },
+    "empty": {
+        "title": "Заказы не найдены",
+        "description": "Попробуйте изменить поиск или фильтры."
+    },
+    "error": {
+        "title": "Не удалось загрузить заказы",
+        "description": "Произошла ошибка при загрузке заказов.",
+        "retry": "Повторить"
+    },
+    "pagination": {
+        "previous": "Назад",
+        "next": "Далее",
+        "page": "Страница {{page}} из {{totalPages}}"
+    },
+    "details": {
+        "title": "Детали заказа",
+        "customer": "Клиент",
+        "shippingAddress": "Адрес доставки",
+        "items": "Товары заказа",
+        "orderInformation": "Информация о заказе",
+        "orderId": "ID заказа",
+        "created": "Создан",
+        "updated": "Обновлён",
+        "paymentProvider": "Платёжный провайдер",
+        "paymentSession": "Платёжная сессия",
+        "paymentIntent": "Платёжный intent",
+        "phone": "Телефон",
+        "country": "Страна",
+        "city": "Город",
+        "postalCode": "Индекс",
+        "street": "Улица",
+        "apartment": "Квартира",
+        "sku": "SKU",
+        "quantity": "Количество",
+        "price": "Цена",
+        "subtotal": "Подытог",
+        "total": "Итого",
+        "back": "Вернуться к заказам"
+    },
+    "actions": {
+        "changeStatus": "Изменить статус",
+        "save": "Сохранить статус",
+        "cancel": "Отмена",
+        "updating": "Обновление..."
+    },
+    "messages": {
+        "statusUpdated": "Статус заказа успешно обновлён.",
+        "statusUpdateError": "Не удалось обновить статус заказа."
+    }
+}

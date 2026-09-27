@@ -13,11 +13,12 @@ export const NewProductsSection = () => {
     const { t } = useTranslation();
 
     const { data, isLoading, isError } = useCatalog({
-        limit: PRODUCTS_LIMIT,
         sort: 'newest',
     });
 
-    const products = data?.items ?? [];
+    const products =
+        data?.pages.flatMap((page) => page.items).slice(0, PRODUCTS_LIMIT) ??
+        [];
 
     return (
         <section className={styles.section}>

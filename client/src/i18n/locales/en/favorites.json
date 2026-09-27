@@ -1,0 +1,23 @@
+{
+    "button": {
+        "add": "Add to favorites",
+        "remove": "Remove from favorites"
+    },
+    "page": {
+        "eyebrow": "Favorites",
+        "title": "Favorite products",
+        "description": "Products you saved so you can come back to them later.",
+        "empty": "Your favorites are empty.",
+        "emptyDescription": "Save products you like to find them quickly later.",
+        "continueShopping": "Continue shopping",
+        "loading": "Loading favorites...",
+        "error": "Unable to load your favorites.",
+        "retry": "Try again"
+    },
+    "account": {
+        "eyebrow": "Saved",
+        "title": "Favorites",
+        "description": "Quick access to the products you want to keep.",
+        "open": "Open favorites"
+    }
+}

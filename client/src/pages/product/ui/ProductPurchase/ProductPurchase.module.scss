@@ -171,7 +171,7 @@
     display: flex;
     flex-direction: column;
 
-    gap: 18px;
+    gap: 22px;
 }
 
 .sectionHeader {
@@ -215,6 +215,134 @@
     color: var(--color-text-muted);
 
     font-size: 12px;
+}
+
+/*
+ * Variant attribute selectors
+ *
+ * Example:
+ *
+ * Color
+ * [ red ] [ blue ] [ black ]
+ *
+ * Size
+ * [ S ] [ M ] [ L ]
+ */
+.attributeGroups {
+    display: flex;
+    flex-direction: column;
+
+    gap: 22px;
+}
+
+.attributeGroup {
+    display: flex;
+    flex-direction: column;
+
+    gap: 11px;
+}
+
+.attributeGroupHeader {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+
+    gap: 16px;
+}
+
+.attributeName {
+    color: var(--color-text);
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.attributeSelected {
+    overflow: hidden;
+
+    max-width: 55%;
+
+    color: var(--color-text-muted);
+
+    font-size: 12px;
+    font-weight: 500;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.attributeOptions {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 8px;
+}
+
+.attributeOption {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 64px;
+    min-height: 42px;
+
+    padding: 0 16px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+
+    background: var(--color-surface);
+
+    color: var(--color-text-secondary);
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+
+    cursor: pointer;
+
+    transition:
+        border-color var(--transition-fast),
+        background-color var(--transition-fast),
+        color var(--transition-fast),
+        box-shadow var(--transition-fast),
+        transform var(--transition-fast);
+
+    &:hover:not(:disabled) {
+        border-color: var(--color-border-strong);
+
+        background: var(--color-surface-secondary);
+
+        color: var(--color-text);
+
+        transform: translateY(-1px);
+    }
+
+    &:focus-visible {
+        outline: 3px solid var(--focus-ring);
+        outline-offset: 2px;
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+
+        opacity: 0.38;
+    }
+}
+
+.attributeOptionActive {
+    border-color: var(--color-accent);
+
+    background: var(--color-accent-soft);
+
+    color: var(--color-accent);
+
+    box-shadow: inset 0 0 0 1px var(--color-accent);
+}
+
+.attributeOptionDisabled {
+    text-decoration: line-through;
 }
 
 .variantGrid {
@@ -479,9 +607,6 @@
     font-weight: 600;
 }
 
-/*
- * Primary cart action
- */
 .cartButton {
     display: inline-flex;
     align-items: center;
@@ -540,9 +665,6 @@
     }
 }
 
-/*
- * Successful "Added to cart" state
- */
 .cartButtonSuccess {
     background: #2d8757;
 
@@ -555,9 +677,6 @@
     }
 }
 
-/*
- * Secondary "Go to cart" action
- */
 .cartButtonSecondary {
     display: inline-flex;
     align-items: center;
@@ -826,6 +945,31 @@
         gap: 8px;
     }
 
+    .attributeGroups {
+        gap: 20px;
+    }
+
+    .attributeOptions {
+        gap: 7px;
+    }
+
+    .attributeOption {
+        min-width: 58px;
+        min-height: 40px;
+
+        padding: 0 13px;
+
+        font-size: 12px;
+    }
+
+    .attributeGroupHeader {
+        gap: 10px;
+    }
+
+    .attributeSelected {
+        max-width: 45%;
+    }
+
     .variantGrid {
         grid-template-columns: 1fr;
     }
@@ -886,6 +1030,7 @@
 
 @media (prefers-reduced-motion: reduce) {
     .category,
+    .attributeOption,
     .variantButton,
     .quantityControl button,
     .cartButton,
@@ -894,6 +1039,7 @@
         transition: none;
     }
 
+    .attributeOption:hover:not(:disabled),
     .variantButton:hover:not(:disabled),
     .cartButton:hover:not(:disabled),
     .cartButtonSecondary:hover,

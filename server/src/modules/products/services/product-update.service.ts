@@ -39,16 +39,37 @@ export const updateProduct = async (
 
     await ensureProductNameOrSlugAvailable(input.name, input.slug, id);
 
+    const productTypeChanged =
+        input.productTypeId !== undefined &&
+        input.productTypeId !== existingProduct.productTypeId;
+
     const targetProductTypeId =
         input.productTypeId !== undefined
             ? input.productTypeId
             : existingProduct.productTypeId;
 
-    const isActivating =
-        input.status === 'ACTIVE' && existingProduct.status !== 'ACTIVE';
+    const targetStatus = input.status ?? existingProduct.status;
 
-    if (isActivating) {
+    if (targetStatus === 'ACTIVE') {
         await validateProductCanBeActivated(id, targetProductTypeId);
+    }
+
+    let allowedAttributeIds: string[] | null = null;
+
+    if (productTypeChanged && targetProductTypeId !== null) {
+        const attributes = await prisma.productTypeAttribute.findMany({
+            where: {
+                productTypeId: targetProductTypeId,
+            },
+
+            select: {
+                attributeId: true,
+            },
+        });
+
+        allowedAttributeIds = attributes.map(
+            (attribute) => attribute.attributeId,
+        );
     }
 
     await prisma.$transaction(async (tx) => {
@@ -124,6 +145,44 @@ export const updateProduct = async (
 
                 data,
             });
+        }
+
+        if (productTypeChanged) {
+            if (allowedAttributeIds === null) {
+                await tx.productAttributeValue.deleteMany({
+                    where: {
+                        productId: id,
+                    },
+                });
+
+                await tx.productAttributeValue.deleteMany({
+                    where: {
+                        variant: {
+                            productId: id,
+                        },
+                    },
+                });
+            } else {
+                await tx.productAttributeValue.deleteMany({
+                    where: {
+                        productId: id,
+                        attributeId: {
+                            notIn: allowedAttributeIds,
+                        },
+                    },
+                });
+
+                await tx.productAttributeValue.deleteMany({
+                    where: {
+                        variant: {
+                            productId: id,
+                        },
+                        attributeId: {
+                            notIn: allowedAttributeIds,
+                        },
+                    },
+                });
+            }
         }
 
         if (input.name !== undefined || input.description !== undefined) {

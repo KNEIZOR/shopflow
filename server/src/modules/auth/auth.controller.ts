@@ -1,6 +1,12 @@
 import type { Request, Response, NextFunction } from 'express';
 
-import { loginSchema, registerSchema } from './auth.schema';
+import {
+    loginSchema,
+    registerSchema,
+    updatePasswordSchema,
+    updateProfileSchema,
+} from './auth.schema';
+
 import * as authService from './auth.service';
 
 const COOKIE_NAME = 'shopflow_token';
@@ -90,6 +96,62 @@ export const me = async (req: Request, res: Response, next: NextFunction) => {
         res.json({
             success: true,
             user,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const updateProfile = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        if (!req.userId) {
+            res.status(401).json({
+                success: false,
+                message: 'Unauthorized',
+            });
+
+            return;
+        }
+
+        const input = updateProfileSchema.parse(req.body);
+
+        const user = await authService.updateProfile(req.userId, input);
+
+        res.status(200).json({
+            success: true,
+            user,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const updatePassword = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        if (!req.userId) {
+            res.status(401).json({
+                success: false,
+                message: 'Unauthorized',
+            });
+
+            return;
+        }
+
+        const input = updatePasswordSchema.parse(req.body);
+
+        await authService.updatePassword(req.userId, input);
+
+        res.status(200).json({
+            success: true,
+            message: 'Password updated successfully',
         });
     } catch (error) {
         next(error);

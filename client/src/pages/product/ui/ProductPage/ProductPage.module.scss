@@ -72,6 +72,17 @@
     margin-top: 112px;
 }
 
+.purchaseColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.galleryColumn {
+    position: relative;
+    min-width: 0;
+}
+
 .state {
     display: flex;
     flex-direction: column;

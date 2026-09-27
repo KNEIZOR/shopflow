@@ -8,6 +8,8 @@ import { ProductAttributes } from '../ProductAttributes';
 import { ProductDescription } from '../ProductDescription';
 import { ProductGallery } from '../ProductGallery';
 import { ProductPurchase } from '../ProductPurchase';
+import { ProductReviews } from '../ProductReviews';
+import { ProductFavoriteButton } from '../ProductFavoriteButton';
 
 import styles from './ProductPage.module.scss';
 
@@ -44,6 +46,7 @@ export const ProductPage = () => {
                 <div className="container">
                     <div className={styles.state}>
                         <span className={styles.stateIndicator} />
+
                         <p>{t('product.loading')}</p>
                     </div>
                 </div>
@@ -70,6 +73,7 @@ export const ProductPage = () => {
     const activeVariant = selectedVariant;
 
     const currentPrice = activeVariant?.price ?? product.price;
+
     const currentCurrency = activeVariant?.currency ?? product.currency;
 
     const currentStock = activeVariant
@@ -127,12 +131,19 @@ export const ProductPage = () => {
                 </nav>
 
                 <section className={styles.product}>
-                    <ProductGallery
-                        productName={product.name}
-                        images={product.images}
-                        activeImageIndex={safeImageIndex}
-                        onImageChange={setActiveImageIndex}
-                    />
+                    <div className={styles.galleryColumn}>
+                        <ProductGallery
+                            productName={product.name}
+                            images={product.images}
+                            activeImageIndex={safeImageIndex}
+                            onImageChange={setActiveImageIndex}
+                        />
+
+                        <ProductFavoriteButton
+                            productId={product.id}
+                            currency={currentCurrency}
+                        />
+                    </div>
 
                     <ProductPurchase
                         product={product}
@@ -152,6 +163,8 @@ export const ProductPage = () => {
                     <ProductAttributes product={product} />
 
                     <ProductDescription description={product.description} />
+
+                    <ProductReviews productId={product.id} />
                 </div>
             </div>
         </main>

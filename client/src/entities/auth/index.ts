@@ -6,5 +6,7 @@ export type {
     AuthUser,
     LoginInput,
     RegisterInput,
+    UpdatePasswordInput,
+    UpdateProfileInput,
     UserRole,
 } from './model/types';

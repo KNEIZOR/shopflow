@@ -7,11 +7,19 @@ import {
     login as loginRequest,
     logout as logoutRequest,
     register as registerRequest,
+    updatePassword as updatePasswordRequest,
+    updateProfile as updateProfileRequest,
 } from '../api/auth-api';
 
 import { AuthContext } from './AuthContext';
 
-import type { AuthUser, LoginInput, RegisterInput } from './types';
+import type {
+    AuthUser,
+    LoginInput,
+    RegisterInput,
+    UpdatePasswordInput,
+    UpdateProfileInput,
+} from './types';
 
 const AUTH_QUERY_KEY = ['auth', 'me'] as const;
 
@@ -20,6 +28,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
     const { data: user = null, isLoading } = useQuery({
         queryKey: AUTH_QUERY_KEY,
+
         queryFn: getCurrentUser,
 
         retry: false,
@@ -55,6 +64,18 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         },
     });
 
+    const updateProfileMutation = useMutation({
+        mutationFn: updateProfileRequest,
+
+        onSuccess: (updatedUser) => {
+            queryClient.setQueryData(AUTH_QUERY_KEY, updatedUser);
+        },
+    });
+
+    const updatePasswordMutation = useMutation({
+        mutationFn: updatePasswordRequest,
+    });
+
     const login = useCallback(
         async (input: LoginInput): Promise<AuthUser> => {
             return loginMutation.mutateAsync(input);
@@ -73,6 +94,20 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         await logoutMutation.mutateAsync();
     }, [logoutMutation]);
 
+    const updateProfile = useCallback(
+        async (input: UpdateProfileInput): Promise<AuthUser> => {
+            return updateProfileMutation.mutateAsync(input);
+        },
+        [updateProfileMutation],
+    );
+
+    const updatePassword = useCallback(
+        async (input: UpdatePasswordInput): Promise<void> => {
+            await updatePasswordMutation.mutateAsync(input);
+        },
+        [updatePasswordMutation],
+    );
+
     const isAuthenticated = Boolean(user);
 
     const isAdmin = user?.role === 'ADMIN';
@@ -86,8 +121,20 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
             login,
             register,
             logout,
+            updateProfile,
+            updatePassword,
         }),
-        [user, isLoading, isAuthenticated, isAdmin, login, register, logout],
+        [
+            user,
+            isLoading,
+            isAuthenticated,
+            isAdmin,
+            login,
+            register,
+            logout,
+            updateProfile,
+            updatePassword,
+        ],
     );
 
     return (

@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -56,12 +57,10 @@ export const HeroSection = () => {
     const { t } = useTranslation();
 
     const { data, isLoading } = useCatalog({
-        page: 1,
-        limit: HERO_PRODUCT_CARDS.length,
         sort: 'newest',
     });
 
-    const products = data?.items ?? [];
+    const products = data?.pages.flatMap((page) => page.items) ?? [];
 
     return (
         <section className={styles.section}>
@@ -132,7 +131,7 @@ export const HeroSection = () => {
                                         style={
                                             {
                                                 '--stat-index': index,
-                                            } as React.CSSProperties
+                                            } as CSSProperties
                                         }
                                     >
                                         <strong className={styles.statValue}>
@@ -208,7 +207,9 @@ export const HeroSection = () => {
                                     t(`home.cards.${card.labelKey}`);
 
                                 const cardHref = product
-                                    ? `/product/${product.slug}`
+                                    ? `/product/${encodeURIComponent(
+                                          product.slug,
+                                      )}`
                                     : '/catalog';
 
                                 return (

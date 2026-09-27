@@ -1,18 +1,43 @@
 {
-  "eyebrow": "Overview",
-  "title": "Welcome to ShopFlow",
-  "description": "Manage your store, products, orders and users from one place.",
-  "stats": {
-    "products": "Products",
-    "orders": "Orders",
-    "users": "Users",
-    "revenue": "Revenue"
-  },
-  "recentOrders": "Recent orders",
-  "noRecentOrders": "There are no recent orders yet.",
-  "quickActions": "Quick actions",
-  "actions": {
-    "products": "Manage products",
-    "categories": "Manage categories"
-  }
+    "eyebrow": "Administration",
+    "title": "Store overview",
+    "description": "Key store metrics, recent orders and the current order status overview.",
+    "refresh": "Refresh",
+    "errorTitle": "Unable to load dashboard",
+    "errorDescription": "Check the connection to the server and try again.",
+    "retry": "Try again",
+    "stats": {
+        "products": "Products",
+        "orders": "Orders",
+        "users": "Users",
+        "revenue": "Revenue"
+    },
+    "recentOrdersEyebrow": "Sales",
+    "recentOrders": "Recent orders",
+    "noRecentOrders": "There are no orders yet.",
+    "itemsCount_one": "{{count}} item",
+    "itemsCount_other": "{{count}} items",
+    "orderStatusesEyebrow": "Statistics",
+    "orderStatusesTitle": "Order statuses",
+    "quickActionsEyebrow": "Management",
+    "quickActions": "Quick actions",
+    "actions": {
+        "products": "Manage products",
+        "categories": "Manage categories",
+        "productTypes": "Product types"
+    },
+    "orderStatuses": {
+        "PENDING": "Pending",
+        "CONFIRMED": "Confirmed",
+        "PROCESSING": "Processing",
+        "SHIPPED": "Shipped",
+        "DELIVERED": "Delivered",
+        "CANCELLED": "Cancelled"
+    },
+    "paymentStatuses": {
+        "PENDING": "Payment pending",
+        "PAID": "Paid",
+        "FAILED": "Payment failed",
+        "REFUNDED": "Refunded"
+    }
 }

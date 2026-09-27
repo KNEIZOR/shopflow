@@ -5,7 +5,12 @@ import { prisma } from '../../lib/prisma';
 import { env } from '../../config/env';
 import { AppError } from '../../errors/app-error';
 
-import type { LoginInput, RegisterInput } from './auth.schema';
+import type {
+    LoginInput,
+    RegisterInput,
+    UpdatePasswordInput,
+    UpdateProfileInput,
+} from './auth.schema';
 import type { PublicUser } from './auth.types';
 
 const SALT_ROUNDS = 12;
@@ -120,4 +125,108 @@ export const getUserById = async (
     }
 
     return sanitizeUser(user);
+};
+
+export const updateProfile = async (
+    userId: string,
+    input: UpdateProfileInput,
+): Promise<PublicUser> => {
+    const email = input.email.toLowerCase();
+
+    const currentUser = await prisma.user.findUnique({
+        where: {
+            id: userId,
+        },
+    });
+
+    if (!currentUser) {
+        throw new AppError(404, 'USER_NOT_FOUND', 'User not found');
+    }
+
+    const existingUser = await prisma.user.findUnique({
+        where: {
+            email,
+        },
+    });
+
+    if (existingUser && existingUser.id !== userId) {
+        throw new AppError(
+            409,
+            'EMAIL_ALREADY_EXISTS',
+            'User with this email already exists',
+        );
+    }
+
+    const user = await prisma.user.update({
+        where: {
+            id: userId,
+        },
+
+        data: {
+            email,
+            firstName:
+                input.firstName === undefined
+                    ? currentUser.firstName
+                    : input.firstName || null,
+            lastName:
+                input.lastName === undefined
+                    ? currentUser.lastName
+                    : input.lastName || null,
+        },
+    });
+
+    return sanitizeUser(user);
+};
+
+export const updatePassword = async (
+    userId: string,
+    input: UpdatePasswordInput,
+): Promise<void> => {
+    const user = await prisma.user.findUnique({
+        where: {
+            id: userId,
+        },
+    });
+
+    if (!user) {
+        throw new AppError(404, 'USER_NOT_FOUND', 'User not found');
+    }
+
+    const currentPasswordMatches = await bcrypt.compare(
+        input.currentPassword,
+        user.password,
+    );
+
+    if (!currentPasswordMatches) {
+        throw new AppError(
+            400,
+            'INVALID_CURRENT_PASSWORD',
+            'Current password is incorrect',
+        );
+    }
+
+    const isSamePassword = await bcrypt.compare(
+        input.newPassword,
+        user.password,
+    );
+
+    if (isSamePassword) {
+        throw new AppError(
+            400,
+            'PASSWORD_UNCHANGED',
+            'New password must be different from the current password',
+        );
+    }
+
+    const hashedPassword = await bcrypt.hash(input.newPassword, SALT_ROUNDS);
+
+    await prisma.user.update({
+        where: {
+            id: userId,
+        },
+
+        data: {
+            password: hashedPassword,
+        },
+    });
 };

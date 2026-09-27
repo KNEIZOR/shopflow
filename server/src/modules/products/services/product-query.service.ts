@@ -1,16 +1,13 @@
 import { Prisma, type CurrencyCode } from '@prisma/client';
 
-import { prisma } from '../../../lib/prisma';
 import { AppError } from '../../../errors/app-error';
+import { prisma } from '../../../lib/prisma';
 
 import type { ProductListQuery } from '../products.schema';
-
 import type { ProductListResponse, ProductResponse } from '../products.types';
 
 import { createProductInclude } from './product.include';
-
 import { mapProduct } from './product-mapper.service';
-
 import { sortProductsByPrice } from './product-price.service';
 
 const DEFAULT_LANGUAGE = 'ru';
@@ -157,6 +154,82 @@ const buildProductWhere = (
     };
 };
 
+const getProductIdsRandomly = async (
+    where: Prisma.ProductWhereInput,
+    excludeIds: string[],
+    limit: number,
+) => {
+    const candidates = await prisma.product.findMany({
+        where: {
+            ...where,
+
+            ...(excludeIds.length > 0
+                ? {
+                      id: {
+                          notIn: excludeIds,
+                      },
+                  }
+                : {}),
+        },
+
+        select: {
+            id: true,
+        },
+    });
+
+    for (let index = candidates.length - 1; index > 0; index -= 1) {
+        const randomIndex = Math.floor(Math.random() * (index + 1));
+
+        [candidates[index], candidates[randomIndex]] = [
+            candidates[randomIndex],
+            candidates[index],
+        ];
+    }
+
+    return candidates.slice(0, limit).map((product) => product.id);
+};
+
+const getRandomProducts = async (
+    where: Prisma.ProductWhereInput,
+    excludeIds: string[],
+    limit: number,
+    productInclude: ReturnType<typeof createProductInclude>,
+    total: number,
+) => {
+    const selectedIds = await getProductIdsRandomly(where, excludeIds, limit);
+
+    if (selectedIds.length === 0) {
+        return {
+            products: [],
+            total,
+        };
+    }
+
+    const products = await prisma.product.findMany({
+        where: {
+            id: {
+                in: selectedIds,
+            },
+        },
+
+        include: productInclude,
+    });
+
+    const productMap = new Map(
+        products.map((product) => [product.id, product]),
+    );
+
+    return {
+        products: selectedIds
+            .map((id) => productMap.get(id))
+            .filter((product): product is (typeof products)[number] =>
+                Boolean(product),
+            ),
+
+        total,
+    };
+};
+
 const getProductsByPrice = async (
     where: Prisma.ProductWhereInput,
     currency: CurrencyCode,
@@ -223,6 +296,8 @@ export const getProducts = async (
         minPrice,
         maxPrice,
         sort,
+        random,
+        excludeIds,
         language = DEFAULT_LANGUAGE,
         currency = DEFAULT_CURRENCY,
     } = query;
@@ -244,6 +319,38 @@ export const getProducts = async (
     const where = buildProductWhere(query, isAdmin);
 
     const isPriceSort = sort === 'price_asc' || sort === 'price_desc';
+
+    /*
+     * Random mode is used by the public catalog.
+     *
+     * It deliberately ignores the normal page offset because every
+     * "load more" request supplies IDs that have already been displayed.
+     */
+    if (random && !isAdmin) {
+        const total = await prisma.product.count({
+            where,
+        });
+
+        const { products } = await getRandomProducts(
+            where,
+            excludeIds,
+            limit,
+            productInclude,
+            total,
+        );
+
+        return {
+            items: products.map((product) => mapProduct(product, currency)),
+
+            pagination: {
+                page,
+                limit,
+                total,
+
+                totalPages: Math.ceil(total / limit),
+            },
+        };
+    }
 
     if (isPriceSort) {
         const { products, total } = await getProductsByPrice(

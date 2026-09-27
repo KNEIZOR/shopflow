@@ -1,5 +1,12 @@
-import { ChevronDown, Globe2, ShoppingCart, UserRound } from 'lucide-react';
-import { useState } from 'react';
+import {
+    ChevronDown,
+    Globe2,
+    Menu,
+    ShoppingCart,
+    UserRound,
+    X,
+} from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 
@@ -14,6 +21,8 @@ import {
 } from '@/shared/config';
 import { NAVIGATION_ITEMS } from '@/shared/config/navigation';
 import { ThemeToggle } from '@/shared/ui/ThemeToggle';
+import { FavoriteHeaderLink } from './FavoriteHeaderLink/FavoriteHeaderLink';
+import { MobileMenu } from './MobileMenu/MobileMenu';
 
 import styles from './Header.module.scss';
 
@@ -27,8 +36,8 @@ export const Header = () => {
     const { data: cart } = useCart();
 
     const [isLanguageOpen, setIsLanguageOpen] = useState(false);
-
     const [isCurrencyOpen, setIsCurrencyOpen] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const currentLanguage =
         LANGUAGES.find((item) => item.code === language) ?? LANGUAGES[0];
@@ -42,13 +51,11 @@ export const Header = () => {
 
     const handleLanguageToggle = () => {
         setIsLanguageOpen((isOpen) => !isOpen);
-
         setIsCurrencyOpen(false);
     };
 
     const handleCurrencyToggle = () => {
         setIsCurrencyOpen((isOpen) => !isOpen);
-
         setIsLanguageOpen(false);
     };
 
@@ -64,6 +71,43 @@ export const Header = () => {
         setIsLanguageOpen(false);
     };
 
+    const closeMobileMenu = () => {
+        setIsMobileMenuOpen(false);
+        setIsLanguageOpen(false);
+        setIsCurrencyOpen(false);
+    };
+
+    useEffect(() => {
+        if (!isMobileMenuOpen) {
+            return;
+        }
+
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                closeMobileMenu();
+            }
+        };
+
+        const handleResize = () => {
+            if (window.innerWidth > 560) {
+                closeMobileMenu();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        window.addEventListener('resize', handleResize);
+
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('resize', handleResize);
+
+            document.body.style.overflow = previousOverflow;
+        };
+    }, [isMobileMenuOpen]);
+
     return (
         <header className={styles.header}>
             <div className={`container ${styles.header__inner}`}>
@@ -71,6 +115,7 @@ export const Header = () => {
                     to="/"
                     className={styles.header__logo}
                     aria-label="ShopFlow"
+                    onClick={closeMobileMenu}
                 >
                     <span className={styles.header__logoMark}>S</span>
 
@@ -149,7 +194,9 @@ export const Header = () => {
                                             item.code === currentLanguage.code
                                         }
                                         tabIndex={isLanguageOpen ? 0 : -1}
-                                        className={`${styles.language__option} ${
+                                        className={`${
+                                            styles.language__option
+                                        } ${
                                             item.code === currentLanguage.code
                                                 ? styles.language__optionActive
                                                 : ''
@@ -224,7 +271,9 @@ export const Header = () => {
                                             item.code === currentCurrency.code
                                         }
                                         tabIndex={isCurrencyOpen ? 0 : -1}
-                                        className={`${styles.currency__option} ${
+                                        className={`${
+                                            styles.currency__option
+                                        } ${
                                             item.code === currentCurrency.code
                                                 ? styles.currency__optionActive
                                                 : ''
@@ -258,6 +307,8 @@ export const Header = () => {
                     </div>
 
                     <ThemeToggle />
+
+                    <FavoriteHeaderLink />
 
                     <NavLink
                         to="/account"
@@ -294,7 +345,60 @@ export const Header = () => {
                         </span>
                     </NavLink>
                 </div>
+
+                <div className={styles.header__mobileActions}>
+                    <FavoriteHeaderLink />
+
+                    <NavLink
+                        to="/cart"
+                        className={({ isActive }) =>
+                            `${styles.header__iconLink} ${
+                                isActive ? styles.header__iconLinkActive : ''
+                            }`
+                        }
+                        aria-label={t('header.cartItems', {
+                            count: cartItemsCount,
+                        })}
+                    >
+                        <ShoppingCart size={20} strokeWidth={1.8} />
+
+                        <span
+                            className={styles.header__cartCount}
+                            aria-hidden="true"
+                        >
+                            {cartItemsCount}
+                        </span>
+                    </NavLink>
+
+                    <button
+                        type="button"
+                        className={styles.header__menuButton}
+                        onClick={() => setIsMobileMenuOpen((isOpen) => !isOpen)}
+                        aria-label={t('header.navigation')}
+                        aria-expanded={isMobileMenuOpen}
+                        aria-controls="shopflow-mobile-menu"
+                    >
+                        {isMobileMenuOpen ? (
+                            <X size={21} strokeWidth={1.8} />
+                        ) : (
+                            <Menu size={21} strokeWidth={1.8} />
+                        )}
+                    </button>
+                </div>
             </div>
+
+            <MobileMenu
+                isOpen={isMobileMenuOpen}
+                currentLanguage={currentLanguage}
+                currentCurrency={currentCurrency}
+                isLanguageOpen={isLanguageOpen}
+                isCurrencyOpen={isCurrencyOpen}
+                onClose={closeMobileMenu}
+                onLanguageToggle={handleLanguageToggle}
+                onCurrencyToggle={handleCurrencyToggle}
+                onLanguageChange={handleLanguageChange}
+                onCurrencyChange={handleCurrencyChange}
+            />
         </header>
     );
 };

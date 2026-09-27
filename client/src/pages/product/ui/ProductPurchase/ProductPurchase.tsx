@@ -1,9 +1,10 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@/entities/auth';
-import { useAddToCart } from '@/features/add-to-cart';
 import type { Product, ProductVariant } from '@/entities/product';
+import { useAddToCart } from '@/features/add-to-cart';
 import { formatCurrency } from '@/shared/lib/formatCurrency';
 
 import styles from './ProductPurchase.module.scss';
@@ -19,6 +20,76 @@ type ProductPurchaseProps = {
     hasStock: boolean;
     onVariantChange: (variantId: string) => void;
     onQuantityChange: (quantity: number) => void;
+};
+
+type VariantAttributeGroup = {
+    attributeId: string;
+    name: string;
+    slug: string;
+    values: string[];
+};
+
+const getVariantAttributeGroups = (
+    variants: ProductVariant[],
+): VariantAttributeGroup[] => {
+    const groups = new Map<
+        string,
+        {
+            attributeId: string;
+            name: string;
+            slug: string;
+            values: Set<string>;
+        }
+    >();
+
+    for (const variant of variants) {
+        for (const attribute of variant.attributes) {
+            const existingGroup = groups.get(attribute.attributeId);
+
+            if (existingGroup) {
+                existingGroup.values.add(attribute.value);
+                continue;
+            }
+
+            groups.set(attribute.attributeId, {
+                attributeId: attribute.attributeId,
+                name: attribute.attribute.name,
+                slug: attribute.attribute.slug,
+                values: new Set([attribute.value]),
+            });
+        }
+    }
+
+    return Array.from(groups.values()).map((group) => ({
+        attributeId: group.attributeId,
+        name: group.name,
+        slug: group.slug,
+        values: Array.from(group.values),
+    }));
+};
+
+const getVariantAttributeValue = (
+    variant: ProductVariant,
+    attributeId: string,
+): string | null => {
+    return (
+        variant.attributes.find(
+            (attribute) => attribute.attributeId === attributeId,
+        )?.value ?? null
+    );
+};
+
+const variantMatchesAttributeSelection = (
+    variant: ProductVariant,
+    selection: Map<string, string>,
+): boolean => {
+    for (const [attributeId, value] of selection) {
+        if (getVariantAttributeValue(variant, attributeId) !== value) {
+            return false;
+        }
+    }
+
+    return true;
 };
 
 export const ProductPurchase = ({
@@ -41,6 +112,7 @@ export const ProductPurchase = ({
     const addToCartMutation = useAddToCart();
 
     const hasVariants = product.variants.length > 0;
+
     const maximumQuantity = stock ?? 99;
 
     const isAddingToCart = addToCartMutation.isPending;
@@ -52,6 +124,77 @@ export const ProductPurchase = ({
         quantity >= 1 &&
         !isAddingToCart &&
         !isAuthLoading;
+
+    const attributeGroups = useMemo(
+        () => getVariantAttributeGroups(product.variants),
+        [product.variants],
+    );
+
+    const hasVariantAttributes = attributeGroups.length > 0;
+
+    const selectedAttributeValues = useMemo(() => {
+        const selection = new Map<string, string>();
+
+        if (!selectedVariant) {
+            return selection;
+        }
+
+        for (const attribute of selectedVariant.attributes) {
+            selection.set(attribute.attributeId, attribute.value);
+        }
+
+        return selection;
+    }, [selectedVariant]);
+
+    const getAvailableVariantForAttributeValue = (
+        attributeId: string,
+        value: string,
+    ): ProductVariant | null => {
+        const nextSelection = new Map(selectedAttributeValues);
+
+        nextSelection.set(attributeId, value);
+
+        const exactMatch = product.variants.find((variant) => {
+            if (variant.stock <= 0) {
+                return false;
+            }
+
+            return variantMatchesAttributeSelection(variant, nextSelection);
+        });
+
+        if (exactMatch) {
+            return exactMatch;
+        }
+
+        return (
+            product.variants.find((variant) => {
+                if (variant.stock <= 0) {
+                    return false;
+                }
+
+                return getVariantAttributeValue(variant, attributeId) === value;
+            }) ?? null
+        );
+    };
+
+    const isAttributeValueAvailable = (attributeId: string, value: string) => {
+        return Boolean(
+            getAvailableVariantForAttributeValue(attributeId, value),
+        );
+    };
+
+    const handleAttributeChange = (attributeId: string, value: string) => {
+        const nextVariant = getAvailableVariantForAttributeValue(
+            attributeId,
+            value,
+        );
+
+        if (!nextVariant) {
+            return;
+        }
+
+        onVariantChange(nextVariant.id);
+    };
 
     const handleDecrease = () => {
         onQuantityChange(quantity - 1);
@@ -170,50 +313,138 @@ export const ProductPurchase = ({
                         </span>
                     </div>
 
-                    <div className={styles.variantGrid}>
-                        {product.variants.map((variant) => {
-                            const isSelected = variant.id === selectedVariantId;
-                            const isAvailable = variant.stock > 0;
+                    {hasVariantAttributes ? (
+                        <div className={styles.attributeGroups}>
+                            {attributeGroups.map((group) => {
+                                const selectedValue =
+                                    selectedAttributeValues.get(
+                                        group.attributeId,
+                                    ) ?? null;
 
-                            return (
-                                <button
-                                    key={variant.id}
-                                    type="button"
-                                    className={`${styles.variantButton} ${
-                                        isSelected
-                                            ? styles.variantButtonActive
-                                            : ''
-                                    } ${
-                                        !isAvailable
-                                            ? styles.variantButtonDisabled
-                                            : ''
-                                    }`}
-                                    disabled={!isAvailable}
-                                    onClick={() => onVariantChange(variant.id)}
-                                >
-                                    <span className={styles.variantName}>
-                                        {variant.name}
-                                    </span>
+                                return (
+                                    <div
+                                        className={styles.attributeGroup}
+                                        key={group.attributeId}
+                                    >
+                                        <div
+                                            className={
+                                                styles.attributeGroupHeader
+                                            }
+                                        >
+                                            <span
+                                                className={styles.attributeName}
+                                            >
+                                                {group.name}
+                                            </span>
 
-                                    <span className={styles.variantPrice}>
-                                        {formatCurrency(
-                                            variant.price ?? product.price,
-                                            variant.currency ??
-                                                product.currency,
-                                        )}
-                                    </span>
+                                            {selectedValue && (
+                                                <span
+                                                    className={
+                                                        styles.attributeSelected
+                                                    }
+                                                >
+                                                    {selectedValue}
+                                                </span>
+                                            )}
+                                        </div>
 
-                                    <span className={styles.variantStock}>
-                                        {isAvailable
-                                            ? t('product.stockAvailable', {
-                                                  count: variant.stock,
-                                              })
-                                            : t('product.stockUnavailable')}
-                                    </span>
-                                </button>
-                            );
-                        })}
-                    </div>
+                                        <div
+                                            className={styles.attributeOptions}
+                                        >
+                                            {group.values.map((value) => {
+                                                const isSelected =
+                                                    selectedValue === value;
+
+                                                const isAvailable =
+                                                    isAttributeValueAvailable(
+                                                        group.attributeId,
+                                                        value,
+                                                    );
+
+                                                return (
+                                                    <button
+                                                        key={`${group.attributeId}-${value}`}
+                                                        type="button"
+                                                        className={`${
+                                                            styles.attributeOption
+                                                        } ${
+                                                            isSelected
+                                                                ? styles.attributeOptionActive
+                                                                : ''
+                                                        } ${
+                                                            !isAvailable
+                                                                ? styles.attributeOptionDisabled
+                                                                : ''
+                                                        }`}
+                                                        disabled={!isAvailable}
+                                                        aria-pressed={
+                                                            isSelected
+                                                        }
+                                                        onClick={() =>
+                                                            handleAttributeChange(
+                                                                group.attributeId,
+                                                                value,
+                                                            )
+                                                        }
+                                                    >
+                                                        {value}
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <div className={styles.variantGrid}>
+                            {product.variants.map((variant) => {
+                                const isSelected =
+                                    variant.id === selectedVariantId;
+                                const isAvailable = variant.stock > 0;
+
+                                return (
+                                    <button
+                                        key={variant.id}
+                                        type="button"
+                                        className={`${styles.variantButton} ${
+                                            isSelected
+                                                ? styles.variantButtonActive
+                                                : ''
+                                        } ${
+                                            !isAvailable
+                                                ? styles.variantButtonDisabled
+                                                : ''
+                                        }`}
+                                        disabled={!isAvailable}
+                                        onClick={() =>
+                                            onVariantChange(variant.id)
+                                        }
+                                    >
+                                        <span className={styles.variantName}>
+                                            {variant.name}
+                                        </span>
+
+                                        <span className={styles.variantPrice}>
+                                            {formatCurrency(
+                                                variant.price ?? product.price,
+                                                variant.currency ??
+                                                    product.currency,
+                                            )}
+                                        </span>
+
+                                        <span className={styles.variantStock}>
+                                            {isAvailable
+                                                ? t('product.stockAvailable', {
+                                                      count: variant.stock,
+                                                  })
+                                                : t('product.stockUnavailable')}
+                                        </span>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    )}
                 </section>
             )}
 

@@ -24,6 +24,7 @@ type AdminFeature =
     | 'categories'
     | 'productTypes'
     | 'products'
+    | 'orders'
     | 'navigation'
     | 'sidebar'
     | 'header';
@@ -31,8 +32,9 @@ type AdminFeature =
 const loadedLanguages = new Set<LanguageCode>();
 const loadedResources = new Set<string>();
 
-const getResourceKey = (language: LanguageCode, resource: string): string =>
-    `${language}:${resource}`;
+const getResourceKey = (language: LanguageCode, resource: string): string => {
+    return `${language}:${resource}`;
+};
 
 const loadBaseResources = async (
     language: LanguageCode,
@@ -204,6 +206,22 @@ export const loadAuthTranslations = async (
     addTopLevelResource(language, 'auth', auth);
 };
 
+export const loadFavoritesTranslations = async (
+    language: LanguageCode,
+): Promise<void> => {
+    const key = getResourceKey(language, 'favorites');
+
+    if (loadedResources.has(key)) {
+        return;
+    }
+
+    const { default: favorites } = await import(
+        `./locales/${language}/favorites.json`
+    );
+
+    addTopLevelResource(language, 'favorites', favorites);
+};
+
 export const loadOrdersTranslations = async (
     language: LanguageCode,
 ): Promise<void> => {
@@ -255,6 +273,8 @@ const adminLoaders: Record<
 
     products: (language) => import(`./locales/${language}/admin/products.json`),
 
+    orders: (language) => import(`./locales/${language}/admin/orders.json`),
+
     navigation: (language) =>
         import(`./locales/${language}/admin/navigation.json`),
 
@@ -290,6 +310,7 @@ const loadAllFeatureTranslations = async (
         loadCartTranslations(language),
         loadCheckoutTranslations(language),
         loadAuthTranslations(language),
+        loadFavoritesTranslations(language),
         loadOrdersTranslations(language),
         loadNotFoundTranslations(language),
 
@@ -298,6 +319,7 @@ const loadAllFeatureTranslations = async (
         loadAdminFeatureTranslations(language, 'categories'),
         loadAdminFeatureTranslations(language, 'productTypes'),
         loadAdminFeatureTranslations(language, 'products'),
+        loadAdminFeatureTranslations(language, 'orders'),
         loadAdminFeatureTranslations(language, 'navigation'),
         loadAdminFeatureTranslations(language, 'sidebar'),
         loadAdminFeatureTranslations(language, 'header'),
@@ -306,7 +328,7 @@ const loadAllFeatureTranslations = async (
 
 const initialResources = await loadBaseResources(initialLanguage);
 
-void i18n.use(initReactI18next).init({
+await i18n.use(initReactI18next).init({
     resources: {
         [initialLanguage]: {
             translation: {
@@ -329,8 +351,14 @@ void i18n.use(initReactI18next).init({
 loadedLanguages.add(initialLanguage);
 
 loadedResources.add(getResourceKey(initialLanguage, 'common'));
+
 loadedResources.add(getResourceKey(initialLanguage, 'header'));
+
 loadedResources.add(getResourceKey(initialLanguage, 'footer'));
+
+// Load all feature translations before the application
+// starts rendering.
+await loadAllFeatureTranslations(initialLanguage);
 
 export const changeLanguage = async (language: LanguageCode): Promise<void> => {
     if (language === i18n.language) {

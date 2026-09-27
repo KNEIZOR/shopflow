@@ -9,10 +9,13 @@ import authRouter from './modules/auth/auth.routes';
 import categoriesRouter from './modules/categories/categories.routes';
 import productTypesRouter from './modules/product-types/product-types.routes';
 import productsRouter from './modules/products/products.routes';
+import reviewsRouter from './modules/reviews/reviews.routes';
 import addressesRouter from './modules/addresses/address.routes';
 import cartRoutes from './modules/cart/cart.routes';
 import orderRoutes from './modules/orders/order.routes';
 import paymentsRoutes from './modules/payments/payments.routes';
+import adminRouter from './modules/admin/admin.routes';
+import favoritesRoutes from './modules/favorites/favorites.routes';
 
 import { webhook } from './modules/payments/payments.controller';
 
@@ -55,10 +58,13 @@ app.use('/api/auth', authRouter);
 app.use('/api/categories', categoriesRouter);
 app.use('/api/product-types', productTypesRouter);
 app.use('/api/products', productsRouter);
+app.use('/api/reviews', reviewsRouter);
 app.use('/api/addresses', addressesRouter);
 app.use('/api/cart', cartRoutes);
+app.use('/api/favorites', favoritesRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/payments', paymentsRoutes);
+app.use('/api/admin', adminRouter);
 
 app.use(errorHandler);
 

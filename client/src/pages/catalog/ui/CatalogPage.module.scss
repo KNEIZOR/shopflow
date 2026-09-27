@@ -72,6 +72,67 @@
     transition: color var(--transition-base);
 }
 
+.loadMore {
+    display: flex;
+    justify-content: center;
+
+    margin-top: 56px;
+}
+
+.loadMoreButton {
+    min-width: 190px;
+
+    padding: 14px 28px;
+
+    border: 1px solid var(--color-border-strong);
+    border-radius: 999px;
+
+    background: var(--color-surface);
+
+    color: var(--color-text);
+
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    box-shadow: var(--shadow-xs);
+
+    transition:
+        background-color var(--transition-fast),
+        border-color var(--transition-fast),
+        color var(--transition-fast),
+        box-shadow var(--transition-fast),
+        transform var(--transition-fast);
+
+    &:hover:not(:disabled) {
+        border-color: var(--color-accent);
+
+        background: var(--color-accent);
+
+        color: var(--color-text-inverse);
+
+        box-shadow: var(--shadow-sm);
+
+        transform: translateY(-1px);
+    }
+
+    &:active:not(:disabled) {
+        transform: translateY(0);
+    }
+
+    &:focus-visible {
+        outline: 3px solid var(--focus-ring);
+        outline-offset: 3px;
+    }
+
+    &:disabled {
+        cursor: wait;
+        opacity: 0.65;
+    }
+}
+
 .empty {
     display: flex;
     align-items: center;
@@ -125,6 +186,15 @@
 
         font-size: 16px;
     }
+
+    .loadMore {
+        margin-top: 44px;
+    }
+
+    .loadMoreButton {
+        width: 100%;
+        max-width: 360px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -151,6 +221,10 @@
         line-height: 1.55;
     }
 
+    .loadMore {
+        margin-top: 36px;
+    }
+
     .empty {
         min-height: 220px;
 
@@ -160,12 +234,39 @@
     }
 }
 
+.error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 320px;
+
+    padding: 40px;
+
+    border: 1px solid var(--color-danger);
+    border-radius: 20px;
+
+    background: var(--color-surface-secondary);
+
+    color: var(--color-danger);
+
+    text-align: center;
+}
+
+.error p {
+    margin: 0;
+
+    font-size: 15px;
+    line-height: 1.6;
+}
+
 @media (prefers-reduced-motion: reduce) {
     .page,
     .eyebrow,
     .title,
     .description,
-    .empty {
+    .empty,
+    .loadMoreButton {
         transition: none;
     }
 }

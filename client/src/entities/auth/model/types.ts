@@ -22,6 +22,17 @@ export type RegisterInput = {
     lastName?: string;
 };
 
+export type UpdateProfileInput = {
+    email: string;
+    firstName: string | null;
+    lastName: string | null;
+};
+
+export type UpdatePasswordInput = {
+    currentPassword: string;
+    newPassword: string;
+};
+
 export type LoginResponse = {
     success: boolean;
     user: AuthUser;
@@ -35,6 +46,16 @@ export type RegisterResponse = {
 export type MeResponse = {
     success: boolean;
     user: AuthUser;
+};
+
+export type UpdateProfileResponse = {
+    success: boolean;
+    user: AuthUser;
+};
+
+export type UpdatePasswordResponse = {
+    success: boolean;
+    message: string;
 };
 
 export type LogoutResponse = {

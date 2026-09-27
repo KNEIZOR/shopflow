@@ -1,0 +1,287 @@
+.card {
+    min-width: 0;
+
+    color: var(--color-text);
+
+    transition:
+        color var(--transition-base),
+        transform var(--transition-fast);
+}
+
+.imageArea {
+    position: relative;
+}
+
+.imageLink {
+    position: relative;
+
+    display: block;
+
+    border-radius: 18px;
+
+    &:focus-visible {
+        outline: 3px solid var(--focus-ring);
+        outline-offset: 4px;
+    }
+}
+
+.imageWrapper {
+    position: relative;
+
+    aspect-ratio: 0.92 / 1;
+
+    overflow: hidden;
+
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+
+    background: var(--color-surface-secondary);
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+        background-color var(--transition-base),
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast),
+        transform var(--transition-fast);
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition:
+        transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 0.4s ease;
+}
+
+.imageLink::after {
+    content: '→';
+
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 38px;
+    height: 38px;
+
+    border: 1px solid rgb(255 255 255 / 35%);
+    border-radius: 50%;
+
+    background: rgb(0 0 0 / 58%);
+    color: #fff;
+
+    font-size: 18px;
+    line-height: 1;
+
+    opacity: 0;
+
+    transform: translateY(8px) scale(0.92);
+
+    backdrop-filter: blur(8px);
+
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s ease;
+}
+
+.imageLink:hover .image {
+    transform: scale(1.055);
+
+    filter: saturate(1.05);
+}
+
+.imageLink:hover .imageWrapper {
+    border-color: var(--color-border-strong);
+
+    box-shadow: var(--shadow-md);
+
+    transform: translateY(-3px);
+}
+
+.imageLink:hover::after {
+    opacity: 1;
+
+    transform: translateY(0) scale(1);
+}
+
+.placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 20px;
+
+    background: var(--color-surface-secondary);
+
+    color: var(--color-text-muted);
+
+    font-size: 13px;
+    line-height: 1.5;
+
+    text-align: center;
+
+    transition:
+        background-color var(--transition-base),
+        color var(--transition-base);
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    min-width: 0;
+
+    padding: 16px 2px 0;
+}
+
+.category {
+    max-width: 100%;
+
+    margin-bottom: 7px;
+
+    overflow: hidden;
+
+    color: var(--color-text-muted);
+
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.3;
+
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    transition: color var(--transition-base);
+}
+
+.name {
+    display: -webkit-box;
+
+    max-width: 100%;
+
+    overflow: hidden;
+
+    color: var(--color-text);
+
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+
+    transition:
+        color var(--transition-fast),
+        transform var(--transition-fast);
+}
+
+.price {
+    margin-top: 11px;
+
+    color: var(--color-text);
+
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+
+    transition: color var(--transition-base);
+}
+
+.card:hover .category {
+    color: var(--color-accent);
+}
+
+.card:hover .name {
+    color: var(--color-accent);
+}
+
+@media (max-width: 768px) {
+    .imageWrapper {
+        border-radius: 15px;
+    }
+
+    .imageLink::after {
+        display: none;
+    }
+
+    .content {
+        padding-top: 13px;
+    }
+
+    .name {
+        font-size: 16px;
+    }
+
+    .price {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .imageWrapper {
+        border-radius: 13px;
+    }
+
+    .content {
+        padding-top: 11px;
+    }
+
+    .category {
+        margin-bottom: 5px;
+
+        font-size: 10px;
+    }
+
+    .name {
+        font-size: 14px;
+        line-height: 1.35;
+    }
+
+    .price {
+        margin-top: 7px;
+
+        font-size: 15px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .card,
+    .imageLink,
+    .imageWrapper,
+    .image,
+    .placeholder,
+    .category,
+    .name,
+    .price {
+        transition: none;
+    }
+
+    .imageLink:hover .image {
+        transform: none;
+
+        filter: none;
+    }
+
+    .imageLink:hover .imageWrapper {
+        transform: none;
+    }
+
+    .imageLink::after {
+        display: none;
+    }
+}

@@ -67,6 +67,8 @@ export const ScrollReveal = ({
             return;
         }
 
+        let hasTriggered = false;
+
         const observer = new IntersectionObserver(
             ([entry]) => {
                 if (!entry) {
@@ -74,6 +76,11 @@ export const ScrollReveal = ({
                 }
 
                 if (entry.isIntersecting) {
+                    if (hasTriggered && once) {
+                        return;
+                    }
+
+                    hasTriggered = true;
                     setIsVisible(true);
 
                     if (once) {
@@ -84,6 +91,7 @@ export const ScrollReveal = ({
                 }
 
                 if (!once) {
+                    hasTriggered = false;
                     setIsVisible(false);
                 }
             },

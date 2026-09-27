@@ -74,10 +74,6 @@ export const createProductSchema = z.object({
 
     description: z.string().trim().max(5000).optional(),
 
-    /**
-     * Current base price.
-     * ShopFlow currently uses RUB as the base currency.
-     */
     price: positivePriceSchema,
 
     status: productStatusSchema.default('DRAFT'),
@@ -123,6 +119,24 @@ export const productListQuerySchema = z.object({
         ])
         .default('newest'),
 
+    random: z
+        .enum(['true', 'false'])
+        .transform((value) => value === 'true')
+        .default(false),
+
+    excludeIds: z
+        .string()
+        .trim()
+        .optional()
+        .transform((value) =>
+            value
+                ? value
+                      .split(',')
+                      .map((id) => id.trim())
+                      .filter(Boolean)
+                : [],
+        ),
+
     language: languageSchema.default('ru'),
 
     currency: currencySchema.default('RUB'),
@@ -154,9 +168,6 @@ export const createProductVariantSchema = z.object({
         .max(100)
         .regex(/^[A-Za-z0-9][A-Za-z0-9._-]*$/, 'Invalid SKU format'),
 
-    /**
-     * Current variant base price in RUB.
-     */
     price: positivePriceSchema.optional(),
 
     stock: z.coerce.number().int().min(0).max(1000000).default(0),

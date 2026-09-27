@@ -34,6 +34,8 @@ export const ProductAdminPage = () => {
         );
     }
 
+    const productTypeId = product.productType?.id ?? null;
+
     return (
         <section className={styles.page}>
             <header className={styles.header}>
@@ -59,6 +61,11 @@ export const ProductAdminPage = () => {
             <div className={styles.grid}>
                 <ProductBasicInfo product={product} />
 
+                <ProductAttributes
+                    productId={product.id}
+                    productTypeId={productTypeId}
+                />
+
                 <section className={styles.card}>
                     <h2 className={styles.cardTitle}>
                         {t('admin.products.currentPrice')}
@@ -73,14 +80,9 @@ export const ProductAdminPage = () => {
 
                 <ProductPrices productId={product.id} />
 
-                <ProductAttributes
-                    productId={product.id}
-                    productTypeId={product.productType?.id ?? null}
-                />
-
                 <ProductVariants
                     productId={product.id}
-                    productTypeId={product.productType?.id ?? null}
+                    productTypeId={productTypeId}
                 />
 
                 <ProductImages productId={product.id} />

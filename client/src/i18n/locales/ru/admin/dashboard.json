@@ -1,18 +1,45 @@
 {
-  "eyebrow": "Обзор",
-  "title": "Добро пожаловать в ShopFlow",
-  "description": "Управляйте магазином, товарами, заказами и пользователями из одного места.",
-  "stats": {
-    "products": "Товары",
-    "orders": "Заказы",
-    "users": "Пользователи",
-    "revenue": "Выручка"
-  },
-  "recentOrders": "Последние заказы",
-  "noRecentOrders": "Последних заказов пока нет.",
-  "quickActions": "Быстрые действия",
-  "actions": {
-    "products": "Управление товарами",
-    "categories": "Управление категориями"
-  }
+    "eyebrow": "Панель управления",
+    "title": "Обзор магазина",
+    "description": "Ключевые показатели магазина, последние заказы и текущее состояние заказов.",
+    "refresh": "Обновить",
+    "errorTitle": "Не удалось загрузить данные",
+    "errorDescription": "Проверьте соединение с сервером и попробуйте ещё раз.",
+    "retry": "Повторить",
+    "stats": {
+        "products": "Товары",
+        "orders": "Заказы",
+        "users": "Пользователи",
+        "revenue": "Выручка"
+    },
+    "recentOrdersEyebrow": "Продажи",
+    "recentOrders": "Последние заказы",
+    "noRecentOrders": "Заказов пока нет.",
+    "itemsCount_one": "{{count}} товар",
+    "itemsCount_few": "{{count}} товара",
+    "itemsCount_many": "{{count}} товаров",
+    "itemsCount_other": "{{count}} товара",
+    "orderStatusesEyebrow": "Статистика",
+    "orderStatusesTitle": "Статусы заказов",
+    "quickActionsEyebrow": "Управление",
+    "quickActions": "Быстрые действия",
+    "actions": {
+        "products": "Управление товарами",
+        "categories": "Управление категориями",
+        "productTypes": "Типы товаров"
+    },
+    "orderStatuses": {
+        "PENDING": "Ожидает",
+        "CONFIRMED": "Подтверждён",
+        "PROCESSING": "В обработке",
+        "SHIPPED": "Отправлен",
+        "DELIVERED": "Доставлен",
+        "CANCELLED": "Отменён"
+    },
+    "paymentStatuses": {
+        "PENDING": "Ожидает оплаты",
+        "PAID": "Оплачен",
+        "FAILED": "Ошибка оплаты",
+        "REFUNDED": "Возвращён"
+    }
 }

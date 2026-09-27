@@ -80,6 +80,20 @@ export const ProductGallery = ({
         handleNext();
     };
 
+    const handleLightboxBackgroundClick = (
+        event: React.MouseEvent<HTMLDivElement>,
+    ) => {
+        if (event.target === event.currentTarget) {
+            handleCloseLightbox();
+        }
+    };
+
+    const handleLightboxContentClick = (
+        event: React.MouseEvent<HTMLDivElement>,
+    ) => {
+        event.stopPropagation();
+    };
+
     useEffect(() => {
         if (!isLightboxOpen) {
             return;
@@ -245,13 +259,12 @@ export const ProductGallery = ({
                     role="dialog"
                     aria-modal="true"
                     aria-label={t('product.gallery')}
-                    onMouseDown={(event) => {
-                        if (event.target === event.currentTarget) {
-                            handleCloseLightbox();
-                        }
-                    }}
+                    onClick={handleLightboxBackgroundClick}
                 >
-                    <div className={styles.lightboxContent}>
+                    <div
+                        className={styles.lightboxContent}
+                        onClick={handleLightboxContentClick}
+                    >
                         <button
                             ref={closeButtonRef}
                             type="button"
